@@ -1,6 +1,8 @@
 package io.catalyte.training.sportsproducts.domains.product;
 
+import static io.catalyte.training.sportsproducts.constants.Paths.PRODUCTS_PATH;
 import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +36,12 @@ public class PurchaseApiTest {
   public void getAllPurchasesReturnsEmptyArray() throws Exception {
     String purchases = mockMvc.perform(get(PURCHASES_PATH))
         .andReturn().getResponse().getContentAsString();
-    assertTrue(purchases.equals("[]"));
+    assertEquals("[]", purchases);
+  }
+  @Test
+  public void getAllPurchasesReturns200() throws Exception {
+    mockMvc.perform(get(PURCHASES_PATH))
+        .andExpect(status().isOk());
   }
 
 
