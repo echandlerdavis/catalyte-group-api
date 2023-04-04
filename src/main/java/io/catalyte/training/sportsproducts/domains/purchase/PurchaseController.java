@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,8 +36,8 @@ public class PurchaseController {
   /**
    * Handles a POST request to /purchases. This creates a new purchase that gets saved to the database.
    *
-   * @param purchase
-   * @return
+   * @param purchase purchase to be created
+   * @return valid purchase that was saved
    */
   @PostMapping
   public ResponseEntity savePurchase(@RequestBody Purchase purchase) {
@@ -48,11 +50,24 @@ public class PurchaseController {
   /**
    * Handles a GET request directed at /purchases.
    *
-   * @return ResponseEntity with a body containing an empty array and http status 200
+   * @return ResponseEntity with a 404 status code
    */
   @GetMapping
   public ResponseEntity findAllPurchases() {
-    List<Purchase> emptyList = new ArrayList<>();
-    return new ResponseEntity<>(emptyList, HttpStatus.OK);
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
+  }
+
+  /**
+   * Handles a GET request with an email parameter
+   *
+   * @param email String email of user whose purchase history should be returned
+   * @return ResponseEntity with a list of purchase objects and HttpStatus Ok. If no purchases
+   * are found, returns an empty list.
+   */
+  @RequestMapping(value = "/{email}")
+  public ResponseEntity findAllPurchasesByEmail(@PathVariable String email){
+    return new ResponseEntity(purchaseService.findByBillingAddressEmail(email), HttpStatus.OK);
   }
 }

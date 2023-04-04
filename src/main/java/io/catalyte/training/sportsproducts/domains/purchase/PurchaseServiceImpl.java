@@ -5,6 +5,7 @@ import io.catalyte.training.sportsproducts.domains.product.ProductService;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.util.List;
 import java.util.Set;
+import javax.xml.crypto.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,16 @@ public class PurchaseServiceImpl implements PurchaseService {
   public List<Purchase> findAllPurchases() {
     try {
       return purchaseRepository.findAll();
+    } catch (DataAccessException e) {
+      logger.error(e.getMessage());
+      throw new ServerError(e.getMessage());
+    }
+  }
+
+  @Override
+  public List<Purchase> findByBillingAddressEmail(String email) {
+    try {
+      return purchaseRepository.findByBillingAddressEmail(email);
     } catch (DataAccessException e) {
       logger.error(e.getMessage());
       throw new ServerError(e.getMessage());

@@ -27,21 +27,43 @@ public class PurchaseApiTest {
 
   private MockMvc mockMvc;
 
+  /**
+   * Create a mockMvc to run tests with
+   */
   @Before
   public void setUp() {
     mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
   }
 
+  /**
+   * Tests that the API returns an empty list when a non-existent email is send to /purchases/{email}
+    * @throws Exception
+   */
   @Test
-  public void getAllPurchasesReturnsEmptyArray() throws Exception {
-    String purchases = mockMvc.perform(get(PURCHASES_PATH))
+  public void findPurchasesByEmailEmailNotFoundReturnsEmptyList() throws Exception {
+    String purchases = mockMvc.perform(get(PURCHASES_PATH + "/not@anEmail.com"))
         .andReturn().getResponse().getContentAsString();
     assertEquals("[]", purchases);
   }
+
+  /**
+   * Tests that the API returns a response with status 200 when a non-existent email is searched for
+   * @throws Exception
+   */
   @Test
-  public void getAllPurchasesReturns200() throws Exception {
-    mockMvc.perform(get(PURCHASES_PATH))
+  public void findPurchasesByEmailEmailNotFoundReturnsOk() throws Exception {
+    mockMvc.perform(get(PURCHASES_PATH + "/not@anEmail.com"))
         .andExpect(status().isOk());
+  }
+
+  /**
+   * Tests that a GET request send to /purchases returns a 404 error.
+   * @throws Exception
+   */
+  @Test
+  public void getAllPurchasesReturns404() throws Exception {
+    mockMvc.perform(get(PURCHASES_PATH))
+        .andExpect(status().is(404));
   }
 
 
