@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,7 +67,7 @@ public class PurchaseController {
    * @return ResponseEntity with a list of purchase objects and HttpStatus Ok. If no purchases
    * are found, returns an empty list.
    */
-  @RequestMapping(value = "/{email}")
+  @RequestMapping(value = "/{email}", method = RequestMethod.GET)
   public ResponseEntity findAllPurchasesByEmail(@PathVariable String email){
     return new ResponseEntity(purchaseService.findByBillingAddressEmail(email), HttpStatus.OK);
   }

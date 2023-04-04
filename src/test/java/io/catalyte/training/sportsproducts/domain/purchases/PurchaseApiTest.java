@@ -1,4 +1,4 @@
-package io.catalyte.training.sportsproducts.domains.product;
+package io.catalyte.training.sportsproducts.domain.purchases;
 
 import static io.catalyte.training.sportsproducts.constants.Paths.PRODUCTS_PATH;
 import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH;
