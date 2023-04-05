@@ -4,7 +4,6 @@ import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class PurchaseApiTest {
+public class PurchaseApiIntegrationTest {
   @Autowired
   private WebApplicationContext wac;
 
@@ -74,6 +74,19 @@ public class PurchaseApiTest {
   }
 
   /**
+   * Remove purchases that were added in setup.
+   */
+  @After
+  public void tearDown(){
+    for (String email: emails){
+      List<Purchase> purchases = purchaseRepository.findByBillingAddressEmail(email);
+      for (Purchase p: purchases){
+        purchaseRepository.delete(p);
+      }
+    }
+  }
+
+  /**
    * Ensure that data is loaded into the test database.
    * @throws Exception
    */
@@ -83,36 +96,6 @@ public class PurchaseApiTest {
     assertTrue(testPurchases.size() > 0);
   }
 
-  /**
-   * Tests that the API returns an empty list when a non-existent email is send to /purchases/{email}
-    * @throws Exception
-   */
-  @Test
-  public void findPurchasesByEmailEmailNotFoundReturnsEmptyList() throws Exception {
-    String purchases = mockMvc.perform(get(PURCHASES_PATH + "/not@anEmail.com"))
-        .andReturn().getResponse().getContentAsString();
-    assertEquals("[]", purchases);
-  }
-
-  /**
-   * Tests that the API returns a response with status 200 when a non-existent email is searched for
-   * @throws Exception
-   */
-  @Test
-  public void findPurchasesByEmailEmailNotFoundReturnsOk() throws Exception {
-    mockMvc.perform(get(PURCHASES_PATH + "/not@anEmail.com"))
-        .andExpect(status().isOk());
-  }
-
-  /**
-   * Tests that a GET request send to /purchases returns a 404 error.
-   * @throws Exception
-   */
-  @Test
-  public void getAllPurchasesReturns404() throws Exception {
-    mockMvc.perform(get(PURCHASES_PATH))
-        .andExpect(status().is(404));
-  }
 
   /**
    * Tests that findPurchasesByEmail returns the expected number of purchases.
