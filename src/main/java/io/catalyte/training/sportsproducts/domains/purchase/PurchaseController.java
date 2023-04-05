@@ -31,6 +31,8 @@ public class PurchaseController {
 
   @PostMapping
   public ResponseEntity savePurchase(@RequestBody Purchase purchase) {
+    //TODO: handle id property
+    //TODO: add serializer/deserializer for jackson
     Purchase newPurchase = purchaseService.savePurchase(purchase);
 
     return new ResponseEntity<>(newPurchase, HttpStatus.CREATED);
