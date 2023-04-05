@@ -33,6 +33,9 @@ public class ProductController {
     return new ResponseEntity<>(productService.getProducts(product), HttpStatus.OK);
   }
 
+  /**
+   * GET request - returns a single product based on an id defined in the path variable
+   * */
   @GetMapping(value = "/{id}")
   @ResponseStatus(value = HttpStatus.OK)
   public ResponseEntity<Product> getProductById(@PathVariable Long id) {
