@@ -1,30 +1,61 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 public class PromotionalCode {
 
+    /**
+     * Unique identifier for the promotional code.
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
-    private String description;
-    private String type;
-    private Double rate;
 
+    /**
+     *  Title of the promotional code.
+     */
+    @Column(unique = true)
+    private String title;
+
+    /**
+     *  Description of the promotional code.
+     */
+    private String description;
+
+    /**
+     *  Type of promotional code (flat or percent).
+     */
+    @Enumerated(EnumType.STRING)
+    private PromotionalCodeType type;
+
+    /**
+     * Rate of the promotional code (either a flat dollar amount or a percentage off).
+     */
+    private BigDecimal rate;
+
+    /**
+     *  Default constructor for JPA.
+     */
     public PromotionalCode() {}
 
-    public PromotionalCode(String title, String description, String type, Double rate) {
+    /**
+     *  Constructor for creating a new promotional code.
+     *
+     * @param title  Title of the promotional code.
+     * @param description  Description of the promotional code.
+     * @param type  Type of the promotional code (flat or percent).
+     * @param rate  Rate of the promotional code (either a flat dollar amount or a percentage off).
+     */
+    public PromotionalCode(String title, String description, PromotionalCodeType type, BigDecimal rate) {
         this.title = title;
         this.description = description;
         this.type = type;
         this.rate = rate;
     }
 
+    // getters and setters
     public Long getId() {
         return id;
     }
