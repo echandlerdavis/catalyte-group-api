@@ -12,7 +12,19 @@ import org.apache.commons.lang3.RandomStringUtils;
  * This class provides tools for random generation of products.
  */
 public class ProductFactory {
-
+  private static final String[] brands = {
+      "Nike",
+      "Brooks",
+      "Adidas",
+      "Champion",
+      "Hoka",
+      "Lululemon",
+      "Athleta",
+      "New Balance",
+      "Under Armor",
+      "Puma",
+      "Alo"
+  };
   private static final String[] colors = {
       "#000000", // white
       "#ffffff", // black
