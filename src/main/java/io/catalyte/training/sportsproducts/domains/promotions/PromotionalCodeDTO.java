@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public class PromotionalCodeDto {
+public class PromotionalCodeDTO {
 
     /**
      * Title of the promotional code.
