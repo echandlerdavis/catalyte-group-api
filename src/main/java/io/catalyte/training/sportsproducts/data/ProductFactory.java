@@ -116,6 +116,16 @@ public class ProductFactory {
   }
 
   /**
+   * Returns a random category from the list of categories.
+   *
+   * @return - a category string
+   */
+  public static String getCategory(){
+    Random randomGenerator = new Random();
+    return categories[randomGenerator.nextInt(categories.length)];
+  }
+  
+  /**
    * Generates a random product offering id.
    *
    * @return - a product offering id
@@ -177,8 +187,9 @@ public class ProductFactory {
     Product product = new Product();
     String demographic = ProductFactory.getDemographic();
     String brand = ProductFactory.getBrand();
+    String category = ProductFactory.getCategory();
     product.setBrand(brand);
-    product.setCategory("Running");
+    product.setCategory(category);
     product.setType("Short");
     product.setDemographic(demographic);
     product.setGlobalProductCode(ProductFactory.getRandomProductId());
