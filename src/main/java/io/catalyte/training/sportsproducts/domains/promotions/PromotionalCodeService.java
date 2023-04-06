@@ -1,4 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
-public class PromotionalCodeService {
+public interface PromotionalCodeService {
+
+    PromotionalCode createPromotionalCode(PromotionalCodeDto promotionalCodeDto);
 }
