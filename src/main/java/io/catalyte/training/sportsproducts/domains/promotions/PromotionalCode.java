@@ -80,7 +80,7 @@ public class PromotionalCode {
         this.description = description;
     }
 
-    public String getType() {
+    public PromotionalCodeType getType() {
         return type;
     }
 
@@ -88,7 +88,7 @@ public class PromotionalCode {
         this.type = type;
     }
 
-    public Double getRate() {
+    public BigDecimal getRate() {
         return rate;
     }
 

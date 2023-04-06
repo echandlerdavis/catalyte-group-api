@@ -1,5 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,9 +9,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
-public class PromotionalCodeController {
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
     /**
      *  Exposes endpoints for the 'promotions' domain.
