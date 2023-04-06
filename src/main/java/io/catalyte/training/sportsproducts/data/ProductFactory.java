@@ -95,6 +95,15 @@ public class ProductFactory {
       "Flip Flop",
       "Pool Noodle"
   };
+  /**
+   * Returns a random brand from the list of brands.
+   *
+   * @return - a brand string
+   */
+  public static String getBrand(){
+    Random randomGenerator = new Random();
+    return brands[randomGenerator.nextInt(brands.length)];
+  }
 
   /**
    * Returns a random demographic from the list of demographics.
@@ -167,9 +176,10 @@ public class ProductFactory {
   public Product createRandomProduct() {
     Product product = new Product();
     String demographic = ProductFactory.getDemographic();
+    String brand = ProductFactory.getBrand();
+    product.setBrand(brand);
     product.setCategory("Running");
     product.setType("Short");
-
     product.setDemographic(demographic);
     product.setGlobalProductCode(ProductFactory.getRandomProductId());
     product.setStyleNumber(ProductFactory.getStyleCode());
