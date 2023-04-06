@@ -51,13 +51,9 @@ public class PurchaseApiIntegrationTest {
     testAddresses = new ArrayList<>();
     purchaseCounts = new HashMap<>();
     for(String email: emails){
-      BillingAddress temp = new BillingAddress();
-      temp.setEmail(email);
-      testAddresses.add(temp);
-    }
-    for(String email: emails){
       BillingAddress tempAddress = new BillingAddress();
       tempAddress.setEmail(email);
+      testAddresses.add(tempAddress);
       Purchase tempPurchase = new Purchase();
       tempPurchase.setBillingAddress(tempAddress);
       purchaseRepository.save(tempPurchase);
@@ -113,6 +109,16 @@ public class PurchaseApiIntegrationTest {
           });
       assertEquals(Integer.valueOf(purchaseCounts.get(email)), Integer.valueOf(purchases.size()));
     }
+
+    String purchasesJson =
+        mockMvc.perform(
+            get(PURCHASES_PATH + "/" + emails[0]))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+    Integer numPurchases =
+        mapper.readValue(purchasesJson, new TypeReference<List<Purchase>>() {}).size();
+    assertEquals(Integer.valueOf(2), numPurchases);
   }
 
 
