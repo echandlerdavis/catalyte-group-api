@@ -84,7 +84,7 @@ public class PromotionalCode {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(PromotionalCodeType type) {
         this.type = type;
     }
 
@@ -92,7 +92,7 @@ public class PromotionalCode {
         return rate;
     }
 
-    public void setRate(Double rate) {
+    public void setRate(BigDecimal rate) {
         this.rate = rate;
     }
 }
