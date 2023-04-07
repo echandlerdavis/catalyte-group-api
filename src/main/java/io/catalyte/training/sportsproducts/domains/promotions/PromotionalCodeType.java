@@ -1,2 +1,4 @@
-package io.catalyte.training.sportsproducts.domains.promotions;public class PromotionalCodeType {
+package io.catalyte.training.sportsproducts.domains.promotions;
+
+public class PromotionalCodeType {
 }
