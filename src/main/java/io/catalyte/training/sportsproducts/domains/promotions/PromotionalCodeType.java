@@ -1,4 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
-public class PromotionalCodeType {
-}
+    public enum PromotionalCodeType {
+        FLAT,
+        PERCENT
+    }
