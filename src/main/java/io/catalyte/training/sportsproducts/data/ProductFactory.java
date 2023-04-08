@@ -126,6 +126,16 @@ public class ProductFactory {
   }
 
   /**
+   * Returns a random type from the list of types.
+   *
+   * @return - a type string
+   */
+  public static String getType(){
+    Random randomGenerator = new Random();
+    return types[randomGenerator.nextInt(types.length)];
+  }
+
+  /**
    * Returns a random adjective from the list of adjectives.
    *
    * @return - an adjective string
@@ -136,13 +146,13 @@ public class ProductFactory {
   }
 
   /**
-   * Returns a random type from the list of types.
+   * Returns a random color code from the list of color codes.
    *
-   * @return - a type string
+   * @return - a color code string
    */
-  public static String getType(){
+  public static String getColorCode(){
     Random randomGenerator = new Random();
-    return types[randomGenerator.nextInt(types.length)];
+    return colors[randomGenerator.nextInt(colors.length)];
   }
 
   /**
@@ -210,6 +220,8 @@ public class ProductFactory {
     String category = ProductFactory.getCategory();
     String type = ProductFactory.getType();
     String adjective = ProductFactory.getAdjective();
+    String primaryColor = ProductFactory.getColorCode();
+    String secondaryColor = ProductFactory.getColorCode();
     product.setBrand(brand);
     product.setCategory(category);
     product.setType(type);
@@ -217,6 +229,8 @@ public class ProductFactory {
     product.setDescription(adjective + " " + demographic + " " + type);
     product.setName(adjective + " " + category + " " + type);
     product.setDemographic(demographic);
+    product.setPrimaryColorCode(primaryColor);
+    product.setSecondaryColorCode(secondaryColor);
     product.setGlobalProductCode(ProductFactory.getRandomProductId());
     product.setStyleNumber(ProductFactory.getStyleCode());
 
