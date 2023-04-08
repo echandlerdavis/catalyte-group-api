@@ -124,7 +124,17 @@ public class ProductFactory {
     Random randomGenerator = new Random();
     return categories[randomGenerator.nextInt(categories.length)];
   }
-  
+
+  /**
+   * Returns a random type from the list of types.
+   *
+   * @return - a type string
+   */
+  public static String getType(){
+    Random randomGenerator = new Random();
+    return types[randomGenerator.nextInt(types.length)];
+  }
+
   /**
    * Generates a random product offering id.
    *
@@ -188,9 +198,10 @@ public class ProductFactory {
     String demographic = ProductFactory.getDemographic();
     String brand = ProductFactory.getBrand();
     String category = ProductFactory.getCategory();
+    String type = ProductFactory.getType();
     product.setBrand(brand);
     product.setCategory(category);
-    product.setType("Short");
+    product.setType(type);
     product.setDemographic(demographic);
     product.setGlobalProductCode(ProductFactory.getRandomProductId());
     product.setStyleNumber(ProductFactory.getStyleCode());
