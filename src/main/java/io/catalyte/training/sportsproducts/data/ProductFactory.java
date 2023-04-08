@@ -126,6 +126,16 @@ public class ProductFactory {
   }
 
   /**
+   * Returns a random adjective from the list of adjectives.
+   *
+   * @return - an adjective string
+   */
+  public static String getAdjective(){
+    Random randomGenerator = new Random();
+    return adjectives[randomGenerator.nextInt(adjectives.length)];
+  }
+
+  /**
    * Returns a random type from the list of types.
    *
    * @return - a type string
@@ -199,9 +209,13 @@ public class ProductFactory {
     String brand = ProductFactory.getBrand();
     String category = ProductFactory.getCategory();
     String type = ProductFactory.getType();
+    String adjective = ProductFactory.getAdjective();
     product.setBrand(brand);
     product.setCategory(category);
     product.setType(type);
+//    Would like to clarify the distinction between description and name.
+    product.setDescription(adjective + " " + demographic + " " + type);
+    product.setName(adjective + " " + category + " " + type);
     product.setDemographic(demographic);
     product.setGlobalProductCode(ProductFactory.getRandomProductId());
     product.setStyleNumber(ProductFactory.getStyleCode());
