@@ -191,6 +191,11 @@ public class ProductFactory {
     return LocalDate.ofEpochDay(randomDay);
   }
 
+  /**
+   * Generates a random boolean
+   *
+   * @return - a boolean
+   */
   private static boolean isActive(){
     Random randomGenerator = new Random();
     return randomGenerator.nextBoolean();
