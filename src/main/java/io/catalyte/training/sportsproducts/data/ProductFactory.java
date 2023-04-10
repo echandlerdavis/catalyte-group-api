@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import jdk.vm.ci.meta.Local;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
@@ -231,8 +230,6 @@ public class ProductFactory {
     String category = ProductFactory.getCategory();
     String type = ProductFactory.getType();
     String adjective = ProductFactory.getAdjective();
-    String dateAsString = String.valueOf(
-        ProductFactory.between(LocalDate.parse("2000-01-01"), LocalDate.now()));
 //    Setters
     product.setBrand(ProductFactory.getBrand());
     product.setCategory(category);
@@ -244,7 +241,8 @@ public class ProductFactory {
     product.setSecondaryColorCode(ProductFactory.getColorCode());
     product.setGlobalProductCode(ProductFactory.getRandomProductId());
     product.setStyleNumber(ProductFactory.getStyleCode());
-    product.setReleaseDate(dateAsString);
+    product.setReleaseDate(String.valueOf(
+        ProductFactory.between(LocalDate.parse("2000-01-01"), LocalDate.now())));
     product.setActive(ProductFactory.isActive());
 
     return product;
