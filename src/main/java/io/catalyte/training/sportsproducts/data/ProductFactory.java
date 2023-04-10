@@ -226,24 +226,22 @@ public class ProductFactory {
    */
   public Product createRandomProduct() {
     Product product = new Product();
+//    Strings that need to be reused
     String demographic = ProductFactory.getDemographic();
-    String brand = ProductFactory.getBrand();
     String category = ProductFactory.getCategory();
     String type = ProductFactory.getType();
     String adjective = ProductFactory.getAdjective();
-    String primaryColor = ProductFactory.getColorCode();
-    String secondaryColor = ProductFactory.getColorCode();
     String dateAsString = String.valueOf(
         ProductFactory.between(LocalDate.parse("2000-01-01"), LocalDate.now()));
-    product.setBrand(brand);
+//    Setters
+    product.setBrand(ProductFactory.getBrand());
     product.setCategory(category);
     product.setType(type);
-//    Would like to clarify the distinction between description and name.
     product.setDescription(adjective + " " + demographic + " " + type);
     product.setName(adjective + " " + category + " " + type);
     product.setDemographic(demographic);
-    product.setPrimaryColorCode(primaryColor);
-    product.setSecondaryColorCode(secondaryColor);
+    product.setPrimaryColorCode(ProductFactory.getColorCode());
+    product.setSecondaryColorCode(ProductFactory.getColorCode());
     product.setGlobalProductCode(ProductFactory.getRandomProductId());
     product.setStyleNumber(ProductFactory.getStyleCode());
     product.setReleaseDate(dateAsString);
