@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.data;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +126,19 @@ public class ProductFactory {
     Random randomGenerator = new Random();
     return materials[randomGenerator.nextInt(materials.length)];
   }
-  
+
+  /**
+   * Returns a random double between minimum and maximum parameters to two decimal places.
+   * @param min - a double minimum value
+   * @param max - a double maximum value
+   * @return - a double between minimum and maximum values as the price to two decimal places.
+   */
+  public static Double getPrice(double min, double max){
+    Random randomGenerator = new Random();
+    DecimalFormat df = new DecimalFormat("0.00");
+    return Double.valueOf(df.format((randomGenerator.nextDouble() * (max-min)) + min));
+  }
+
   /**
    * Returns a random demographic from the list of demographics.
    *
@@ -255,6 +268,7 @@ public class ProductFactory {
 //    Setters
     product.setBrand(ProductFactory.getBrand());
     product.setImageSrc("www.myimageurl.com");
+    product.setPrice(ProductFactory.getPrice(1.0, 300.0));
     product.setMaterial(ProductFactory.getMaterial());
     product.setDemographic(demographic);
     product.setCategory(category);
