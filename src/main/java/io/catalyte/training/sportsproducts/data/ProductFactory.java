@@ -140,6 +140,16 @@ public class ProductFactory {
   }
 
   /**
+   * Returns a random integer below a maximum value
+   *
+   * @param max - a maximum value integer
+   * @return - an integer representing quantity
+   */
+  public static Integer getQuantity(int max){
+    Random randomGenerator = new Random();
+    return randomGenerator.nextInt(max);
+  }
+  /**
    * Returns a random demographic from the list of demographics.
    *
    * @return - a demographic string
@@ -269,6 +279,7 @@ public class ProductFactory {
     product.setBrand(ProductFactory.getBrand());
     product.setImageSrc("www.myimageurl.com");
     product.setPrice(ProductFactory.getPrice(1.0, 300.0));
+    product.setQuantity(ProductFactory.getQuantity(100));
     product.setMaterial(ProductFactory.getMaterial());
     product.setDemographic(demographic);
     product.setCategory(category);
