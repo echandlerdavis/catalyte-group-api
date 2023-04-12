@@ -107,13 +107,14 @@ public class ProductFactory {
       "Flip Flop",
       "Pool Noodle"
   };
+
+  private static final Random randomGenerator = new Random();
   /**
    * Returns a random brand from the list of brands.
    *
    * @return - a brand string
    */
   public static String getBrand(){
-    Random randomGenerator = new Random();
     return brands[randomGenerator.nextInt(brands.length)];
   }
 
@@ -123,7 +124,6 @@ public class ProductFactory {
    * @return - a material string
    */
   public static String getMaterial(){
-    Random randomGenerator = new Random();
     return materials[randomGenerator.nextInt(materials.length)];
   }
 
@@ -134,7 +134,6 @@ public class ProductFactory {
    * @return - a double between minimum and maximum values as the price to two decimal places.
    */
   public static Double getPrice(double min, double max){
-    Random randomGenerator = new Random();
     DecimalFormat df = new DecimalFormat("0.00");
     return Double.valueOf(df.format((randomGenerator.nextDouble() * (max-min)) + min));
   }
@@ -146,7 +145,6 @@ public class ProductFactory {
    * @return - an integer representing quantity
    */
   public static Integer getQuantity(int max){
-    Random randomGenerator = new Random();
     return randomGenerator.nextInt(max);
   }
   /**
@@ -155,7 +153,6 @@ public class ProductFactory {
    * @return - a demographic string
    */
   public static String getDemographic() {
-    Random randomGenerator = new Random();
     return demographics[randomGenerator.nextInt(demographics.length)];
   }
 
@@ -165,7 +162,6 @@ public class ProductFactory {
    * @return - a category string
    */
   public static String getCategory(){
-    Random randomGenerator = new Random();
     return categories[randomGenerator.nextInt(categories.length)];
   }
 
@@ -175,7 +171,6 @@ public class ProductFactory {
    * @return - a type string
    */
   public static String getType(){
-    Random randomGenerator = new Random();
     return types[randomGenerator.nextInt(types.length)];
   }
 
@@ -185,7 +180,6 @@ public class ProductFactory {
    * @return - an adjective string
    */
   public static String getAdjective(){
-    Random randomGenerator = new Random();
     return adjectives[randomGenerator.nextInt(adjectives.length)];
   }
 
@@ -195,7 +189,6 @@ public class ProductFactory {
    * @return - a color code string
    */
   public static String getColorCode(){
-    Random randomGenerator = new Random();
     return colors[randomGenerator.nextInt(colors.length)];
   }
 
