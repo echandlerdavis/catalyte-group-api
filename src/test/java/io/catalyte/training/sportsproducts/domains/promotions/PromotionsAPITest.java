@@ -1,8 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
-import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestTest;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
