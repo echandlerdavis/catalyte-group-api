@@ -38,6 +38,10 @@ public class PromotionalCodeDTO {
         this.rate = rate;
     }
 
+    public PromotionalCodeDTO() {
+
+    }
+
     /**
      * Returns the title of the promotional code.
      *

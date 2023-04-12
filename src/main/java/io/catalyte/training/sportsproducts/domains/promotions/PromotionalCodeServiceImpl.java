@@ -60,6 +60,6 @@ public class PromotionalCodeServiceImpl extends PromotionalCodeService {
         }
     }
 
-    private class InvalidPromoCodeException extends Exception {
+    public class InvalidPromoCodeException extends Exception {
     }
 }

@@ -3,13 +3,15 @@ package io.catalyte.training.sportsproducts.domains.promotions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * This service class provides functionality related to promotional codes.
  */
 @Service
 public class PromotionalCodeService {
 
-    private final PromotionalCodeRepository promotionalCodeRepository;
+    private PromotionalCodeRepository promotionalCodeRepository = null;
 
     /**
      * Constructs a PromotionalCodeService object with the given PromotionalCodeRepository.
@@ -30,11 +32,11 @@ public class PromotionalCodeService {
             return null;
         }
 
-        PromotionalCode promotionalCode = new PromotionalCode(promotionalCodeDTO.getTitle(),
-                promotionalCodeDTO.getDescription(),
-                promotionalCodeDTO.getType(),
-                promotionalCodeDTO.getRate());
+        PromotionalCode promotionalCode = new PromotionalCode();
         return promotionalCodeRepository.save(promotionalCode);
     }
 
+    public List<PromotionalCode> getAllPromotionalCodes() {
+        return promotionalCodeRepository.findAll();
+    }
 }

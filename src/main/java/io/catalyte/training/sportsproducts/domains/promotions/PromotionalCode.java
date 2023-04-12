@@ -8,10 +8,12 @@ import java.math.BigDecimal;
  */
 public class PromotionalCode {
 
+    private Object code = null;
     private String title;
     private String description;
     private PromotionalCodeType type;
     private BigDecimal rate;
+    private long id;
 
     /**
      * Constructs a new PromotionalCode object with the specified title, description,
@@ -22,15 +24,18 @@ public class PromotionalCode {
      * @param type the type of the promotional code (either percent or flat)
      * @param rate the rate of the promotional code (a percentage or flat dollar amount)
      */
-    public PromotionalCode(String title, String description, PromotionalCodeType type, BigDecimal rate) {
+    public PromotionalCode(int id, String title, String description, PromotionalCodeType type, BigDecimal rate) {
+        this.id = id;
         this.title = title;
         this.description = description;
+        this.code = code;
         this.type = type;
         this.rate = rate;
     }
 
     public PromotionalCode() {
 
+        code = null;
     }
 
     /**
@@ -103,5 +108,13 @@ public class PromotionalCode {
      */
     public void setRate(BigDecimal rate) {
         this.rate = rate;
+    }
+
+    public void setId(long l) {
+        this.id = l;
+    }
+
+    public Object getId() {
+        return this.id;
     }
 }

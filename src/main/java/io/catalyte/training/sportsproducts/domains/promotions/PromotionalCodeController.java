@@ -39,8 +39,11 @@ public class PromotionalCodeController {
      * @throws PromotionalCodeService.DuplicatePromoCodeException if the promotional code already exists
      */
     @PostMapping("/promotional-codes")
-    public ResponseEntity<PromotionalCode> createPromotionalCode(@Valid @RequestBody PromotionalCodeDTO dto) throws PromotionalCodeService.DuplicatePromoCodeException {
+    public ResponseEntity<PromotionalCode> createPromotionalCode(@Valid @RequestBody PromotionalCodeDTO dto) throws DuplicatePromoCodeException, PromotionalCodeServiceImpl.InvalidPromoCodeException {
         PromotionalCode promotionalCode = promotionalCodeService.createPromotionalCode(dto);
         return new ResponseEntity<>(promotionalCode, HttpStatus.CREATED);
+    }
+
+    public class DuplicatePromoCodeException extends Exception {
     }
 }
