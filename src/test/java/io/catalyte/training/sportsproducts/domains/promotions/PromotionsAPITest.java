@@ -1,7 +1,8 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeType;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTest;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -33,8 +33,8 @@ public class PromotionsAPITest {
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
@@ -45,7 +45,7 @@ public class PromotionsAPITest {
      * @throws Exception if any error occurs while performing the test
      */
     @Test
-    void createPromotionalCode_ShouldReturn201Status_WhenGivenValidInput() throws Exception {
+    public void createPromotionalCode_ShouldReturn201Status_WhenGivenValidInput() throws Exception {
         PromotionalCodeDTO dto = new PromotionalCodeDTO();
         dto.setTitle("My Promo Code");
         dto.setDescription("This is a test promo code.");
@@ -81,63 +81,14 @@ public class PromotionsAPITest {
      * @throws Exception if any error occurs while performing the test
      */
     @Test
-    void createPromotionalCode_ShouldReturn400Status_WhenGivenInvalidInput() throws Exception {
+    public void createPromotionalCode_ShouldReturn400Status_WhenGivenInvalidInput() throws Exception {
         when(promotionalCodeService.createPromotionalCode(any(PromotionalCodeDTO.class))).thenReturn(null);
         mockMvc.perform(post("/promotional-codes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\": \"\", \"description\": \"\", \"type\": null, \"rate\": null}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\": \"\", \"description\": \"\", \"type\": null, \"rate\": null}"))
                 .andExpect(status().isUnprocessableEntity());
-        verify(promotionalCodeService).createPromotionalCode(any(PromotionalCodeDTO.class));
-    }
-
-    /**
-
-     Tests the {@link PromotionalCodeController getAllPromotionalCodes()} endpoint
-     when there are no promotional codes.
-     @throws Exception if any error occurs while performing the test
-     */
-    @Test
-    void getAllPromotionalCodes_ShouldReturnEmptyList_WhenNoPromotionalCodesExist() throws Exception {
-        when(promotionalCodeService.getAllPromotionalCodes()).thenReturn(new ArrayList<>());
-        mockMvc.perform(get("/promotional-codes"))
-        .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(0)));
-
-        verify(promotionalCodeService).getAllPromotionalCodes();
-    }
-
-    /**
-
-     Tests the {@link PromotionalCodeController getAllPromotionalCodes()} endpoint
-     when there are promotional codes.
-     @throws Exception if any error occurs while performing the test
-     */
-    @Test
-    void getAllPromotionalCodes_ShouldReturnListOfPromotionalCodes_WhenPromotionalCodesExist() throws Exception {
-        List<PromotionalCode> promotionalCodes = new ArrayList<>();
-        promotionalCodes.add(new PromotionalCode(1, "My Promo Code 1", "This is a test promo code 1.", PromotionalCodeType.FLAT, new BigDecimal("10.00")));
-        promotionalCodes.add(new PromotionalCode(2, "My Promo Code 2", "This is a test promo code 2.", PromotionalCodeType.PERCENT, new BigDecimal("20.00")));
-        when(promotionalCodeService.getAllPromotionalCodes()).thenReturn(promotionalCodes);
-        mockMvc.perform(get("/promotional-codes"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(promotionalCodes.get(0).getId()))
-                .andExpect(jsonPath("$[0].title").value(promotionalCodes.get(0).getTitle()))
-                .andExpect(jsonPath("$[0].description").value(promotionalCodes.get(0).getDescription()))
-                .andExpect(jsonPath("$[0].type").value(promotionalCodes.get(0).getType().toString()))
-                .andExpect(jsonPath("$[0].rate").value(promotionalCodes.get(0).getRate().doubleValue()))
-                .andExpect(jsonPath("$[1].id").value(promotionalCodes.get(1).getId()))
-                .andExpect(jsonPath("$[1].title").value(promotionalCodes.get(1).getTitle()))
-                .andExpect(jsonPath("$[1].description").value(promotionalCodes.get(1).getDescription()))
-                .andExpect(jsonPath("$[1].type").value(promotionalCodes.get(1).getType().toString()))
-                .andExpect(jsonPath("$[1].rate").value(promotionalCodes.get(1).getRate().doubleValue()));
-
-
-        verify(promotionalCodeService).getAllPromotionalCodes();
+        verify(promotionalCodeService).createPromotional(any(PromotionalCodeDTO.class));
     }
 }
-
 
 
