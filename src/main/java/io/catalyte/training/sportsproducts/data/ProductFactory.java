@@ -233,6 +233,7 @@ public class ProductFactory {
     String comma = ", ";
 //    Setters
     product.setBrand(ProductFactory.getBrand());
+    product.setImageSrc("www.myimageurl.com");
     product.setDemographic(demographic);
     product.setCategory(category);
     product.setType(type);
