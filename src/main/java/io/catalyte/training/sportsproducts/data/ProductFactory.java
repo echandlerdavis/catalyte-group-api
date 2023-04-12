@@ -25,6 +25,17 @@ public class ProductFactory {
       "Puma",
       "Alo"
   };
+
+  private static final String[] materials = {
+      "Cotton",
+      "Nylon",
+      "Microfiber",
+      "Polyester",
+      "Gore-Tex",
+      "Spandex",
+      "Merino Wool",
+      "Fleece"
+  };
   private static final String[] colors = {
       "#000000", // white
       "#ffffff", // black
@@ -105,6 +116,10 @@ public class ProductFactory {
     return brands[randomGenerator.nextInt(brands.length)];
   }
 
+  public static String getMaterial(){
+    Random randomGenerator = new Random();
+    return materials[randomGenerator.nextInt(materials.length)];
+  }
   /**
    * Returns a random demographic from the list of demographics.
    *
@@ -234,6 +249,7 @@ public class ProductFactory {
 //    Setters
     product.setBrand(ProductFactory.getBrand());
     product.setImageSrc("www.myimageurl.com");
+    product.setMaterial(ProductFactory.getMaterial());
     product.setDemographic(demographic);
     product.setCategory(category);
     product.setType(type);
