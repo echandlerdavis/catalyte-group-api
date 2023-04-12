@@ -116,10 +116,16 @@ public class ProductFactory {
     return brands[randomGenerator.nextInt(brands.length)];
   }
 
+  /**
+   * Returns a random material from the list of materials.
+   *
+   * @return - a material string
+   */
   public static String getMaterial(){
     Random randomGenerator = new Random();
     return materials[randomGenerator.nextInt(materials.length)];
   }
+  
   /**
    * Returns a random demographic from the list of demographics.
    *
