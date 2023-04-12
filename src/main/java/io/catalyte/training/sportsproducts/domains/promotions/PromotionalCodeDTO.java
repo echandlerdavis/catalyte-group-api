@@ -1,34 +1,30 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class PromotionalCodeDTO {
 
-    /**
-     * Title of the promotional code.
-     */
+    @NotBlank(message = "Code is required")
+    private String code;
+
     @NotBlank(message = "Title is required")
     private String title;
 
-    /**
-     * Description of the promotional code.
-     */
-    @NotBlank
+    @NotBlank(message = "Description is required")
     private String description;
 
-    /**
-     * Type of the promotional code (flat or percent).
-     */
-    @NotNull
+    @NotNull(message = "Type is required")
     private PromotionalCodeType type;
 
-    /**
-     * Rate of the promotional code (either a flat dollar amount or a percentage off).
-     */
-    @NotNull
+    @NotNull(message = "Rate is required")
+    @DecimalMin(value = "0.01", message = "Rate must be greater than or equal to 0.01")
     private BigDecimal rate;
+
+    // constructor, getters and setters
+
 
     // getters and setters
 }

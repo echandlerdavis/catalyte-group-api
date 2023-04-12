@@ -1,6 +1,9 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -10,89 +13,37 @@ public class PromotionalCode {
      * Unique identifier for the promotional code.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column (unique = true)
+    private String code;
 
     /**
      *  Title of the promotional code.
      */
-    @Column(unique = true)
+    @NotBlank(message = "Title is required")
     private String title;
 
     /**
      *  Description of the promotional code.
      */
+    @NotBlank(message = "Description is required")
     private String description;
 
     /**
      *  Type of promotional code (flat or percent).
      */
+    @NotBlank(message = "Type is required")
     @Enumerated(EnumType.STRING)
     private PromotionalCodeType type;
 
     /**
      * Rate of the promotional code (either a flat dollar amount or a percentage off).
      */
+    @NotNull(message = "Rate is required")
+    @DecimalMin(value = "0.01", message = "Rate must be greater than or equal to 0.01")
     private BigDecimal rate;
 
-    /**
-     *  Default constructor for JPA.
-     */
-    public PromotionalCode() {}
-
-    /**
-     *  Constructor for creating a new promotional code.
-     *
-     * @param title  Title of the promotional code.
-     * @param description  Description of the promotional code.
-     * @param type  Type of the promotional code (flat or percent).
-     * @param rate  Rate of the promotional code (either a flat dollar amount or a percentage off).
-     */
-    public PromotionalCode(String title, String description, PromotionalCodeType type, BigDecimal rate) {
-        this.title = title;
-        this.description = description;
-        this.type = type;
-        this.rate = rate;
-    }
-
-    // getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public PromotionalCodeType getType() {
-        return type;
-    }
-
-    public void setType(PromotionalCodeType type) {
-        this.type = type;
-    }
-
-    public BigDecimal getRate() {
-        return rate;
-    }
-
-    public void setRate(BigDecimal rate) {
-        this.rate = rate;
-    }
+    // constructor, getters and setters
 }
