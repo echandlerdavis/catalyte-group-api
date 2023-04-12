@@ -1,49 +1,107 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
-import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-@Entity
+/**
+ * This class represents a promotional code, which is used to offer discounts
+ * to customers when purchasing products.
+ */
 public class PromotionalCode {
 
-    /**
-     * Unique identifier for the promotional code.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column (unique = true)
-    private String code;
-
-    /**
-     *  Title of the promotional code.
-     */
-    @NotBlank(message = "Title is required")
     private String title;
-
-    /**
-     *  Description of the promotional code.
-     */
-    @NotBlank(message = "Description is required")
     private String description;
-
-    /**
-     *  Type of promotional code (flat or percent).
-     */
-    @NotBlank(message = "Type is required")
-    @Enumerated(EnumType.STRING)
     private PromotionalCodeType type;
-
-    /**
-     * Rate of the promotional code (either a flat dollar amount or a percentage off).
-     */
-    @NotNull(message = "Rate is required")
-    @DecimalMin(value = "0.01", message = "Rate must be greater than or equal to 0.01")
     private BigDecimal rate;
 
-    // constructor, getters and setters
+    /**
+     * Constructs a new PromotionalCode object with the specified title, description,
+     * type, and rate.
+     *
+     * @param title the title of the promotional code
+     * @param description the description of the promotional code
+     * @param type the type of the promotional code (either percent or flat)
+     * @param rate the rate of the promotional code (a percentage or flat dollar amount)
+     */
+    public PromotionalCode(String title, String description, PromotionalCodeType type, BigDecimal rate) {
+        this.title = title;
+        this.description = description;
+        this.type = type;
+        this.rate = rate;
+    }
+
+    public PromotionalCode() {
+
+    }
+
+    /**
+     * Returns the title of the promotional code.
+     *
+     * @return the title of the promotional code
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets the title of the promotional code.
+     *
+     * @param title the new title of the promotional code
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Returns the description of the promotional code.
+     *
+     * @return the description of the promotional code
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description of the promotional code.
+     *
+     * @param description the new description of the promotional code
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Returns the type of the promotional code.
+     *
+     * @return the type of the promotional code
+     */
+    public PromotionalCodeType getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of the promotional code.
+     *
+     * @param type the new type of the promotional code
+     */
+    public void setType(PromotionalCodeType type) {
+        this.type = type;
+    }
+
+    /**
+     * Returns the rate of the promotional code.
+     *
+     * @return the rate of the promotional code
+     */
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    /**
+     * Sets the rate of the promotional code.
+     *
+     * @param rate the new rate of the promotional code
+     */
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
+    }
 }
