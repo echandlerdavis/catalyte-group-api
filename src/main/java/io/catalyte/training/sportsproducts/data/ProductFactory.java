@@ -229,13 +229,15 @@ public class ProductFactory {
     String demographic = ProductFactory.getDemographic();
     String category = ProductFactory.getCategory();
     String type = ProductFactory.getType();
+    String space = " ";
+    String comma = ", ";
 //    Setters
     product.setBrand(ProductFactory.getBrand());
     product.setDemographic(demographic);
     product.setCategory(category);
     product.setType(type);
-    product.setDescription(category + ", " + demographic + ", " + ProductFactory.getAdjective());
-    product.setName(ProductFactory.getAdjective() + " " + category + " " + type);
+    product.setDescription(category + comma + demographic + comma + ProductFactory.getAdjective());
+    product.setName(ProductFactory.getAdjective() + space + category + space + type);
     product.setPrimaryColorCode(ProductFactory.getColorCode());
     product.setSecondaryColorCode(ProductFactory.getColorCode());
     product.setGlobalProductCode(ProductFactory.getRandomProductId());
