@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<String> categoryNames = new ArrayList<>();
 
-        categories.forEach(brand -> categoryNames.add(brand.toLowerCase()));
+        categories.forEach(category -> categoryNames.add(category.toLowerCase()));
 
         products.removeIf(product -> !categoryNames.contains(product.getCategory().toLowerCase()));
 
@@ -138,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<String> demographicNames = new ArrayList<>();
 
-        demographics.forEach(brand -> demographicNames.add(brand.toLowerCase()));
+        demographics.forEach(demographic -> demographicNames.add(demographic.toLowerCase()));
 
         products.removeIf(product -> !demographicNames.contains(product.getDemographic().toLowerCase()));
 
@@ -147,24 +147,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public List<Product> getProductsByPrice(List<Product> products, List<String> price) {
-        if (price.size()!=2){
+        if (price.size() != 2) {
             throw new BadRequest("Price must have a min and max value");
         }
+
         Double price1;
         Double price2;
 
         try {
             price1 = Double.valueOf(price.get(0));
             price2 = Double.valueOf(price.get(1));
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             logger.error(e.getMessage());
             throw new BadRequest("prices must be a number");
         }
 
-        Double min = Math.min(price1,price2);
-        Double max = Math.max(price1,price2);
+        Double min = Math.min(price1, price2);
+        Double max = Math.max(price1, price2);
 
-        products.removeIf(product -> product.getPrice()< min && product.getPrice()>max);
+        products.removeIf(product -> product.getPrice() < min && product.getPrice() > max);
 
         return products;
 
@@ -174,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<String> primaryColorsCodes = new ArrayList<>();
 
-        primaryColors.forEach(brand -> primaryColorsCodes.add(brand.toLowerCase()));
+        primaryColors.forEach(primaryColor -> primaryColorsCodes.add(primaryColor.toLowerCase()));
 
         products.removeIf(product -> !primaryColorsCodes.contains(product.getPrimaryColorCode().toLowerCase()));
 
@@ -185,7 +186,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<String> materialNames = new ArrayList<>();
 
-        materials.forEach(brand -> materialNames.add(brand.toLowerCase()));
+        materials.forEach(material -> materialNames.add(material.toLowerCase()));
 
         products.removeIf(product -> !materialNames.contains(product.getMaterial().toLowerCase()));
 
