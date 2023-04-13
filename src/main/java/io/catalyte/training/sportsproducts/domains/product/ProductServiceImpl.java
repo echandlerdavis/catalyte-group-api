@@ -1,4 +1,5 @@
 package io.catalyte.training.sportsproducts.domains.product;
+
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 /**
  * This class provides the implementation for the ProductService interface.
@@ -105,5 +107,35 @@ public class ProductServiceImpl implements ProductService {
       logger.error(e.getMessage());
       throw new ServerError(e.getMessage());
     }
+  }
+
+  @Override
+  public List<Product> getProductsByFilters(MultiValueMap<String, List<String>> filters) {
+    return null;
+  }
+
+  public List<Product> getProductsByBrands(List<Product> products, List<String> brands){
+
+    return null;
+  }
+
+  public List<Product> getProductsByCategories(List<Product> products,List<String> categories){
+    return null;
+  }
+
+  public List<Product> getProductsByDemographics(List<Product> products, List<String> demographics){
+    return null;
+  }
+
+  public List<Product> getProductsByPrice(List<Product> products, List<String> price){
+    return null;
+  }
+
+  public List<Product> getProductsByPrimaryColors(List<Product> products, List<String> primaryColors){
+    return null;
+  }
+
+  public List<Product> getProductsByMaterials(List<Product> products, List<String> materials){
+    return null;
   }
 }
