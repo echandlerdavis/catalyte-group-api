@@ -1,5 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.product;
 
+import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import org.apache.logging.log4j.LogManager;
@@ -146,7 +147,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public List<Product> getProductsByPrice(List<Product> products, List<String> price) {
-        return null;
+        if (price.size()!=2){
+            throw new BadRequest("Price must have a min and max value");
+        }
+        Double price1;
+        Double price2;
+
+        try {
+            price1 = Double.valueOf(price.get(0));
+            price2 = Double.valueOf(price.get(1));
+        } catch (NumberFormatException e){
+            logger.error(e.getMessage());
+            throw new BadRequest("prices must be a number");
+        }
+
+        Double min = Math.min(price1,price2);
+        Double max = Math.max(price1,price2);
+
+        products.removeIf(product -> product.getPrice()< min && product.getPrice()>max);
+
+        return products;
+
     }
 
     public List<Product> getProductsByPrimaryColors(List<Product> products, List<String> primaryColors) {
