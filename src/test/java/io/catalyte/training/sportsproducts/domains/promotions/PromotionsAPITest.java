@@ -55,9 +55,9 @@ public class PromotionsAPITest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/promotional-codes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"SUMMER2015\", \"description\": \"Our summer discount for the Q3 2015 campaign\", \"type\": \"flat\", \"rate\": 10.00}"))
+                        .content("{\"title\": \"SUMMER2015\", \"description\": \"Our summer discount for the Q3 2015 campaign\", \"type\": \"FLAT\", \"rate\": 10.00}"))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().json("{\"title\": \"SUMMER2015\", \"description\": \"Our summer discount for the Q3 2015 campaign\", \"type\": \"flat\", \"rate\": 10.00}"));
+                .andExpect(MockMvcResultMatchers.content().json("{\"title\": \"SUMMER2015\", \"description\": \"Our summer discount for the Q3 2015 campaign\", \"type\": \"FLAT\", \"rate\": 10.00}"));
     }
 }
 
