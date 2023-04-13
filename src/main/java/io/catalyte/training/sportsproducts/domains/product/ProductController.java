@@ -6,13 +6,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -80,6 +75,19 @@ public class ProductController {
   public ResponseEntity<List> postProduct(@RequestBody List<Product> products){
     productService.addProducts(products);
     return new ResponseEntity<>(productService.addProducts(products), HttpStatus.CREATED);
+  }
+
+  /**
+   *
+   * Handles a GET request to /products/filters. This retrieves all products in the database with applied query.
+   * @param filters - the filters to be read from the request parameters
+   * @return product(s) found matching the given filters
+   */
+  @GetMapping(value = "/filters")
+  @ResponseStatus(value = HttpStatus.OK)
+  public ResponseEntity<List> getProductsByFilters(@RequestParam MultiValueMap<String, List<String>> filters){
+    logger.info("Request received for getProductsByFilters");
+    return new ResponseEntity<>(productService.getProductsByFilters(filters), HttpStatus.OK);
   }
 
 }
