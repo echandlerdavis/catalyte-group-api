@@ -18,5 +18,5 @@ public interface ProductService {
 
   List<Product> addProducts(List<Product> products);
 
-  List<Product> getProductsByFilters(MultiValueMap<String, List<String>> filters);
+  List<Product> getProductsByFilters(MultiValueMap<String, String> filters);
 }
