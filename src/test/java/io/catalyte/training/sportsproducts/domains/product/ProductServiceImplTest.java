@@ -135,7 +135,7 @@ public class ProductServiceImplTest {
   @Test
   public void getProductByOnePriceReturnsThrowsError() {
     prices.add(String.valueOf(testProduct2.getPrice()));
-    List<Product> actual = productServiceImpl.getProductsByPrice(productRepository.findAll(), prices);
+
     assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), prices));
   }
 
