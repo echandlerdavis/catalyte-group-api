@@ -116,15 +116,24 @@ public class ProductServiceImpl implements ProductService {
 
   public List<Product> getProductsByBrands(List<Product> products, List<String> brands){
 
-    return null;
+    products.removeIf(product -> !brands.contains(product.getBrand()));
+
+    return products;
   }
 
   public List<Product> getProductsByCategories(List<Product> products,List<String> categories){
-    return null;
+
+    products.removeIf(product -> !categories.contains(product.getCategory()));
+
+    return products;
   }
 
   public List<Product> getProductsByDemographics(List<Product> products, List<String> demographics){
-    return null;
+
+    products.removeIf(product -> !demographics.contains(product.getDemographic()));
+
+    return products;
+
   }
 
   public List<Product> getProductsByPrice(List<Product> products, List<String> price){
@@ -132,10 +141,16 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public List<Product> getProductsByPrimaryColors(List<Product> products, List<String> primaryColors){
-    return null;
+
+    products.removeIf(product -> !primaryColors.contains(product.getPrimaryColorCode()));
+
+    return products;
   }
 
   public List<Product> getProductsByMaterials(List<Product> products, List<String> materials){
-    return null;
+
+    products.removeIf(product -> !materials.contains(product.getMaterial()));
+
+    return products;
   }
 }
