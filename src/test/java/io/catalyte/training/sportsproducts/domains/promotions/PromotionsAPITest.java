@@ -53,7 +53,7 @@ public class PromotionsAPITest {
 
         when(promotionalCodeService.createPromotionalCode(any())).thenReturn(promotionalCode);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/promotions")
+        mockMvc.perform(MockMvcRequestBuilders.post("/promotional-codes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"SUMMER2015\", \"description\": \"Our summer discount for the Q3 2015 campaign\", \"type\": \"flat\", \"rate\": 10.00}"))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
