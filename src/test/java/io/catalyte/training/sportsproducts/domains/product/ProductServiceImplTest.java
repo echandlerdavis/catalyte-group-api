@@ -69,17 +69,7 @@ public class ProductServiceImplTest {
     // Create Two Random Test Products
     productFactory = new ProductFactory();
     testProduct = productFactory.createRandomProduct();
-    testProduct.setBrand("Nike");
-    testProduct.setPrimaryColorCode("#000000");
-    testProduct.setMaterial("Polyester");
-    testProduct.setPrice(25.89);
     testProduct2 = productFactory.createRandomProduct();
-    testProduct2.setActive(true);
-    testProduct2.setDemographic("Kids");
-    testProduct2.setBrand("Puma");
-    testProduct2.setMaterial("Cotton");
-    testProduct2.setPrice(19.99);
-    testProduct2.setPrimaryColorCode("#f092b0");
 
     testProductsList.add(testProduct);
     testProductsList.add(testProduct2);
