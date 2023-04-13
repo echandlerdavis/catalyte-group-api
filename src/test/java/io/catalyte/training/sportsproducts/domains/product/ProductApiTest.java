@@ -142,7 +142,7 @@ public class ProductApiTest {
     public void getProductsByFilterQueryParamsWithOnlyBrandReturnsProductListWith200() throws Exception {
 
         String testBrand = testProduct1.getBrand();
-
+        System.out.println("mockMvc = " + mockMvc.perform(get(PRODUCTS_PATH+"/filter?brand=" + testBrand )).andReturn().getResponse().getContentAsString());
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?brand=" + testBrand))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].brand")

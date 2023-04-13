@@ -108,8 +108,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductsByFilters(MultiValueMap<String, List<String>> filters) {
-        return null;
+    public List<Product> getProductsByFilters(MultiValueMap<String, String> filters) {
+        List<Product> products;
+        products = productRepository.findAll();
+        List<String> brands=filters.get("brand");
+        System.out.println("brands.size() + brands.get(0) = " + brands.size() + brands.get(0));
+        getProductsByBrands(products,brands);
+        return products;
     }
 
     public List<Product> getProductsByBrands(List<Product> products, List<String> brands) {

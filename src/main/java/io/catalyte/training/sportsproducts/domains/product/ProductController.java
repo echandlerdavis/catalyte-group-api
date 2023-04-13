@@ -85,7 +85,7 @@ public class ProductController {
    */
   @GetMapping(value = "/filters")
   @ResponseStatus(value = HttpStatus.OK)
-  public ResponseEntity<List> getProductsByFilters(@RequestParam MultiValueMap<String, List<String>> filters){
+  public ResponseEntity<List> getProductsByFilters(@RequestParam MultiValueMap<String, String> filters){
     logger.info("Request received for getProductsByFilters");
     return new ResponseEntity<>(productService.getProductsByFilters(filters), HttpStatus.OK);
   }
