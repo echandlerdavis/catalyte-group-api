@@ -24,11 +24,9 @@ public class PromotionalCode {
      * @param type the type of the promotional code (either percent or flat)
      * @param rate the rate of the promotional code (a percentage or flat dollar amount)
      */
-    public PromotionalCode(int id, String title, String description, PromotionalCodeType type, BigDecimal rate) {
-        this.id = id;
+    public PromotionalCode(String title, String description, PromotionalCodeType type, BigDecimal rate) {
         this.title = title;
         this.description = description;
-        this.code = code;
         this.type = type;
         this.rate = rate;
     }

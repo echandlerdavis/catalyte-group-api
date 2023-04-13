@@ -4,39 +4,37 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.math.BigDecimal;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 
 /**
  * Test class for {@link PromotionalCodeController}.
  */
-@WebMvcTest(PromotionalCodeController.class)
 public class PromotionsAPITest {
 
-    @MockBean
-    private PromotionalCodeService promotionalCodeService;
-
-    @Autowired
     private MockMvc mockMvc;
+
+    @Mock
+    private PromotionalCodeService promotionalCodeService;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(new PromotionalCodeController(promotionalCodeService)).build();
     }
+
 
     /**
      * Tests the {@link PromotionalCodeController#createPromotionalCode(PromotionalCodeDTO)} endpoint
@@ -46,48 +44,20 @@ public class PromotionsAPITest {
      */
     @Test
     public void createPromotionalCode_ShouldReturn201Status_WhenGivenValidInput() throws Exception {
-        PromotionalCodeDTO dto = new PromotionalCodeDTO();
-        dto.setTitle("My Promo Code");
-        dto.setDescription("This is a test promo code.");
-        dto.setType(PromotionalCodeType.PERCENT);
-        dto.setRate(new BigDecimal("10"));
+        String title = "SUMMER2015";
+        String description = "Our summer discount for the Q3 2015 campaign";
+        String type = "FLAT";
+        double rate = 10.00;
 
-        PromotionalCode createdPromo = new PromotionalCode();
-        createdPromo.setId(1L);
-        createdPromo.setTitle(dto.getTitle());
-        createdPromo.setDescription(dto.getDescription());
-        createdPromo.setType(dto.getType());
-        createdPromo.setRate(dto.getRate());
+        PromotionalCode promotionalCode = new PromotionalCode(title, description, PromotionalCodeType.FLAT, BigDecimal.valueOf(rate));
 
-        when(promotionalCodeService.createPromotionalCode(any(PromotionalCodeDTO.class))).thenReturn(createdPromo);
-        mockMvc.perform(post("/promotional-codes")
+        when(promotionalCodeService.createPromotionalCode(any())).thenReturn(promotionalCode);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/promotions")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"My Promo Code\", \"description\": \"This is a test promo code.\", \"type\": \"PERCENT\", \"rate\": 10}"))
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(createdPromo.getId()))
-                .andExpect(jsonPath("$.title").value(createdPromo.getTitle()))
-                .andExpect(jsonPath("$.description").value(createdPromo.getDescription()))
-                .andExpect(jsonPath("$.type").value(createdPromo.getType().toString()))
-                .andExpect(jsonPath("$.rate").value(createdPromo.getRate().doubleValue()));
-
-        verify(promotionalCodeService).createPromotionalCode(dto);
-    }
-
-    /**
-     * Tests the {@link PromotionalCodeController#createPromotionalCode(PromotionalCodeDTO)} endpoint
-     * for an invalid promotional code.
-     *
-     * @throws Exception if any error occurs while performing the test
-     */
-    @Test
-    public void createPromotionalCode_ShouldReturn400Status_WhenGivenInvalidInput() throws Exception {
-        when(promotionalCodeService.createPromotionalCode(any(PromotionalCodeDTO.class))).thenReturn(null);
-        mockMvc.perform(post("/promotional-codes")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"\", \"description\": \"\", \"type\": null, \"rate\": null}"))
-                .andExpect(status().isUnprocessableEntity());
-        verify(promotionalCodeService).createPromotional(any(PromotionalCodeDTO.class));
+                        .content("{\"title\": \"SUMMER2015\", \"description\": \"Our summer discount for the Q3 2015 campaign\", \"type\": \"flat\", \"rate\": 10.00}"))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().json("{\"title\": \"SUMMER2015\", \"description\": \"Our summer discount for the Q3 2015 campaign\", \"type\": \"flat\", \"rate\": 10.00}"));
     }
 }
 

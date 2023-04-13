@@ -17,8 +17,12 @@ public class PromotionalCodeService {
      * Constructs a PromotionalCodeService object with the given PromotionalCodeRepository.
      */
     @Autowired
-    public PromotionalCodeService() {
+    public PromotionalCodeService(PromotionalCodeRepository promotionalCodeRepository) {
         this.promotionalCodeRepository = promotionalCodeRepository;
+    }
+
+    public PromotionalCodeService() {
+
     }
 
     /**
@@ -27,7 +31,7 @@ public class PromotionalCodeService {
      * @param promotionalCodeDTO The PromotionalCodeDTO containing the information for the new promotional code.
      * @return The created PromotionalCode.
      */
-    public PromotionalCode createPromotionalCode(PromotionalCodeDTO promotionalCodeDTO) throws PromotionalCodeServiceImpl.InvalidPromoCodeException {
+    public PromotionalCode createPromotionalCode(PromotionalCodeDTO promotionalCodeDTO) throws PromotionalCodeServiceImpl. InvalidPromoCodeException {
         if (promotionalCodeDTO.getType() == null || promotionalCodeDTO.getRate() == null) {
             return null;
         }
@@ -38,5 +42,8 @@ public class PromotionalCodeService {
 
     public List<PromotionalCode> getAllPromotionalCodes() {
         return promotionalCodeRepository.findAll();
+    }
+
+    public class InvalidPromoCodeException extends Exception {
     }
 }
