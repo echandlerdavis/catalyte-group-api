@@ -203,15 +203,15 @@ public class ProductServiceImplTest {
     primaryColors.addAll(Arrays.asList(testProduct.getPrimaryColorCode(), testProduct2.getPrimaryColorCode()));
     materials.addAll(Arrays.asList(testProduct.getMaterial(), testProduct2.getMaterial()));
 
-    MultiValueMap<String, List<String>> filters = new LinkedMultiValueMap<>();
+    MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 
-    filters.add("brand", brands);
-    filters.add("category",categories);
-    filters.add("price", prices);
-    filters.add("primaryColor", primaryColors);
-    filters.add("material", materials);
-//
-//    List<Product> actual = productServiceImpl.getProductsByFilters(filters);
-//    assertEquals(testProductsList, actual);
+    filters.addAll("brand", brands);
+    filters.addAll("category",categories);
+    filters.addAll("price", prices);
+    filters.addAll("primaryColor", primaryColors);
+    filters.addAll("material", materials);
+
+    List<Product> actual = productServiceImpl.getProductsByFilters(filters);
+    assertEquals(testProductsList, actual);
   }
 }
