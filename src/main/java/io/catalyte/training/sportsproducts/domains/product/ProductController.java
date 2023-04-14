@@ -81,6 +81,7 @@ public class ProductController {
   /**
    *
    * Handles a GET request to /products/filters. This retrieves all products in the database with applied query.
+   * Methods have been implemented to handle the following query params: brand, category, priceMin, priceMax, material, primaryColor, and demographic
    * @param filters - the filters to be read from the request parameters
    * @return product(s) found matching the given filters
    */

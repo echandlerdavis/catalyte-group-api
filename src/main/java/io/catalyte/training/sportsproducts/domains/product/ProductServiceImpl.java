@@ -139,8 +139,8 @@ public class ProductServiceImpl implements ProductService {
             getProductsByDemographics(products,filters.get("demographic"));
         }
 
-        if(filters.containsKey("price")){
-            getProductsByPrice(products,filters.get("price"));
+        if(filters.containsKey("priceMin") && filters.containsKey("priceMax")){
+            getProductsByPrice(products,filters.get("priceMin"), filters.get("priceMax"));
         }
 
         if(filters.containsKey("primaryColor")){
@@ -157,7 +157,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by brands
      * @param products the list of products to filter
-     * @param brands the list of brands to filter by
+     * @param brands the list of brands to filter by as a string with %7C between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByBrands(List<Product> products, String brands) {
@@ -173,7 +173,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by categories
      * @param products the list of products to filter
-     * @param categories the list of categories to filter by
+     * @param categories the list of categories to filter by as a string with %7C between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByCategories(List<Product> products, String categories) {
@@ -191,7 +191,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by demographics
      * @param products the list of products to filter
-     * @param demographics the list of demographics to filter by
+     * @param demographics the list of demographics to filter by as a string with %7C between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByDemographics(List<Product> products, String demographics) {
@@ -210,33 +210,24 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products between two prices
      * @param products the list of products to filter
-     * @param price the list of prices to filter by
+     * @param priceMin the minimum price to filter by
+     * @param priceMax the maximum price to filter by
      * @return filtered list of products
      */
-    public List<Product> getProductsByPrice(List<Product> products, String price) {
+    public List<Product> getProductsByPrice(List<Product> products, String priceMin, String priceMax) {
 
-        List<String> prices = Arrays.asList(price.split("%7C"));
-
-        // If two prices aren't given throw error
-        if (prices.size() != 2) {
-            throw new BadRequest("Price must have a min and max value");
-        }
-
-        Double price1;
-        Double price2;
+        Double min;
+        Double max;
 
         // Try to parse price to ensure it is a double value, not a string of letters
         try {
-            price1 = Double.valueOf(prices.get(0));
-            price2 = Double.valueOf(prices.get(1));
+            min = Double.valueOf(priceMin);
+            max = Double.valueOf(priceMax);
         } catch (NumberFormatException e) {
             logger.error(e.getMessage());
             throw new BadRequest("prices must be a number");
         }
 
-        // Get the min and max value to filter prices between
-        Double min = Math.min(price1, price2);
-        Double max = Math.max(price1, price2);
 
         products.removeIf(product -> product.getPrice() < min || product.getPrice() > max);
 
@@ -247,7 +238,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by primaryColor
      * @param products the list of products to filter
-     * @param primaryColors the list of primaryColors to filter by
+     * @param primaryColors the list of primaryColors to filter by as a string with %7C between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByPrimaryColors(List<Product> products, String primaryColors) {
@@ -265,7 +256,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by material
      * @param products the list of products to filter
-     * @param materials the list of materials to filter by
+     * @param materials the list of materials to filter by as a string with %7C between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByMaterials(List<Product> products, String materials) {

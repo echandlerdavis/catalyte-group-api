@@ -50,8 +50,8 @@ public class ProductApiTest {
     List<String> primaryColors = new ArrayList<>();
     List<String> materials = new ArrayList<>();
 
-    Double max;
-    Double min;
+    Double priceMax;
+    Double priceMin;
 
     @Before
     public void setUp() {
@@ -70,14 +70,8 @@ public class ProductApiTest {
      * Assigns min and max value that will be used to ensure prices filtered are between these values
      */
     private void getMinMaxPrice (){
-        // Assign min and max values to check all prices found are between these values
-        if (testProduct1.getPrice() > testProduct2.getPrice()) {
-            max = testProduct1.getPrice();
-            min = testProduct2.getPrice();
-        } else {
-            max = testProduct2.getPrice();
-            min = testProduct1.getPrice();
-        }
+        priceMin = Double.min(testProduct1.getPrice(), testProduct2.getPrice());
+        priceMax = Double.max(testProduct1.getPrice(), testProduct2.getPrice());
     }
 
     @After
@@ -230,21 +224,22 @@ public class ProductApiTest {
     @Test
     public void getProductsByFilterQueryParamsWithOnlyPriceReturnsProductListWith200() throws Exception {
 
-        prices.add(String.valueOf(testProduct1.getPrice()));
-        prices.add(String.valueOf(testProduct2.getPrice()));
-        String pricesString = String.join("%7C", prices);
-
-        mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + pricesString))
+        mockMvc.perform(get(PRODUCTS_PATH + "/filter?priceMin=" + priceMin + "&priceMax=" + priceMax))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].price")
-                        .value(Every.everyItem(anyOf(greaterThanOrEqualTo(min), lessThanOrEqualTo(max)))));
+                        .value(Every.everyItem(anyOf(greaterThanOrEqualTo(priceMin), lessThanOrEqualTo(priceMax)))));
     }
 
     @Test
-    public void getProductsByFilterQueryParamsWithOnlyOnePriceReturns400() throws Exception {
+    public void getProductsByFilterQueryParamsWithOnlyPriceMinReturnsListOfProductsWith200() throws Exception {
 
-        mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + String.valueOf(testProduct1.getPrice())))
-                .andExpect(status().isBadRequest());
+        mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + priceMin))
+                .andExpect(status().isOk());
+    }
+    public void getProductsByFilterQueryParamsWithOnlyPriceMaxReturnsListOfProducts200() throws Exception {
+
+        mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + priceMax))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -317,7 +312,7 @@ public class ProductApiTest {
                 .andExpect(jsonPath("$[*].category")
                         .value(Every.everyItem(anyOf(is(testProduct1.getCategory()), is(testProduct2.getCategory())))))
                 .andExpect(jsonPath("$[*].price")
-                        .value(Every.everyItem(anyOf(greaterThanOrEqualTo(min), lessThanOrEqualTo(max)))))
+                        .value(Every.everyItem(anyOf(greaterThanOrEqualTo(priceMin), lessThanOrEqualTo(priceMax)))))
                 .andExpect(jsonPath("$[*].demographic")
                         .value(Every.everyItem(anyOf(is(testProduct1.getDemographic()), is(testProduct2.getDemographic())))))
                 .andExpect(jsonPath("$[*].primaryColor")
@@ -344,8 +339,8 @@ public class ProductApiTest {
         filterString.append("&category=" + categoriesString);
 
 
-        String pricesString = String.join("%7C", prices).replaceAll("\\s", "%20");
-        filterString.append("&price=" + pricesString);
+        filterString.append("&priceMin=" + priceMin);
+        filterString.append("&priceMax=" + priceMax);
 
 
         String primaryColorsString = String.join("%7C", primaryColors).replaceAll("\\s", "%20");
