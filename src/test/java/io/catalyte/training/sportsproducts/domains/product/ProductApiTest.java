@@ -13,8 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
@@ -52,6 +50,9 @@ public class ProductApiTest {
     List<String> primaryColors = new ArrayList<>();
     List<String> materials = new ArrayList<>();
 
+    Double max;
+    Double min;
+
     @Before
     public void setUp() {
         setTestProducts();
@@ -60,6 +61,23 @@ public class ProductApiTest {
 
     private void setTestProducts() {
         productRepository.saveAll(Arrays.asList(testProduct1, testProduct2));
+        getMinMaxPrice();
+    }
+
+
+    /**
+     * Test Helper method used to compare values of the test products prices
+     * Assigns min and max value that will be used to ensure prices filtered are between these values
+     */
+    private void getMinMaxPrice (){
+        // Assign min and max values to check all prices found are between these values
+        if (testProduct1.getPrice() > testProduct2.getPrice()) {
+            max = testProduct1.getPrice();
+            min = testProduct2.getPrice();
+        } else {
+            max = testProduct2.getPrice();
+            min = testProduct1.getPrice();
+        }
     }
 
     @After
@@ -141,7 +159,7 @@ public class ProductApiTest {
     public void getProductsByFilterQueryParamsWithOnlyBrandReturnsProductListWith200() throws Exception {
 
         String testBrand = testProduct1.getBrand();
-        System.out.println("mockMvc = " + mockMvc.perform(get(PRODUCTS_PATH+"/filter?brand=" + testBrand )).andReturn().getResponse().getContentAsString());
+
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?brand=" + testBrand))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].brand")
@@ -150,15 +168,15 @@ public class ProductApiTest {
 
     @Test
     public void getProductsByFilterQueryParamsWithMultipleBrandsReturnsProductListWith200() throws Exception {
+
         brands.add(testProduct1.getBrand());
         brands.add(testProduct2.getBrand());
+
         String brandsString = String.join("&brand=", brands);
-
-
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?brand=" + brandsString))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].brand").value(Every.everyItem(anyOf(is(brands.get(0)),is(brands.get(1))))));
+                .andExpect(jsonPath("$[*].brand").value(Every.everyItem(anyOf(is(brands.get(0)), is(brands.get(1))))));
     }
 
     @Test
@@ -174,6 +192,7 @@ public class ProductApiTest {
 
     @Test
     public void getProductsByFilterQueryParamsWithMultipleCategoriesReturnsProductListWith200() throws Exception {
+
         categories.add(testProduct1.getCategory());
         categories.add(testProduct2.getCategory());
         String categoriesString = String.join("&category=", categories);
@@ -181,7 +200,7 @@ public class ProductApiTest {
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?category=" + categoriesString))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].category")
-                        .value(Every.everyItem(anyOf(is(categories.get(0)),is(categories.get(1))))));
+                        .value(Every.everyItem(anyOf(is(categories.get(0)), is(categories.get(1))))));
     }
 
     @Test
@@ -197,6 +216,7 @@ public class ProductApiTest {
 
     @Test
     public void getProductsByFilterQueryParamsWithMultipleDemographicsReturnsProductListWith200() throws Exception {
+
         demographics.add(testProduct1.getDemographic());
         demographics.add(testProduct2.getDemographic());
         String demographicsString = String.join("&demographic=", demographics);
@@ -204,35 +224,24 @@ public class ProductApiTest {
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?demographic=" + demographicsString))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].demographic")
-                        .value(Every.everyItem(anyOf(is(demographics.get(0)),is(demographics.get(1))))));
+                        .value(Every.everyItem(anyOf(is(demographics.get(0)), is(demographics.get(1))))));
     }
 
     @Test
     public void getProductsByFilterQueryParamsWithOnlyPriceReturnsProductListWith200() throws Exception {
+
         prices.add(String.valueOf(testProduct1.getPrice()));
         prices.add(String.valueOf(testProduct2.getPrice()));
         String pricesString = String.join("&price=", prices);
 
-        Double max;
-        Double min;
-
-        if(testProduct1.getPrice()> testProduct2.getPrice()){
-            max = testProduct1.getPrice();
-            min = testProduct2.getPrice();
-        } else {
-            max = testProduct2.getPrice();
-            min = testProduct1.getPrice();
-        }
-
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + pricesString))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].price")
-                        .value(Every.everyItem(anyOf(greaterThanOrEqualTo(min),lessThanOrEqualTo(max)))));
+                        .value(Every.everyItem(anyOf(greaterThanOrEqualTo(min), lessThanOrEqualTo(max)))));
     }
 
     @Test
     public void getProductsByFilterQueryParamsWithOnlyOnePriceReturns400() throws Exception {
-
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + String.valueOf(testProduct1.getPrice())))
                 .andExpect(status().isBadRequest());
@@ -251,6 +260,7 @@ public class ProductApiTest {
 
     @Test
     public void getProductsByFilterQueryParamsWithMultiplePrimaryColorsReturnsProductListWith200() throws Exception {
+
         primaryColors.add(testProduct1.getPrimaryColorCode());
         primaryColors.add(testProduct2.getPrimaryColorCode());
         String primaryColorsString = String.join("&primaryColor=", primaryColors);
@@ -263,6 +273,7 @@ public class ProductApiTest {
 
     @Test
     public void getProductsByFilterQueryParamsWithOnlyMaterialReturnsProductListWith200() throws Exception {
+
         String testMaterial = testProduct1.getMaterial();
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?material=" + testMaterial))
@@ -281,11 +292,13 @@ public class ProductApiTest {
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?material=" + materialsString))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].material")
-                        .value(Every.everyItem(oneOf(materials))));
+                        .value(Every.everyItem(anyOf(is(testProduct1.getMaterial()), is(testProduct2.getMaterial())))));
     }
 
     @Test
     public void getProductsByFilterQueryParamsWithAllFiltersReturnsProductListWith200() throws Exception {
+
+        // Create list for all attributes with the values of both test products
         brands.addAll(Arrays.asList(testProduct1.getBrand(), testProduct2.getBrand()));
         categories.addAll(Arrays.asList(testProduct1.getCategory(), testProduct2.getCategory()));
         demographics.addAll(Arrays.asList(testProduct1.getDemographic(), testProduct2.getDemographic()));
@@ -293,34 +306,56 @@ public class ProductApiTest {
         primaryColors.addAll(Arrays.asList(testProduct1.getPrimaryColorCode(), testProduct2.getPrimaryColorCode()));
         materials.addAll(Arrays.asList(testProduct1.getMaterial(), testProduct2.getMaterial()));
 
-        MultiValueMap<String, List<String>> filters = new LinkedMultiValueMap<>();
+        // Get string to use for filter query
+        StringBuilder filterString = createFilterStringForAllFilters();
+
+        // Perform query and check all attributes match either testProduct1 or testProduct2 and price is between the two prices
+        mockMvc.perform(get(PRODUCTS_PATH + "/filter?" + filterString))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].brand")
+                        .value(Every.everyItem(anyOf(is(testProduct1.getBrand()), is(testProduct2.getBrand())))))
+                .andExpect(jsonPath("$[*].category")
+                        .value(Every.everyItem(anyOf(is(testProduct1.getCategory()), is(testProduct2.getCategory())))))
+                .andExpect(jsonPath("$[*].price")
+                        .value(Every.everyItem(anyOf(greaterThanOrEqualTo(min), lessThanOrEqualTo(max)))))
+                .andExpect(jsonPath("$[*].demographic")
+                        .value(Every.everyItem(anyOf(is(testProduct1.getDemographic()), is(testProduct2.getDemographic())))))
+                .andExpect(jsonPath("$[*].primaryColor")
+                        .value(Every.everyItem(anyOf(is(testProduct1.getPrimaryColorCode()), is(testProduct2.getPrimaryColorCode())))))
+                .andExpect(jsonPath("$[*].material")
+                        .value(Every.everyItem(anyOf(is(testProduct1.getMaterial()), is(testProduct2.getMaterial())))));
+
+    }
+
+    /**
+     * Helper method to create the string to be entered into a filter query get request
+     * @return string of attributes
+     */
+    private StringBuilder createFilterStringForAllFilters(){
 
         StringBuilder filterString = new StringBuilder();
 
-        filters.add("brand", brands);
+        // Join list of each attribute to be filtered into a string replacing spaces with ASCII space character and add to filter string
         String brandsString = String.join("&brand=", brands).replaceAll("\\s", "%20");
         filterString.append("brand=" + brandsString);
 
-        filters.add("category",categories);
+
         String categoriesString = String.join("&category=", brands).replaceAll("\\s", "%20");
         filterString.append("&category=" + categoriesString);
 
-        filters.add("price", prices);
+
         String pricesString = String.join("&price=", prices).replaceAll("\\s", "%20");
         filterString.append("&price=" + pricesString);
 
-        filters.add("primaryColor", primaryColors);
+
         String primaryColorsString = String.join("&primaryColor=", primaryColors).replaceAll("\\s", "%20");
         filterString.append("&primaryColor=" + primaryColorsString);
 
-        filters.add("material", materials);
+
         String materialsString = String.join("&material=", materials).replaceAll("\\s", "%20");
         filterString.append("&material=" + materialsString);
 
-        System.out.println("filterString = " + filterString);
-
-        mockMvc.perform(get(PRODUCTS_PATH + "/filter?" + filterString))
-                .andExpect(status().isOk());
-
+        return filterString;
     }
+
 }
