@@ -39,7 +39,7 @@ public class ProductServiceImplTest {
   @Mock
   private ProductRepository productRepository;
 
-  Product testProduct;
+  Product testProduct1;
 
   Product testProduct2;
 
@@ -60,7 +60,7 @@ public class ProductServiceImplTest {
 
     setTestProducts();
 
-    when(productRepository.findById(anyLong())).thenReturn(Optional.of(testProduct));
+    when(productRepository.findById(anyLong())).thenReturn(Optional.of(testProduct1));
     when(productRepository.findAll()).thenReturn(testProductsList);
 
   }
@@ -69,17 +69,49 @@ public class ProductServiceImplTest {
 
     // Create Two Random Test Products
     productFactory = new ProductFactory();
-    testProduct = productFactory.createRandomProduct();
-    testProduct2 = productFactory.createRandomProduct();
+    testProduct1 = new Product(
+            "Test1",
+            "product created for testing purposes",
+            "Men",
+            "Baseball",
+            "Hoodie",
+            "2003-12-02",
+            "Champion",
+            "www.myimageurl.com",
+            "Nylon",
+            1,
+            180.35,
+            false,
+            "po-6123888",
+            "sc88763",
+            "#f092b0",
+            "#51b46d");
+    testProduct2 = new Product(
+            "Test2",
+            "product created for testing purposes",
+            "Women",
+            "Soccer",
+            "Pant",
+            "2014-09-24",
+            "Adidas",
+            "www.myimageurl.com",
+            "Polyester",
+            1,
+            75.95,
+            true,
+            "po-2151664",
+            "sc72141",
+            "#3079ab",
+            "sc72141");
 
-    testProductsList.add(testProduct);
+    testProductsList.add(testProduct1);
     testProductsList.add(testProduct2);
   }
 
   @Test
   public void getProductByIdReturnsProduct() {
     Product actual = productServiceImpl.getProductById(123L);
-    assertEquals(testProduct, actual);
+    assertEquals(testProduct1, actual);
   }
 
   @Test
@@ -97,7 +129,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByTwoBrandsListOfProducts() {
-    brands.add(testProduct.getBrand());
+    brands.add(testProduct1.getBrand());
     brands.add(testProduct2.getBrand());
     List<Product> actual = productServiceImpl.getProductsByBrands(productRepository.findAll(), brands);
     assertEquals(testProductsList, actual);
@@ -112,7 +144,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByTwoCategoriesListOfProducts() {
-    categories.add(testProduct.getCategory());
+    categories.add(testProduct1.getCategory());
     categories.add(testProduct2.getCategory());
     List<Product> actual = productServiceImpl.getProductsByCategories(productRepository.findAll(), categories);
     assertEquals(testProductsList, actual);
@@ -127,7 +159,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByTwoDemographicsListOfProducts() {
-    demographics.add(testProduct.getDemographic());
+    demographics.add(testProduct1.getDemographic());
     demographics.add(testProduct2.getDemographic());
     List<Product> actual = productServiceImpl.getProductsByDemographics(productRepository.findAll(), demographics);
     assertEquals(testProductsList, actual);
@@ -142,7 +174,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByTwoPricesReturnsListOfProducts() {
-    prices.add(String.valueOf(testProduct.getPrice()));
+    prices.add(String.valueOf(testProduct1.getPrice()));
     prices.add(String.valueOf(testProduct2.getPrice()));
     List<Product> actual = productServiceImpl.getProductsByPrice(productRepository.findAll(), prices);
     assertEquals(testProductsList, actual);
@@ -158,7 +190,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByThreePricesThrowsError() {
-    prices.add(String.valueOf(testProduct.getPrice()));
+    prices.add(String.valueOf(testProduct1.getPrice()));
     prices.add(String.valueOf(testProduct2.getPrice()));
     prices.add("10.00");
     assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), prices));
@@ -173,7 +205,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByTwoPrimaryColorsReturnsListOfProducts() {
-    primaryColors.add(testProduct.getPrimaryColorCode());
+    primaryColors.add(testProduct1.getPrimaryColorCode());
     primaryColors.add(testProduct2.getPrimaryColorCode());
     List<Product> actual = productServiceImpl.getProductsByPrimaryColors(productRepository.findAll(), primaryColors);
     assertEquals(testProductsList, actual);
@@ -188,7 +220,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByTwoMaterialsReturnsListOfProducts() {
-    materials.add(testProduct.getMaterial());
+    materials.add(testProduct1.getMaterial());
     materials.add(testProduct2.getMaterial());
     List<Product> actual = productServiceImpl.getProductsByMaterials(productRepository.findAll(), materials);
     assertEquals(testProductsList, actual);
@@ -196,12 +228,12 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByMultipleFiltersReturnsListOfProducts() {
-    brands.addAll(Arrays.asList(testProduct.getBrand(), testProduct2.getBrand()));
-    categories.addAll(Arrays.asList(testProduct.getCategory(), testProduct2.getCategory()));
-    demographics.addAll(Arrays.asList(testProduct.getDemographic(), testProduct2.getDemographic()));
-    prices.addAll(Arrays.asList(String.valueOf(testProduct.getPrice()), String.valueOf(testProduct2.getPrice())));
-    primaryColors.addAll(Arrays.asList(testProduct.getPrimaryColorCode(), testProduct2.getPrimaryColorCode()));
-    materials.addAll(Arrays.asList(testProduct.getMaterial(), testProduct2.getMaterial()));
+    brands.addAll(Arrays.asList(testProduct1.getBrand(), testProduct2.getBrand()));
+    categories.addAll(Arrays.asList(testProduct1.getCategory(), testProduct2.getCategory()));
+    demographics.addAll(Arrays.asList(testProduct1.getDemographic(), testProduct2.getDemographic()));
+    prices.addAll(Arrays.asList(String.valueOf(testProduct1.getPrice()), String.valueOf(testProduct2.getPrice())));
+    primaryColors.addAll(Arrays.asList(testProduct1.getPrimaryColorCode(), testProduct2.getPrimaryColorCode()));
+    materials.addAll(Arrays.asList(testProduct1.getMaterial(), testProduct2.getMaterial()));
 
     MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 
