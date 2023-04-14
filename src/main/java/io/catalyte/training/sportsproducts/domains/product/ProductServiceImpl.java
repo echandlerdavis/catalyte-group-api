@@ -157,14 +157,18 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by brands
      * @param products the list of products to filter
-     * @param brands the list of brands to filter by as a string with %7C between each value
+     * @param brands the list of brands to filter by as a string with | between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByBrands(List<Product> products, String brands) {
         // Create new list for brand names to allow matching without case sensitivity
         List<String> brandNames = new ArrayList<>();
-        // slit the brands string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
-        Arrays.asList(brands.split("%7C")).forEach(brand -> brandNames.add(brand.toLowerCase()));
+
+        System.out.println("brands = " + brands);
+        // slit the brands string into an array separated by |. Then add each value in lowercase to the new names array
+        Arrays.asList(brands.split("\\|")).forEach(brand -> brandNames.add(brand.toLowerCase()));
+
+        System.out.println("brandNames = " + brandNames);
         // Remove ongoing products list if product's brand does not match any brand filters
         products.removeIf(product -> !brandNames.contains(product.getBrand().toLowerCase()));
 
@@ -173,15 +177,15 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by categories
      * @param products the list of products to filter
-     * @param categories the list of categories to filter by as a string with %7C between each value
+     * @param categories the list of categories to filter by as a string with | between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByCategories(List<Product> products, String categories) {
 
         List<String> categoryNames = new ArrayList<>();
 
-        // slit the categories string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
-        Arrays.asList(categories.split("%7C")).forEach(category -> categoryNames.add(category.toLowerCase()));
+        // slit the categories string into an array separated by |. Then add each value in lowercase to the new names array
+        Arrays.asList(categories.split("\\|")).forEach(category -> categoryNames.add(category.toLowerCase()));
 
         products.removeIf(product -> !categoryNames.contains(product.getCategory().toLowerCase()));
 
@@ -191,15 +195,15 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by demographics
      * @param products the list of products to filter
-     * @param demographics the list of demographics to filter by as a string with %7C between each value
+     * @param demographics the list of demographics to filter by as a string with | between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByDemographics(List<Product> products, String demographics) {
 
         List<String> demographicNames = new ArrayList<>();
 
-        // slit the demographics string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
-        Arrays.asList(demographics.split("%7C")).forEach(demographic -> demographicNames.add(demographic.toLowerCase()));
+        // slit the demographics string into an array separated by |. Then add each value in lowercase to the new names array
+        Arrays.asList(demographics.split("\\|")).forEach(demographic -> demographicNames.add(demographic.toLowerCase()));
 
         products.removeIf(product -> !demographicNames.contains(product.getDemographic().toLowerCase()));
 
@@ -238,15 +242,15 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by primaryColor
      * @param products the list of products to filter
-     * @param primaryColors the list of primaryColors to filter by as a string with %7C between each value
+     * @param primaryColors the list of primaryColors to filter by as a string with | between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByPrimaryColors(List<Product> products, String primaryColors) {
 
         List<String> primaryColorsCodes = new ArrayList<>();
 
-        // slit the primaryColors string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
-        Arrays.asList(primaryColors.split("%7C")).forEach(primaryColor -> primaryColorsCodes.add(primaryColor.toLowerCase()));
+        // slit the primaryColors string into an array separated by |. Then add each value in lowercase to the new names array
+        Arrays.asList(primaryColors.split("\\|")).forEach(primaryColor -> primaryColorsCodes.add(primaryColor.toLowerCase()));
 
         products.removeIf(product -> !primaryColorsCodes.contains(product.getPrimaryColorCode().toLowerCase()));
 
@@ -256,15 +260,15 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Helper Method filters list of products by material
      * @param products the list of products to filter
-     * @param materials the list of materials to filter by as a string with %7C between each value
+     * @param materials the list of materials to filter by as a string with | between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByMaterials(List<Product> products, String materials) {
 
         List<String> materialNames = new ArrayList<>();
 
-        // slit the materials string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
-        Arrays.asList(materials.split("%7C")).forEach(material -> materialNames.add(material.toLowerCase()));
+        // slit the materials string into an array separated by |. Then add each value in lowercase to the new names array
+        Arrays.asList(materials.split("\\|")).forEach(material -> materialNames.add(material.toLowerCase()));
 
         products.removeIf(product -> !materialNames.contains(product.getMaterial().toLowerCase()));
 
