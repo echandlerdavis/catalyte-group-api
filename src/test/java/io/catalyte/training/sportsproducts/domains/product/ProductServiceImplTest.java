@@ -13,13 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -122,8 +117,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByOneBrandReturnsListOfProducts() {
-    brands.add(testProduct2.getBrand());
-    List<Product> actual = productServiceImpl.getProductsByBrands(productRepository.findAll(), brands);
+    List<Product> actual = productServiceImpl.getProductsByBrands(productRepository.findAll(), testProduct2.getBrand());
     assertEquals(Arrays.asList(testProduct2), actual);
   }
 
@@ -131,14 +125,15 @@ public class ProductServiceImplTest {
   public void getProductByTwoBrandsListOfProducts() {
     brands.add(testProduct1.getBrand());
     brands.add(testProduct2.getBrand());
-    List<Product> actual = productServiceImpl.getProductsByBrands(productRepository.findAll(), brands);
+    String brandsString = String.join("%7C",brands);
+    List<Product> actual = productServiceImpl.getProductsByBrands(productRepository.findAll(), brandsString);
     assertEquals(testProductsList, actual);
   }
 
   @Test
   public void getProductByOneCategoryReturnsListOfProducts() {
     categories.add(testProduct2.getCategory());
-    List<Product> actual = productServiceImpl.getProductsByCategories(productRepository.findAll(), categories);
+    List<Product> actual = productServiceImpl.getProductsByCategories(productRepository.findAll(), testProduct2.getCategory());
     assertEquals(Arrays.asList(testProduct2), actual);
   }
 
@@ -146,14 +141,15 @@ public class ProductServiceImplTest {
   public void getProductByTwoCategoriesListOfProducts() {
     categories.add(testProduct1.getCategory());
     categories.add(testProduct2.getCategory());
-    List<Product> actual = productServiceImpl.getProductsByCategories(productRepository.findAll(), categories);
+    String categoryString = String.join("%7C",categories);
+    List<Product> actual = productServiceImpl.getProductsByCategories(productRepository.findAll(), categoryString);
     assertEquals(testProductsList, actual);
   }
 
   @Test
   public void getProductByOneDemographicReturnsListOfProducts() {
-    demographics.add(testProduct2.getDemographic());
-    List<Product> actual = productServiceImpl.getProductsByDemographics(productRepository.findAll(), demographics);
+
+    List<Product> actual = productServiceImpl.getProductsByDemographics(productRepository.findAll(), testProduct2.getDemographic());
     assertEquals(Arrays.asList(testProduct2), actual);
   }
 
@@ -161,22 +157,23 @@ public class ProductServiceImplTest {
   public void getProductByTwoDemographicsListOfProducts() {
     demographics.add(testProduct1.getDemographic());
     demographics.add(testProduct2.getDemographic());
-    List<Product> actual = productServiceImpl.getProductsByDemographics(productRepository.findAll(), demographics);
+    String demographicsString = String.join("%7C",demographics);
+    List<Product> actual = productServiceImpl.getProductsByDemographics(productRepository.findAll(), demographicsString);
     assertEquals(testProductsList, actual);
   }
 
   @Test
   public void getProductByOnePriceReturnsThrowsError() {
-    prices.add(String.valueOf(testProduct2.getPrice()));
 
-    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), prices));
+    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), String.valueOf(testProduct2.getPrice())));
   }
 
   @Test
   public void getProductByTwoPricesReturnsListOfProducts() {
     prices.add(String.valueOf(testProduct1.getPrice()));
     prices.add(String.valueOf(testProduct2.getPrice()));
-    List<Product> actual = productServiceImpl.getProductsByPrice(productRepository.findAll(), prices);
+    String pricesString = String.join("%7C",prices);
+    List<Product> actual = productServiceImpl.getProductsByPrice(productRepository.findAll(), pricesString);
     assertEquals(testProductsList, actual);
   }
 
@@ -184,8 +181,7 @@ public class ProductServiceImplTest {
   public void getProductByTwoPricesThrowsErrorIfOnePriceIsNotANumber() {
     prices.add("abc");
     prices.add(String.valueOf(testProduct2.getPrice()));
-
-    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), prices));
+    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), prices.get(0)));
   }
 
   @Test
@@ -193,13 +189,14 @@ public class ProductServiceImplTest {
     prices.add(String.valueOf(testProduct1.getPrice()));
     prices.add(String.valueOf(testProduct2.getPrice()));
     prices.add("10.00");
-    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), prices));
+    String pricesString = String.join("%7C",prices);
+    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), pricesString));
   }
 
   @Test
   public void getProductByOnePrimaryColorReturnsListOfProducts() {
-    primaryColors.add(testProduct2.getPrimaryColorCode());
-    List<Product> actual = productServiceImpl.getProductsByPrimaryColors(productRepository.findAll(), primaryColors);
+
+    List<Product> actual = productServiceImpl.getProductsByPrimaryColors(productRepository.findAll(), testProduct2.getPrimaryColorCode());
     assertEquals(Arrays.asList(testProduct2), actual);
   }
 
@@ -207,14 +204,14 @@ public class ProductServiceImplTest {
   public void getProductByTwoPrimaryColorsReturnsListOfProducts() {
     primaryColors.add(testProduct1.getPrimaryColorCode());
     primaryColors.add(testProduct2.getPrimaryColorCode());
-    List<Product> actual = productServiceImpl.getProductsByPrimaryColors(productRepository.findAll(), primaryColors);
+    String primaryColorsString = String.join("%7C",primaryColors);
+    List<Product> actual = productServiceImpl.getProductsByPrimaryColors(productRepository.findAll(), primaryColorsString);
     assertEquals(testProductsList, actual);
   }
 
   @Test
   public void getProductByOneMaterialReturnsListOfProducts() {
-    materials.add(testProduct2.getMaterial());
-    List<Product> actual = productServiceImpl.getProductsByMaterials(productRepository.findAll(), materials);
+    List<Product> actual = productServiceImpl.getProductsByMaterials(productRepository.findAll(), testProduct2.getMaterial());
     assertEquals(Arrays.asList(testProduct2), actual);
   }
 
@@ -222,7 +219,8 @@ public class ProductServiceImplTest {
   public void getProductByTwoMaterialsReturnsListOfProducts() {
     materials.add(testProduct1.getMaterial());
     materials.add(testProduct2.getMaterial());
-    List<Product> actual = productServiceImpl.getProductsByMaterials(productRepository.findAll(), materials);
+    String materialsString = String.join("%7C",materials);
+    List<Product> actual = productServiceImpl.getProductsByMaterials(productRepository.findAll(), materialsString);
     assertEquals(testProductsList, actual);
   }
 
@@ -235,13 +233,13 @@ public class ProductServiceImplTest {
     primaryColors.addAll(Arrays.asList(testProduct1.getPrimaryColorCode(), testProduct2.getPrimaryColorCode()));
     materials.addAll(Arrays.asList(testProduct1.getMaterial(), testProduct2.getMaterial()));
 
-    MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+    HashMap<String, String> filters = new HashMap<>();
 
-    filters.addAll("brand", brands);
-    filters.addAll("category",categories);
-    filters.addAll("price", prices);
-    filters.addAll("primaryColor", primaryColors);
-    filters.addAll("material", materials);
+    filters.put("brand", String.join("%7C",brands));
+    filters.put("category",String.join("%7C",categories));
+    filters.put("price", String.join("%7C",prices));
+    filters.put("primaryColor", String.join("%7C",prices));
+    filters.put("material", String.join("%7C",materials));
 
     List<Product> actual = productServiceImpl.getProductsByFilters(filters);
     assertEquals(testProductsList, actual);

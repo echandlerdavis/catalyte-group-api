@@ -1,6 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.product;
-import org.springframework.util.MultiValueMap;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,5 +18,5 @@ public interface ProductService {
 
   List<Product> addProducts(List<Product> products);
 
-  List<Product> getProductsByFilters(MultiValueMap<String, String> filters);
+  List<Product> getProductsByFilters(HashMap<String, String> filters);
 }

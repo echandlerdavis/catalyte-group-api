@@ -172,7 +172,7 @@ public class ProductApiTest {
         brands.add(testProduct1.getBrand());
         brands.add(testProduct2.getBrand());
 
-        String brandsString = String.join("&brand=", brands);
+        String brandsString = String.join("%7C", brands);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?brand=" + brandsString))
                 .andExpect(status().isOk())
@@ -195,7 +195,7 @@ public class ProductApiTest {
 
         categories.add(testProduct1.getCategory());
         categories.add(testProduct2.getCategory());
-        String categoriesString = String.join("&category=", categories);
+        String categoriesString = String.join("%7C", categories);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?category=" + categoriesString))
                 .andExpect(status().isOk())
@@ -219,7 +219,7 @@ public class ProductApiTest {
 
         demographics.add(testProduct1.getDemographic());
         demographics.add(testProduct2.getDemographic());
-        String demographicsString = String.join("&demographic=", demographics);
+        String demographicsString = String.join("%7C", demographics);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?demographic=" + demographicsString))
                 .andExpect(status().isOk())
@@ -232,7 +232,7 @@ public class ProductApiTest {
 
         prices.add(String.valueOf(testProduct1.getPrice()));
         prices.add(String.valueOf(testProduct2.getPrice()));
-        String pricesString = String.join("&price=", prices);
+        String pricesString = String.join("%7C", prices);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + pricesString))
                 .andExpect(status().isOk())
@@ -263,7 +263,7 @@ public class ProductApiTest {
 
         primaryColors.add(testProduct1.getPrimaryColorCode());
         primaryColors.add(testProduct2.getPrimaryColorCode());
-        String primaryColorsString = String.join("&primaryColor=", primaryColors);
+        String primaryColorsString = String.join("%7C", primaryColors);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?primaryColor=" + primaryColorsString))
                 .andExpect(status().isOk())
@@ -287,7 +287,7 @@ public class ProductApiTest {
 
         materials.add(testProduct1.getPrimaryColorCode());
         materials.add(testProduct2.getPrimaryColorCode());
-        String materialsString = String.join("&material=", materials);
+        String materialsString = String.join("%7C", materials);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?material=" + materialsString))
                 .andExpect(status().isOk())
@@ -336,23 +336,23 @@ public class ProductApiTest {
         StringBuilder filterString = new StringBuilder();
 
         // Join list of each attribute to be filtered into a string replacing spaces with ASCII space character and add to filter string
-        String brandsString = String.join("&brand=", brands).replaceAll("\\s", "%20");
+        String brandsString = String.join("%7C", brands).replaceAll("\\s", "%20");
         filterString.append("brand=" + brandsString);
 
 
-        String categoriesString = String.join("&category=", brands).replaceAll("\\s", "%20");
+        String categoriesString = String.join("%7C", brands).replaceAll("\\s", "%20");
         filterString.append("&category=" + categoriesString);
 
 
-        String pricesString = String.join("&price=", prices).replaceAll("\\s", "%20");
+        String pricesString = String.join("%7C", prices).replaceAll("\\s", "%20");
         filterString.append("&price=" + pricesString);
 
 
-        String primaryColorsString = String.join("&primaryColor=", primaryColors).replaceAll("\\s", "%20");
+        String primaryColorsString = String.join("%7C", primaryColors).replaceAll("\\s", "%20");
         filterString.append("&primaryColor=" + primaryColorsString);
 
 
-        String materialsString = String.join("&material=", materials).replaceAll("\\s", "%20");
+        String materialsString = String.join("%7C", materials).replaceAll("\\s", "%20");
         filterString.append("&material=" + materialsString);
 
         return filterString;

@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -113,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
      * @return List of products matching the filters
      */
     @Override
-    public List<Product> getProductsByFilters(MultiValueMap<String, String> filters) {
+    public List<Product> getProductsByFilters(HashMap<String, String> filters) {
         // Get list of products
         List<Product> products;
 
@@ -159,11 +160,11 @@ public class ProductServiceImpl implements ProductService {
      * @param brands the list of brands to filter by
      * @return filtered list of products
      */
-    public List<Product> getProductsByBrands(List<Product> products, List<String> brands) {
+    public List<Product> getProductsByBrands(List<Product> products, String brands) {
         // Create new list for brand names to allow matching without case sensitivity
         List<String> brandNames = new ArrayList<>();
-        // Add lowercase of filter to brand names list
-        brands.forEach(brand -> brandNames.add(brand.toLowerCase()));
+        // slit the brands string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
+        Arrays.asList(brands.split("%7C")).forEach(brand -> brandNames.add(brand.toLowerCase()));
         // Remove ongoing products list if product's brand does not match any brand filters
         products.removeIf(product -> !brandNames.contains(product.getBrand().toLowerCase()));
 
@@ -175,11 +176,12 @@ public class ProductServiceImpl implements ProductService {
      * @param categories the list of categories to filter by
      * @return filtered list of products
      */
-    public List<Product> getProductsByCategories(List<Product> products, List<String> categories) {
+    public List<Product> getProductsByCategories(List<Product> products, String categories) {
 
         List<String> categoryNames = new ArrayList<>();
 
-        categories.forEach(category -> categoryNames.add(category.toLowerCase()));
+        // slit the categories string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
+        Arrays.asList(categories.split("%7C")).forEach(category -> categoryNames.add(category.toLowerCase()));
 
         products.removeIf(product -> !categoryNames.contains(product.getCategory().toLowerCase()));
 
@@ -192,11 +194,12 @@ public class ProductServiceImpl implements ProductService {
      * @param demographics the list of demographics to filter by
      * @return filtered list of products
      */
-    public List<Product> getProductsByDemographics(List<Product> products, List<String> demographics) {
+    public List<Product> getProductsByDemographics(List<Product> products, String demographics) {
 
         List<String> demographicNames = new ArrayList<>();
 
-        demographics.forEach(demographic -> demographicNames.add(demographic.toLowerCase()));
+        // slit the demographics string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
+        Arrays.asList(demographics.split("%7C")).forEach(demographic -> demographicNames.add(demographic.toLowerCase()));
 
         products.removeIf(product -> !demographicNames.contains(product.getDemographic().toLowerCase()));
 
@@ -210,10 +213,12 @@ public class ProductServiceImpl implements ProductService {
      * @param price the list of prices to filter by
      * @return filtered list of products
      */
-    public List<Product> getProductsByPrice(List<Product> products, List<String> price) {
+    public List<Product> getProductsByPrice(List<Product> products, String price) {
+
+        List<String> prices = Arrays.asList(price.split("%7C"));
 
         // If two prices aren't given throw error
-        if (price.size() != 2) {
+        if (prices.size() != 2) {
             throw new BadRequest("Price must have a min and max value");
         }
 
@@ -222,8 +227,8 @@ public class ProductServiceImpl implements ProductService {
 
         // Try to parse price to ensure it is a double value, not a string of letters
         try {
-            price1 = Double.valueOf(price.get(0));
-            price2 = Double.valueOf(price.get(1));
+            price1 = Double.valueOf(prices.get(0));
+            price2 = Double.valueOf(prices.get(1));
         } catch (NumberFormatException e) {
             logger.error(e.getMessage());
             throw new BadRequest("prices must be a number");
@@ -245,11 +250,12 @@ public class ProductServiceImpl implements ProductService {
      * @param primaryColors the list of primaryColors to filter by
      * @return filtered list of products
      */
-    public List<Product> getProductsByPrimaryColors(List<Product> products, List<String> primaryColors) {
+    public List<Product> getProductsByPrimaryColors(List<Product> products, String primaryColors) {
 
         List<String> primaryColorsCodes = new ArrayList<>();
 
-        primaryColors.forEach(primaryColor -> primaryColorsCodes.add(primaryColor.toLowerCase()));
+        // slit the primaryColors string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
+        Arrays.asList(primaryColors.split("%7C")).forEach(primaryColor -> primaryColorsCodes.add(primaryColor.toLowerCase()));
 
         products.removeIf(product -> !primaryColorsCodes.contains(product.getPrimaryColorCode().toLowerCase()));
 
@@ -262,11 +268,12 @@ public class ProductServiceImpl implements ProductService {
      * @param materials the list of materials to filter by
      * @return filtered list of products
      */
-    public List<Product> getProductsByMaterials(List<Product> products, List<String> materials) {
+    public List<Product> getProductsByMaterials(List<Product> products, String materials) {
 
         List<String> materialNames = new ArrayList<>();
 
-        materials.forEach(material -> materialNames.add(material.toLowerCase()));
+        // slit the materials string into an array separated by the ASCII | or character, %7C.  Then add each value in lowercase to the new names array
+        Arrays.asList(materials.split("%7C")).forEach(material -> materialNames.add(material.toLowerCase()));
 
         products.removeIf(product -> !materialNames.contains(product.getMaterial().toLowerCase()));
 
