@@ -107,8 +107,14 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    /**
+     * Filters products by multiple attributes provided
+     * @param filters the attributes to filter products by
+     * @return List of products matching the filters
+     */
     @Override
     public List<Product> getProductsByFilters(MultiValueMap<String, String> filters) {
+        // Get list of products
         List<Product> products;
 
         try{
@@ -118,6 +124,8 @@ public class ProductServiceImpl implements ProductService {
             throw new ServerError(e.getMessage());
         }
 
+        // Check if brand, category, demographic, price, primary color, and material filters were provided
+        // If so, repeatedly filter the list of products by each value given
         if(filters.containsKey("brand")){
             getProductsByBrands(products,filters.get("brand"));
         }
@@ -145,6 +153,12 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+    /**
+     * Helper Method filters list of products by brands
+     * @param products the list of products to filter
+     * @param brands the list of brands to filter by
+     * @return filtered list of products
+     */
     public List<Product> getProductsByBrands(List<Product> products, List<String> brands) {
         // Create new list for brand names to allow matching without case sensitivity
         List<String> brandNames = new ArrayList<>();
@@ -155,7 +169,12 @@ public class ProductServiceImpl implements ProductService {
 
         return products;
     }
-
+    /**
+     * Helper Method filters list of products by categories
+     * @param products the list of products to filter
+     * @param categories the list of categories to filter by
+     * @return filtered list of products
+     */
     public List<Product> getProductsByCategories(List<Product> products, List<String> categories) {
 
         List<String> categoryNames = new ArrayList<>();
@@ -167,6 +186,12 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+    /**
+     * Helper Method filters list of products by demographics
+     * @param products the list of products to filter
+     * @param demographics the list of demographics to filter by
+     * @return filtered list of products
+     */
     public List<Product> getProductsByDemographics(List<Product> products, List<String> demographics) {
 
         List<String> demographicNames = new ArrayList<>();
@@ -179,7 +204,15 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    /**
+     * Helper Method filters list of products between two prices
+     * @param products the list of products to filter
+     * @param price the list of prices to filter by
+     * @return filtered list of products
+     */
     public List<Product> getProductsByPrice(List<Product> products, List<String> price) {
+
+        // If two prices aren't given throw error
         if (price.size() != 2) {
             throw new BadRequest("Price must have a min and max value");
         }
@@ -187,6 +220,7 @@ public class ProductServiceImpl implements ProductService {
         Double price1;
         Double price2;
 
+        // Try to parse price to ensure it is a double value, not a string of letters
         try {
             price1 = Double.valueOf(price.get(0));
             price2 = Double.valueOf(price.get(1));
@@ -195,6 +229,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequest("prices must be a number");
         }
 
+        // Get the min and max value to filter prices between
         Double min = Math.min(price1, price2);
         Double max = Math.max(price1, price2);
 
@@ -204,6 +239,12 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    /**
+     * Helper Method filters list of products by primaryColor
+     * @param products the list of products to filter
+     * @param primaryColors the list of primaryColors to filter by
+     * @return filtered list of products
+     */
     public List<Product> getProductsByPrimaryColors(List<Product> products, List<String> primaryColors) {
 
         List<String> primaryColorsCodes = new ArrayList<>();
@@ -215,6 +256,12 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+    /**
+     * Helper Method filters list of products by material
+     * @param products the list of products to filter
+     * @param materials the list of materials to filter by
+     * @return filtered list of products
+     */
     public List<Product> getProductsByMaterials(List<Product> products, List<String> materials) {
 
         List<String> materialNames = new ArrayList<>();
