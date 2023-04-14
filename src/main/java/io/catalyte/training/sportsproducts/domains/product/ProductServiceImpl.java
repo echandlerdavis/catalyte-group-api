@@ -110,10 +110,38 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getProductsByFilters(MultiValueMap<String, String> filters) {
         List<Product> products;
-        products = productRepository.findAll();
-        List<String> brands=filters.get("brand");
-        System.out.println("brands.size() + brands.get(0) = " + brands.size() + brands.get(0));
-        getProductsByBrands(products,brands);
+
+        try{
+            products = productRepository.findAll();
+        } catch (DataAccessException e ){
+            logger.error(e.getMessage());
+            throw new ServerError(e.getMessage());
+        }
+
+        if(filters.containsKey("brand")){
+            getProductsByBrands(products,filters.get("brand"));
+        }
+
+        if(filters.containsKey("category")){
+            getProductsByCategories(products,filters.get("category"));
+        }
+
+        if(filters.containsKey("demographic")){
+            getProductsByDemographics(products,filters.get("demographic"));
+        }
+
+        if(filters.containsKey("price")){
+            getProductsByPrice(products,filters.get("price"));
+        }
+
+        if(filters.containsKey("primaryColor")){
+            getProductsByPrimaryColors(products,filters.get("primaryColor"));
+        }
+
+        if(filters.containsKey("material")){
+            getProductsByCategories(products,filters.get("material"));
+        }
+
         return products;
     }
 
