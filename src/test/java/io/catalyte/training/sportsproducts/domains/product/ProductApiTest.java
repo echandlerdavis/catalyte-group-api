@@ -69,7 +69,7 @@ public class ProductApiTest {
      * Test Helper method used to compare values of the test products prices
      * Assigns min and max value that will be used to ensure prices filtered are between these values
      */
-    private void getMinMaxPrice (){
+    private void getMinMaxPrice() {
         priceMin = Double.min(testProduct1.getPrice(), testProduct2.getPrice());
         priceMax = Double.max(testProduct1.getPrice(), testProduct2.getPrice());
     }
@@ -236,6 +236,7 @@ public class ProductApiTest {
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + priceMin))
                 .andExpect(status().isOk());
     }
+
     public void getProductsByFilterQueryParamsWithOnlyPriceMaxReturnsListOfProducts200() throws Exception {
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + priceMax))
@@ -324,9 +325,10 @@ public class ProductApiTest {
 
     /**
      * Helper method to create the string to be entered into a filter query get request
+     *
      * @return string of attributes
      */
-    private StringBuilder createFilterStringForAllFilters(){
+    private StringBuilder createFilterStringForAllFilters() {
 
         StringBuilder filterString = new StringBuilder();
 
