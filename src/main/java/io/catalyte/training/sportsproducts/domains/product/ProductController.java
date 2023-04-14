@@ -1,12 +1,13 @@
 package io.catalyte.training.sportsproducts.domains.product;
 import static io.catalyte.training.sportsproducts.constants.Paths.PRODUCTS_PATH;
+
+import java.util.HashMap;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -94,7 +95,7 @@ public class ProductController {
    */
   @GetMapping(value = "/filter")
   @ResponseStatus(value = HttpStatus.OK)
-  public ResponseEntity<List> getProductsByFilters(@RequestParam MultiValueMap<String, String> filters){
+  public ResponseEntity<List> getProductsByFilters(@RequestParam HashMap<String, String> filters){
     logger.info("Request received for getProductsByFilters");
     return new ResponseEntity<>(productService.getProductsByFilters(filters), HttpStatus.OK);
   }
