@@ -22,8 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static io.catalyte.training.sportsproducts.constants.Paths.PRODUCTS_PATH;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.oneOf;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -153,11 +152,13 @@ public class ProductApiTest {
     public void getProductsByFilterQueryParamsWithMultipleBrandsReturnsProductListWith200() throws Exception {
         brands.add(testProduct1.getBrand());
         brands.add(testProduct2.getBrand());
-        String brandsString = String.join(",", brands);
+        String brandsString = String.join("&brand=", brands);
+
+
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?brand=" + brandsString))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].brand").value(Every.everyItem(oneOf(brands))));
+                .andExpect(jsonPath("$[*].brand").value(Every.everyItem(anyOf(is(brands.get(0)),is(brands.get(1))))));
     }
 
     @Test
@@ -175,12 +176,12 @@ public class ProductApiTest {
     public void getProductsByFilterQueryParamsWithMultipleCategoriesReturnsProductListWith200() throws Exception {
         categories.add(testProduct1.getCategory());
         categories.add(testProduct2.getCategory());
-        String categoriesString = String.join(",", categories);
+        String categoriesString = String.join("&category=", categories);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?category=" + categoriesString))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].category")
-                        .value(Every.everyItem(oneOf(categories))));
+                        .value(Every.everyItem(anyOf(is(categories.get(0)),is(categories.get(1))))));
     }
 
     @Test
@@ -198,23 +199,35 @@ public class ProductApiTest {
     public void getProductsByFilterQueryParamsWithMultipleDemographicsReturnsProductListWith200() throws Exception {
         demographics.add(testProduct1.getDemographic());
         demographics.add(testProduct2.getDemographic());
-        String demographicsString = String.join(",", demographics);
+        String demographicsString = String.join("&demographic=", demographics);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?demographic=" + demographicsString))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].demographic")
-                        .value(Every.everyItem(oneOf(demographics))));
+                        .value(Every.everyItem(anyOf(is(demographics.get(0)),is(demographics.get(1))))));
     }
 
     @Test
     public void getProductsByFilterQueryParamsWithOnlyPriceReturnsProductListWith200() throws Exception {
         prices.add(String.valueOf(testProduct1.getPrice()));
         prices.add(String.valueOf(testProduct2.getPrice()));
-        String pricesString = String.join(",", prices);
+        String pricesString = String.join("&price=", prices);
+
+        Double max;
+        Double min;
+
+        if(testProduct1.getPrice()> testProduct2.getPrice()){
+            max = testProduct1.getPrice();
+            min = testProduct2.getPrice();
+        } else {
+            max = testProduct2.getPrice();
+            min = testProduct1.getPrice();
+        }
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + pricesString))
-                .andExpect(status().isOk());
-        // Todo Match object prices
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].price")
+                        .value(Every.everyItem(anyOf(lessThanOrEqualTo(min),greaterThanOrEqualTo(max)))));
     }
 
     @Test
@@ -240,12 +253,12 @@ public class ProductApiTest {
     public void getProductsByFilterQueryParamsWithMultiplePrimaryColorsReturnsProductListWith200() throws Exception {
         primaryColors.add(testProduct1.getPrimaryColorCode());
         primaryColors.add(testProduct2.getPrimaryColorCode());
-        String primaryColorsString = String.join(",", primaryColors);
+        String primaryColorsString = String.join("&primaryColor=", primaryColors);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?primaryColor=" + primaryColorsString))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].primaryColorCode")
-                        .value(Every.everyItem(oneOf(primaryColors))));
+                        .value(Every.everyItem(anyOf(is(primaryColors.get(0)), is(primaryColors.get(1))))));
     }
 
     @Test
@@ -263,7 +276,7 @@ public class ProductApiTest {
 
         materials.add(testProduct1.getPrimaryColorCode());
         materials.add(testProduct2.getPrimaryColorCode());
-        String materialsString = String.join(",", materials);
+        String materialsString = String.join("&material=", materials);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?material=" + materialsString))
                 .andExpect(status().isOk())
@@ -282,20 +295,32 @@ public class ProductApiTest {
 
         MultiValueMap<String, List<String>> filters = new LinkedMultiValueMap<>();
 
-        filters.add("brand", brands);
-        filters.add("category",categories);
-        filters.add("price", prices);
-        filters.add("primaryColor", primaryColors);
-        filters.add("material", materials);
-
         StringBuilder filterString = new StringBuilder();
 
-        for (String key : filters.keySet()) {
-            filterString.append(key + "=" + String.join(",", filters.get(key).get(0)) + "&");
-        }
+        filters.add("brand", brands);
+        String brandsString = String.join("&brand=", brands).replaceAll("\\s", "%20");
+        filterString.append("brand=" + brandsString);
+
+        filters.add("category",categories);
+        String categoriesString = String.join("&category=", brands).replaceAll("\\s", "%20");
+        filterString.append("&category=" + categoriesString);
+
+        filters.add("price", prices);
+        String pricesString = String.join("&price=", prices).replaceAll("\\s", "%20");
+        filterString.append("&price=" + pricesString);
+
+        filters.add("primaryColor", primaryColors);
+        String primaryColorsString = String.join("&primaryColor=", primaryColors).replaceAll("\\s", "%20");
+        filterString.append("&primaryColor=" + primaryColorsString);
+
+        filters.add("material", materials);
+        String materialsString = String.join("&material=", materials).replaceAll("\\s", "%20");
+        filterString.append("&material=" + materialsString);
+
+        System.out.println("filterString = " + filterString);
 
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?" + filterString))
                 .andExpect(status().isOk());
-        // todo match object values
+
     }
 }
