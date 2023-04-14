@@ -91,6 +91,7 @@ public class ProductController {
    *
    * Handles a GET request to /products/filters. This retrieves all products in the database with applied query.
    * Methods have been implemented to handle the following query params: brand, category, priceMin, priceMax, material, primaryColor, and demographic
+   * For multiple values passed into a query param the URL-Encoded character for |, "%7C" should be placed in between in url request
    * @param filters - the filters to be read from the request parameters
    * @return product(s) found matching the given filters
    */
