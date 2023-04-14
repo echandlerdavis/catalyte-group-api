@@ -227,7 +227,7 @@ public class ProductApiTest {
         mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + pricesString))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].price")
-                        .value(Every.everyItem(anyOf(lessThanOrEqualTo(min),greaterThanOrEqualTo(max)))));
+                        .value(Every.everyItem(anyOf(greaterThanOrEqualTo(min),lessThanOrEqualTo(max)))));
     }
 
     @Test
