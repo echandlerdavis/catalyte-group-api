@@ -45,15 +45,18 @@ public class ProductServiceImplTest {
   List<String> brands = new ArrayList<>();
   List<String> categories = new ArrayList<>();
   List<String> demographics = new ArrayList<>();
-  List<String> prices = new ArrayList<>();
   List<String> primaryColors = new ArrayList<>();
   List<String> materials = new ArrayList<>();
+
+  String priceMin;
+  String priceMax;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
 
     setTestProducts();
+    getMinMaxPrice();
 
     when(productRepository.findById(anyLong())).thenReturn(Optional.of(testProduct1));
     when(productRepository.findAll()).thenReturn(testProductsList);
@@ -101,6 +104,15 @@ public class ProductServiceImplTest {
 
     testProductsList.add(testProduct1);
     testProductsList.add(testProduct2);
+  }
+
+  /**
+   * Test Helper method used to compare values of the test products prices
+   * Assigns min and max value that will be used to ensure prices filtered are between these values
+   */
+  private void getMinMaxPrice (){
+    priceMin = String.valueOf(Double.min(testProduct1.getPrice(), testProduct2.getPrice()));
+    priceMax = String.valueOf(Double.max(testProduct1.getPrice(), testProduct2.getPrice()));
   }
 
   @Test
@@ -163,35 +175,18 @@ public class ProductServiceImplTest {
   }
 
   @Test
-  public void getProductByOnePriceReturnsThrowsError() {
-
-    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), String.valueOf(testProduct2.getPrice())));
-  }
-
-  @Test
   public void getProductByTwoPricesReturnsListOfProducts() {
-    prices.add(String.valueOf(testProduct1.getPrice()));
-    prices.add(String.valueOf(testProduct2.getPrice()));
-    String pricesString = String.join("%7C",prices);
-    List<Product> actual = productServiceImpl.getProductsByPrice(productRepository.findAll(), pricesString);
+
+    List<Product> actual = productServiceImpl.getProductsByPrice(productRepository.findAll(), priceMin, priceMax);
     assertEquals(testProductsList, actual);
   }
 
   @Test
   public void getProductByTwoPricesThrowsErrorIfOnePriceIsNotANumber() {
-    prices.add("abc");
-    prices.add(String.valueOf(testProduct2.getPrice()));
-    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), prices.get(0)));
+    priceMin = "abc";
+    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), priceMin,priceMax));
   }
 
-  @Test
-  public void getProductByThreePricesThrowsError() {
-    prices.add(String.valueOf(testProduct1.getPrice()));
-    prices.add(String.valueOf(testProduct2.getPrice()));
-    prices.add("10.00");
-    String pricesString = String.join("%7C",prices);
-    assertThrows(BadRequest.class, () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), pricesString));
-  }
 
   @Test
   public void getProductByOnePrimaryColorReturnsListOfProducts() {
@@ -229,7 +224,6 @@ public class ProductServiceImplTest {
     brands.addAll(Arrays.asList(testProduct1.getBrand(), testProduct2.getBrand()));
     categories.addAll(Arrays.asList(testProduct1.getCategory(), testProduct2.getCategory()));
     demographics.addAll(Arrays.asList(testProduct1.getDemographic(), testProduct2.getDemographic()));
-    prices.addAll(Arrays.asList(String.valueOf(testProduct1.getPrice()), String.valueOf(testProduct2.getPrice())));
     primaryColors.addAll(Arrays.asList(testProduct1.getPrimaryColorCode(), testProduct2.getPrimaryColorCode()));
     materials.addAll(Arrays.asList(testProduct1.getMaterial(), testProduct2.getMaterial()));
 
@@ -237,8 +231,9 @@ public class ProductServiceImplTest {
 
     filters.put("brand", String.join("%7C",brands));
     filters.put("category",String.join("%7C",categories));
-    filters.put("price", String.join("%7C",prices));
-    filters.put("primaryColor", String.join("%7C",prices));
+    filters.put("priceMin", priceMin);
+    filters.put("priceMax", priceMax);
+    filters.put("primaryColor", String.join("%7C",primaryColors));
     filters.put("material", String.join("%7C",materials));
 
     List<Product> actual = productServiceImpl.getProductsByFilters(filters);
