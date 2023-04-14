@@ -198,7 +198,7 @@ public class ProductServiceImpl implements ProductService {
         Double min = Math.min(price1, price2);
         Double max = Math.max(price1, price2);
 
-        products.removeIf(product -> product.getPrice() < min && product.getPrice() > max);
+        products.removeIf(product -> product.getPrice() < min || product.getPrice() > max);
 
         return products;
 
