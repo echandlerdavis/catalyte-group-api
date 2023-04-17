@@ -166,11 +166,9 @@ public class ProductServiceImpl implements ProductService {
         // Create new list for brand names to allow matching without case sensitivity
         List<String> brandNames = new ArrayList<>();
 
-        System.out.println("brands = " + brands);
         // slit the brands string into an array separated by |. Then add each value in lowercase to the new names array
         Arrays.asList(brands.split("\\|")).forEach(brand -> brandNames.add(brand.toLowerCase()));
 
-        System.out.println("brandNames = " + brandNames);
         // Remove ongoing products list if product's brand does not match any brand filters
         products.removeIf(product -> !brandNames.contains(product.getBrand().toLowerCase()));
 
