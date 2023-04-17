@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = PRODUCTS_PATH)
 public class ProductController {
 
-  Logger logger = LogManager.getLogger(ProductController.class);
+    Logger logger = LogManager.getLogger(ProductController.class);
 
-  @Autowired
-  private ProductService productService;
+    @Autowired
+    private ProductService productService;
 
   /**
    * Handles a GET request to /products - returns all products in the database.
@@ -32,8 +32,8 @@ public class ProductController {
   public ResponseEntity<List<Product>> getProducts(Product product) {
     logger.info("Request received for getProducts");
 
-    return new ResponseEntity<>(productService.getProducts(product), HttpStatus.OK);
-  }
+        return new ResponseEntity<>(productService.getProducts(product), HttpStatus.OK);
+    }
 
   /**
    * Handles a GET request to /products/{id}- returns a single product based on an id defined in the path variable
