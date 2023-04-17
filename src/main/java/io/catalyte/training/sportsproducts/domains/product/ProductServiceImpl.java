@@ -10,10 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class provides the implementation for the ProductService interface.
@@ -126,30 +123,40 @@ public class ProductServiceImpl implements ProductService {
             throw new ServerError(e.getMessage());
         }
 
-        // Check if brand, category, demographic, price, primary color, and material filters were provided
-        // If so, repeatedly filter the list of products by each value given
-        if (filters.containsKey("brand")) {
-            getProductsByBrands(products, filters.get("brand"));
-        }
+        // List of all filter names currently implemented for a product
+        List<String> filterNames = new ArrayList<>();
+        filterNames.addAll(Arrays.asList("brand", "category", "demographic", "priceMin", "priceMax", "material", "primaryColor"));
 
-        if (filters.containsKey("category")) {
-            getProductsByCategories(products, filters.get("category"));
-        }
+        // For all implemented filters, check if they were provided as parameters within the filter
+        filterNames.forEach(filterName -> {
+            // If the filter name was given filter get products by its respective filter, do nothing if the filterName is not one of the cases
+            if(filters.containsKey(filterName)){
 
-        if (filters.containsKey("demographic")) {
-            getProductsByDemographics(products, filters.get("demographic"));
-        }
+                switch (filterName){
+                    case "brand":
+                        getProductsByBrands(products,filters.get(filterName));
+                        break;
+                    case "category":
+                        getProductsByCategories(products, filters.get(filterName));
+                        break;
+                    case "demographic":
+                        getProductsByDemographics(products, filters.get(filterName));
+                        break;
+                    case "primaryColor":
+                        getProductsByPrimaryColors(products, filters.get(filterName));
+                        break;
+                    case "material":
+                        getProductsByMaterials(products, filters.get(filterName));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
 
+        // Handle price min and price max filters separately since both will need to be present in order to call filter method
         if (filters.containsKey("priceMin") && filters.containsKey("priceMax")) {
             getProductsByPrice(products, filters.get("priceMin"), filters.get("priceMax"));
-        }
-
-        if (filters.containsKey("primaryColor")) {
-            getProductsByPrimaryColors(products, filters.get("primaryColor"));
-        }
-
-        if (filters.containsKey("material")) {
-            getProductsByCategories(products, filters.get("material"));
         }
 
         return products;
