@@ -110,6 +110,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Filters products by multiple attributes provided
+     *
      * @param filters the attributes to filter products by
      * @return List of products matching the filters
      */
@@ -118,37 +119,37 @@ public class ProductServiceImpl implements ProductService {
         // Get list of products
         List<Product> products;
 
-        try{
+        try {
             products = productRepository.findAll();
-        } catch (DataAccessException e ){
+        } catch (DataAccessException e) {
             logger.error(e.getMessage());
             throw new ServerError(e.getMessage());
         }
 
         // Check if brand, category, demographic, price, primary color, and material filters were provided
         // If so, repeatedly filter the list of products by each value given
-        if(filters.containsKey("brand")){
-            getProductsByBrands(products,filters.get("brand"));
+        if (filters.containsKey("brand")) {
+            getProductsByBrands(products, filters.get("brand"));
         }
 
-        if(filters.containsKey("category")){
-            getProductsByCategories(products,filters.get("category"));
+        if (filters.containsKey("category")) {
+            getProductsByCategories(products, filters.get("category"));
         }
 
-        if(filters.containsKey("demographic")){
-            getProductsByDemographics(products,filters.get("demographic"));
+        if (filters.containsKey("demographic")) {
+            getProductsByDemographics(products, filters.get("demographic"));
         }
 
-        if(filters.containsKey("priceMin") && filters.containsKey("priceMax")){
-            getProductsByPrice(products,filters.get("priceMin"), filters.get("priceMax"));
+        if (filters.containsKey("priceMin") && filters.containsKey("priceMax")) {
+            getProductsByPrice(products, filters.get("priceMin"), filters.get("priceMax"));
         }
 
-        if(filters.containsKey("primaryColor")){
-            getProductsByPrimaryColors(products,filters.get("primaryColor"));
+        if (filters.containsKey("primaryColor")) {
+            getProductsByPrimaryColors(products, filters.get("primaryColor"));
         }
 
-        if(filters.containsKey("material")){
-            getProductsByCategories(products,filters.get("material"));
+        if (filters.containsKey("material")) {
+            getProductsByCategories(products, filters.get("material"));
         }
 
         return products;
@@ -156,8 +157,9 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Helper Method filters list of products by brands
+     *
      * @param products the list of products to filter
-     * @param brands the list of brands to filter by as a string with | between each value
+     * @param brands   the list of brands to filter by as a string with | between each value
      * @return filtered list of products
      */
     public List<Product> getProductsByBrands(List<Product> products, String brands) {
@@ -174,9 +176,11 @@ public class ProductServiceImpl implements ProductService {
 
         return products;
     }
+
     /**
      * Helper Method filters list of products by categories
-     * @param products the list of products to filter
+     *
+     * @param products   the list of products to filter
      * @param categories the list of categories to filter by as a string with | between each value
      * @return filtered list of products
      */
@@ -194,7 +198,8 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Helper Method filters list of products by demographics
-     * @param products the list of products to filter
+     *
+     * @param products     the list of products to filter
      * @param demographics the list of demographics to filter by as a string with | between each value
      * @return filtered list of products
      */
@@ -213,6 +218,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Helper Method filters list of products between two prices
+     *
      * @param products the list of products to filter
      * @param priceMin the minimum price to filter by
      * @param priceMax the maximum price to filter by
@@ -241,7 +247,8 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Helper Method filters list of products by primaryColor
-     * @param products the list of products to filter
+     *
+     * @param products      the list of products to filter
      * @param primaryColors the list of primaryColors to filter by as a string with | between each value
      * @return filtered list of products
      */
@@ -259,7 +266,8 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Helper Method filters list of products by material
-     * @param products the list of products to filter
+     *
+     * @param products  the list of products to filter
      * @param materials the list of materials to filter by as a string with | between each value
      * @return filtered list of products
      */
