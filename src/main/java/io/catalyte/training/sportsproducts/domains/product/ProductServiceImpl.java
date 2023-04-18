@@ -1,5 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.product;
 
+import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
@@ -10,7 +11,15 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static io.catalyte.training.sportsproducts.domains.product.ProductFilterTypes.*;
+
 
 /**
  * This class provides the implementation for the ProductService interface.
@@ -123,40 +132,58 @@ public class ProductServiceImpl implements ProductService {
             throw new ServerError(e.getMessage());
         }
 
-        // List of all filter names currently implemented for a product
-        List<String> filterNames = new ArrayList<>();
-        filterNames.addAll(Arrays.asList("brand", "category", "demographic", "priceMin", "priceMax", "material", "primaryColor"));
+        // List of filters found and not yet implemented
+        List<String> unImplementedFilters = new ArrayList<>();
 
-        // For all implemented filters, check if they were provided as parameters within the filter
-        filterNames.forEach(filterName -> {
-            // If the filter name was given filter get products by its respective filter, do nothing if the filterName is not one of the cases
-            if(filters.containsKey(filterName)){
+        // Boolean set to if priceMin and priceMax is present in the filters
+        boolean isPriceMin = false;
+        boolean isPriceMax = false;
 
-                switch (filterName){
-                    case "brand":
-                        getProductsByBrands(products,filters.get(filterName));
-                        break;
-                    case "category":
-                        getProductsByCategories(products, filters.get(filterName));
-                        break;
-                    case "demographic":
-                        getProductsByDemographics(products, filters.get(filterName));
-                        break;
-                    case "primaryColor":
-                        getProductsByPrimaryColors(products, filters.get(filterName));
-                        break;
-                    case "material":
-                        getProductsByMaterials(products, filters.get(filterName));
-                        break;
-                    default:
-                        break;
-                }
+        ProductFilterTypes filterName = null;
+
+        // For each filter key filter the list of products with their respective method or gather a list of filter keys that were not implemented
+        for (String filter : filters.keySet()) {
+            try {
+                filterName = valueOf(filter);
+            } catch (IllegalArgumentException e) {
+                unImplementedFilters.add(filter);
             }
-        });
+            switch (filterName) {
+                case brand:
+                    getProductsByBrands(products, filters.get(filter));
+                    break;
+                case category:
+                    getProductsByCategories(products, filters.get(filter));
+                    break;
+                case demographic:
+                    getProductsByDemographics(products, filters.get(filter));
+                    break;
+                case primaryColor:
+                    getProductsByPrimaryColors(products, filters.get(filter));
+                    break;
+                case material:
+                    getProductsByMaterials(products, filters.get(filter));
+                    break;
+                case priceMin:
+                    isPriceMin = true;
+                    break;
+                case priceMax:
+                    isPriceMax = true;
+                    break;
+                default:
+                    unImplementedFilters.add(filter);
+                    break;
+            }
+        }
 
         // Handle price min and price max filters separately since both will need to be present in order to call filter method
-        if (filters.containsKey("priceMin") && filters.containsKey("priceMax")) {
+        if (isPriceMin && isPriceMax) {
             getProductsByPrice(products, filters.get("priceMin"), filters.get("priceMax"));
+        }
+
+        // Log all filters that are not implemented
+        if(!unImplementedFilters.isEmpty()){
+            logger.info(StringConstants.UNIMPLEMENTED_FILTERS + unImplementedFilters);
         }
 
         return products;
