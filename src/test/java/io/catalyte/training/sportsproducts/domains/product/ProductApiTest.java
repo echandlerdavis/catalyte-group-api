@@ -233,13 +233,14 @@ public class ProductApiTest {
     @Test
     public void getProductsByFilterQueryParamsWithOnlyPriceMinReturnsListOfProductsWith200() throws Exception {
 
-        mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + priceMin))
+        mockMvc.perform(get(PRODUCTS_PATH + "/filter?priceMin=" + priceMin))
                 .andExpect(status().isOk());
     }
 
+    @Test
     public void getProductsByFilterQueryParamsWithOnlyPriceMaxReturnsListOfProducts200() throws Exception {
 
-        mockMvc.perform(get(PRODUCTS_PATH + "/filter?price=" + priceMax))
+        mockMvc.perform(get(PRODUCTS_PATH + "/filter?priceMax=" + priceMax))
                 .andExpect(status().isOk());
     }
 
