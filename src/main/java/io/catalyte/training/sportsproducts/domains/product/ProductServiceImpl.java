@@ -118,7 +118,6 @@ public class ProductServiceImpl implements ProductService {
      * @param filters the attributes to filter products by
      * @return List of products matching the filters
      */
-    @Override
     public List<Product> getProductsByFilters(HashMap<String, String> filters) {
         // Get list of products
         List<Product> products;
