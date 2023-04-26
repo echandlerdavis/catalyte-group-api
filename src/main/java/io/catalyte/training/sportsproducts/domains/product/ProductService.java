@@ -16,6 +16,12 @@ public interface ProductService {
 
   List<String> getDistinctCategories();
 
+  List<String> getDistinctBrands();
+
+  List<String> getDistinctMaterials();
+
+  List<String> getDistinctDemographics();
+
   List<Product> addProducts(List<Product> products);
 
   List<Product> getProductsByFilters(HashMap<String, String> filters);

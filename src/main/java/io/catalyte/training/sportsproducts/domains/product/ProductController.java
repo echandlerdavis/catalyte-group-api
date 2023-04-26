@@ -76,6 +76,42 @@ public class ProductController {
 
   /**
    *
+   * Handles a GET request to /categories- returns all unique values of category
+   * @return unique category values
+   */
+  @GetMapping(value = "/brands")
+  @ResponseStatus(value = HttpStatus.OK)
+  public ResponseEntity<List> getDistinctBrands(){
+    logger.info("Request received for getDistinctBrands");
+    return new ResponseEntity<>(productService.getDistinctBrands(), HttpStatus.OK);
+  }
+
+  /**
+   *
+   * Handles a GET request to /categories- returns all unique values of category
+   * @return unique category values
+   */
+  @GetMapping(value = "/materials")
+  @ResponseStatus(value = HttpStatus.OK)
+  public ResponseEntity<List> getDistinctMaterials(){
+    logger.info("Request received for getDistinctMaterials");
+    return new ResponseEntity<>(productService.getDistinctMaterials(), HttpStatus.OK);
+  }
+
+  /**
+   *
+   * Handles a GET request to /categories- returns all unique values of category
+   * @return unique category values
+   */
+  @GetMapping(value = "/demographics")
+  @ResponseStatus(value = HttpStatus.OK)
+  public ResponseEntity<List> getDistinctDemographics(){
+    logger.info("Request received for getDistinctDemographics");
+    return new ResponseEntity<>(productService.getDistinctDemographics(), HttpStatus.OK);
+  }
+
+  /**
+   *
    * Handles a POST request to /products. This creates a new product object that gets saved to the database.
    * @param products - list of product object(s)
    * @return product(s) added to database

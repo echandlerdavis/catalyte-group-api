@@ -98,6 +98,42 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * @return a list of unique Brands in the database
+     */
+    public List<String> getDistinctBrands() {
+        try {
+            return productRepository.findDistinctBrands();
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            throw new ServerError(e.getMessage());
+        }
+    }
+
+    /**
+     * @return a list of unique Materials in the database
+     */
+    public List<String> getDistinctMaterials() {
+        try {
+            return productRepository.findDistinctMaterials();
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            throw new ServerError(e.getMessage());
+        }
+    }
+
+    /**
+     * @return a list of unique Demographics in the database
+     */
+    public List<String> getDistinctDemographics() {
+        try {
+            return productRepository.findDistinctDemographics();
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            throw new ServerError(e.getMessage());
+        }
+    }
+
+    /**
      * Adds a product to the database
      *
      * @param products - list of product objects

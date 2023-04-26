@@ -99,6 +99,24 @@ public class ProductApiTest {
     }
 
     @Test
+    public void getDistinctBrandsReturnsWith200() throws Exception {
+        mockMvc.perform(get(PRODUCTS_PATH + "/brands"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getDistinctMaterialsReturnsWith200() throws Exception {
+        mockMvc.perform(get(PRODUCTS_PATH + "/materials"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getDistinctDemographicsReturnsWith200() throws Exception {
+        mockMvc.perform(get(PRODUCTS_PATH + "/demographics"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void getDistinctCategoriesReturnsWith200() throws Exception {
         mockMvc.perform(get(PRODUCTS_PATH + "/categories"))
                 .andExpect(status().isOk());
@@ -109,43 +127,73 @@ public class ProductApiTest {
 
         //GET categories and check if it is returning each unique type, only once.
         mockMvc.perform(get(PRODUCTS_PATH + "/types"))
-                .andExpect(ResultMatcher.matchAll(jsonPath("$", Matchers.containsInAnyOrder(
-                        "Pant",
-                        "Short",
-                        "Shoe",
-                        "Glove",
-                        "Jacket",
-                        "Tank Top",
-                        "Sock",
-                        "Sunglasses",
-                        "Hat",
-                        "Helmet",
-                        "Belt",
-                        "Visor",
-                        "Shin Guard",
-                        "Elbow Pad",
-                        "Headband",
-                        "Wristband",
-                        "Hoodie",
-                        "Flip Flop",
-                        "Pool Noodle"))));
+                .andExpect(jsonPath("$", hasItem("Pant")))
+                .andExpect(jsonPath("$", hasItem("Short")))
+                .andExpect(jsonPath("$", hasItem("Shoe")))
+                .andExpect(jsonPath("$", hasItem("Glove")))
+                .andExpect(jsonPath("$", hasItem("Tank Top")))
+                .andExpect(jsonPath("$", hasItem("Jacket")))
+                .andExpect(jsonPath("$", hasItem("Sock")))
+                .andExpect(jsonPath("$", hasItem("Sunglasses")))
+                .andExpect(jsonPath("$", hasItem("Hat")))
+                .andExpect(jsonPath("$", hasItem("Helmet")))
+                .andExpect(jsonPath("$", hasItem("Belt")))
+                .andExpect(jsonPath("$", hasItem("Visor")))
+                .andExpect(jsonPath("$", hasItem("Shin Guard")))
+                .andExpect(jsonPath("$", hasItem("Elbow Pad")))
+                .andExpect(jsonPath("$", hasItem("Headband")))
+                .andExpect(jsonPath("$", hasItem("Wristband")))
+                .andExpect(jsonPath("$", hasItem("Hoodie")))
+                .andExpect(jsonPath("$", hasItem("Flip Flop")))
+                .andExpect(jsonPath("$", hasItem("Pool Noodle")));
     }
 
     @Test
     public void getDistinctCategoriesReturnsAllAndOnlyUniqueCategories() throws Exception {
 
+        //GET categories and check if it is returning each unique category, only once.
+        mockMvc.perform(get(PRODUCTS_PATH + "/categories"))
+                .andExpect(jsonPath("$", hasItem("Golf")))
+                .andExpect(jsonPath("$", hasItem("Soccer")))
+                .andExpect(jsonPath("$", hasItem("Basketball")))
+                .andExpect(jsonPath("$", hasItem("Hockey")))
+                .andExpect(jsonPath("$", hasItem("Football")))
+                .andExpect(jsonPath("$", hasItem("Running")))
+                .andExpect(jsonPath("$", hasItem("Baseball")))
+                .andExpect(jsonPath("$", hasItem("Skateboarding")))
+                .andExpect(jsonPath("$", hasItem("Boxing")))
+                .andExpect(jsonPath("$", hasItem("Weightlifting")));
+    }
+
+    @Test
+    public void getDistinctBrandsReturnsAllAndOnlyUniqueBrands() throws Exception {
 
         //GET categories and check if it is returning each unique category, only once.
-        mockMvc.perform(get(PRODUCTS_PATH + "/categories")).andExpect(ResultMatcher.matchAll(jsonPath("$", Matchers.containsInAnyOrder("Golf",
-                "Soccer",
-                "Basketball",
-                "Hockey",
-                "Football",
-                "Running",
-                "Baseball",
-                "Skateboarding",
-                "Boxing",
-                "Weightlifting"))));
+        mockMvc.perform(get(PRODUCTS_PATH + "/brands"))
+                .andExpect(jsonPath("$", hasItem("Nike")))
+                .andExpect(jsonPath("$", hasItem("Champion")))
+                .andExpect(jsonPath("$", hasItem("New Balance")))
+                .andExpect(jsonPath("$", hasItem("Puma")));
+    }
+
+    @Test
+    public void getDistinctDemographicsReturnsAllAndOnlyUniqueDemographics() throws Exception {
+
+        //GET categories and check if it is returning each unique category, only once.
+        mockMvc.perform(get(PRODUCTS_PATH + "/demographics"))
+                .andExpect(jsonPath("$", hasItem("Men")))
+                .andExpect(jsonPath("$", hasItem("Women")))
+                .andExpect(jsonPath("$", hasItem("Kids")));
+    }
+
+    @Test
+    public void getDistinctMaterialsReturnsAllAndOnlyUniqueMaterials() throws Exception {
+
+        //GET categories and check if it is returning each unique category, only once.
+        mockMvc.perform(get(PRODUCTS_PATH + "/materials"))
+                .andExpect(jsonPath("$", hasItem("Cotton")))
+                .andExpect(jsonPath("$", hasItem("Polyester")))
+                .andExpect(jsonPath("$", hasItem("Nylon")));
     }
 
 
