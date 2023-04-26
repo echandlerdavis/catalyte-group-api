@@ -100,7 +100,7 @@ public class ProductController {
 
   /**
    *
-   * Handles a GET request to /categories- returns all unique values of category
+   * Handles a GET request to /demographics- returns all unique values of category
    * @return unique category values
    */
   @GetMapping(value = "/demographics")
@@ -108,6 +108,30 @@ public class ProductController {
   public ResponseEntity<List> getDistinctDemographics(){
     logger.info("Request received for getDistinctDemographics");
     return new ResponseEntity<>(productService.getDistinctDemographics(), HttpStatus.OK);
+  }
+
+  /**
+   *
+   * Handles a GET request to /primarycolors- returns all unique values of category
+   * @return unique category values
+   */
+  @GetMapping(value = "/primarycolors")
+  @ResponseStatus(value = HttpStatus.OK)
+  public ResponseEntity<List> getDistinctPrimaryColors(){
+    logger.info("Request received for getDistinctPrimaryColors");
+    return new ResponseEntity<>(productService.getDistinctPrimaryColors(), HttpStatus.OK);
+  }
+
+  /**
+   *
+   * Handles a GET request to /secondarycolors- returns all unique values of category
+   * @return unique category values
+   */
+  @GetMapping(value = "/secondarycolors")
+  @ResponseStatus(value = HttpStatus.OK)
+  public ResponseEntity<List> getDistinctSecondaryColors(){
+    logger.info("Request received for getDistinctSecondaryColors");
+    return new ResponseEntity<>(productService.getDistinctSecondaryColors(), HttpStatus.OK);
   }
 
   /**

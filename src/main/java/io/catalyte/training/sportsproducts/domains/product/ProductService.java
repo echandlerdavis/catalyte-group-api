@@ -22,6 +22,10 @@ public interface ProductService {
 
   List<String> getDistinctDemographics();
 
+  List<String> getDistinctPrimaryColors();
+
+  List<String> getDistinctSecondaryColors();
+
   List<Product> addProducts(List<Product> products);
 
   List<Product> getProductsByFilters(HashMap<String, String> filters);

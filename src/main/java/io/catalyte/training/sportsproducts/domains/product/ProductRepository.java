@@ -20,4 +20,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = "SELECT DISTINCT p.demographic FROM product p", nativeQuery = true)
     List<String> findDistinctDemographics();
+
+    @Query(value = "SELECT DISTINCT p.primary_color_code FROM product p", nativeQuery = true)
+    List<String> findDistinctPrimaryColors();
+
+    @Query(value = "SELECT DISTINCT p.secondary_color_code FROM product p", nativeQuery = true)
+    List<String> findDistinctSecondaryColors();
 }

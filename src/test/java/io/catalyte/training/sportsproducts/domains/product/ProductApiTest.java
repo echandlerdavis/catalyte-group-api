@@ -122,10 +122,24 @@ public class ProductApiTest {
                 .andExpect(status().isOk());
     }
 
+
+    @Test
+    public void getDistinctPrimaryColorsReturnsWith200() throws Exception {
+        mockMvc.perform(get(PRODUCTS_PATH + "/primarycolors"))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void getDistinctSecondaryColorsReturnsWith200() throws Exception {
+        mockMvc.perform(get(PRODUCTS_PATH + "/secondarycolors"))
+                .andExpect(status().isOk());
+    }
+
     @Test
     public void getDistinctTypesReturnsAllAndOnlyUniqueTypes() throws Exception {
 
-        //GET categories and check if it is returning each unique type, only once.
+        //GET types and check if it is returning each unique type, only once.
         mockMvc.perform(get(PRODUCTS_PATH + "/types"))
                 .andExpect(jsonPath("$", hasItem("Pant")))
                 .andExpect(jsonPath("$", hasItem("Short")))
@@ -168,7 +182,7 @@ public class ProductApiTest {
     @Test
     public void getDistinctBrandsReturnsAllAndOnlyUniqueBrands() throws Exception {
 
-        //GET categories and check if it is returning each unique category, only once.
+        //GET brands and check if it is returning each unique brand, only once.
         mockMvc.perform(get(PRODUCTS_PATH + "/brands"))
                 .andExpect(jsonPath("$", hasItem("Nike")))
                 .andExpect(jsonPath("$", hasItem("Champion")))
@@ -179,7 +193,7 @@ public class ProductApiTest {
     @Test
     public void getDistinctDemographicsReturnsAllAndOnlyUniqueDemographics() throws Exception {
 
-        //GET categories and check if it is returning each unique category, only once.
+        //GET demographics and check if it is returning each unique demographics, only once.
         mockMvc.perform(get(PRODUCTS_PATH + "/demographics"))
                 .andExpect(jsonPath("$", hasItem("Men")))
                 .andExpect(jsonPath("$", hasItem("Women")))
@@ -189,11 +203,29 @@ public class ProductApiTest {
     @Test
     public void getDistinctMaterialsReturnsAllAndOnlyUniqueMaterials() throws Exception {
 
-        //GET categories and check if it is returning each unique category, only once.
+        //GET materials and check if it is returning each unique materials, only once.
         mockMvc.perform(get(PRODUCTS_PATH + "/materials"))
                 .andExpect(jsonPath("$", hasItem("Cotton")))
                 .andExpect(jsonPath("$", hasItem("Polyester")))
                 .andExpect(jsonPath("$", hasItem("Nylon")));
+    }
+
+    @Test
+    public void getDistinctPrimaryColorsReturnsAllAndOnlyUniquePrimaryColors() throws Exception {
+
+        //GET primary colors and check if it is returning each unique primary colors, only once.
+        mockMvc.perform(get(PRODUCTS_PATH + "/primarycolors"))
+                .andExpect(jsonPath("$", hasItem("#000000")))
+                .andExpect(jsonPath("$", hasItem("#ffffff")));
+    }
+
+    @Test
+    public void getDistinctBrandsReturnsAllAndOnlyUniqueSecondaryColors() throws Exception {
+
+        //GET secondary colros and check if it is returning each unique secondary colors, only once.
+        mockMvc.perform(get(PRODUCTS_PATH + "/secondarycolors"))
+                .andExpect(jsonPath("$", hasItem("#000000")))
+                .andExpect(jsonPath("$", hasItem("#3079ab")));
     }
 
 

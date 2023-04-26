@@ -134,6 +134,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * @return a list of unique Primary Colors in the database
+     */
+    public List<String> getDistinctPrimaryColors() {
+        try {
+            return productRepository.findDistinctPrimaryColors();
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            throw new ServerError(e.getMessage());
+        }
+    }
+
+    /**
+     * @return a list of unique Primary Colors in the database
+     */
+    public List<String> getDistinctSecondaryColors() {
+        try {
+            return productRepository.findDistinctSecondaryColors();
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            throw new ServerError(e.getMessage());
+        }
+    }
+
+    /**
      * Adds a product to the database
      *
      * @param products - list of product objects
