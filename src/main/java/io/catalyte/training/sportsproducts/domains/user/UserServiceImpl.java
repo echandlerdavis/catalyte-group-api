@@ -5,6 +5,7 @@ import static io.catalyte.training.sportsproducts.constants.Roles.CUSTOMER;
 import io.catalyte.training.sportsproducts.auth.GoogleAuthService;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
+import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +122,11 @@ public class UserServiceImpl implements UserService {
     // if (user.getRole() == null) {
     user.setRole(CUSTOMER);
     // }
+
+    // Set lastActive
+    if (user.getLastActive() == null){
+      user.setLastActive(new Date());
+    }
 
     // SAVE USER
     try {
