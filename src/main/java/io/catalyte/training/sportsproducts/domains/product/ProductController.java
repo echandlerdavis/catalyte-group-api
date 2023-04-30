@@ -137,14 +137,14 @@ public class ProductController {
   /**
    *
    * Handles a POST request to /products. This creates a new product object that gets saved to the database.
-   * @param products - list of product object(s)
+   * @param product - product object
    * @return product(s) added to database
    */
   @PostMapping
   @ResponseStatus(value = HttpStatus.OK)
-  public ResponseEntity<List> postProduct(@RequestBody List<Product> products){
-    productService.addProducts(products);
-    return new ResponseEntity<>(productService.addProducts(products), HttpStatus.CREATED);
+  public ResponseEntity<Product> postProduct(@RequestBody Product product){
+    logger.info("Request recieved for postProduct");
+    return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
   }
 
   /**

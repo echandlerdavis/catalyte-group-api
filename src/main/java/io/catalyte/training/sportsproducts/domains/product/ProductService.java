@@ -28,5 +28,7 @@ public interface ProductService {
 
   List<Product> addProducts(List<Product> products);
 
+  Product saveProduct(Product product);
+
   List<Product> getProductsByFilters(HashMap<String, String> filters);
 }

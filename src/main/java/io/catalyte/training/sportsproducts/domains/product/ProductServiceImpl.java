@@ -173,6 +173,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * Adds a product to the database
+     *
+     * @param product - list of product objects
+     * @return list of product objects that are added to database
+     */
+    public Product saveProduct(Product product) {
+        try {
+            return productRepository.save(product);
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            throw new ServerError(e.getMessage());
+        }
+    }
+
+    /**
      * Filters products by multiple attributes provided
      *
      * @param filters the attributes to filter products by
