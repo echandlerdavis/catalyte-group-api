@@ -85,6 +85,10 @@ public class UserServiceImpl implements UserService {
 
   }
 
+  public Date updateLastActive(String bearerToken, Long id){
+    return null;
+  }
+
   /**
    * Creates user in the database, given email is not null and not taken
    *
