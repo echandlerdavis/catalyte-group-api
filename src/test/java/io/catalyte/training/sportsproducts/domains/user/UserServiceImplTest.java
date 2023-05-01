@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -9,6 +10,8 @@ import io.catalyte.training.sportsproducts.auth.GoogleAuthService;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.util.Date;
+import java.util.Optional;
+import javax.swing.text.html.Option;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,13 +34,13 @@ public class UserServiceImplTest {
   @Mock
   private GoogleAuthService googleAuthService;
 
-  User testUser;
-  String firstName;
-  String lastName;
-  String email;
-  String role;
-  Long id;
-  Date lastActive;
+  private User testUser;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String role;
+  private Long id;
+  private Date lastActive;
 
   @Before
   public void setUp() {
@@ -68,6 +71,9 @@ public class UserServiceImplTest {
 
       return copyUser;
     });
+
+    //userRepo.getById mock
+    when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
   }
   public void setUserData(User emptyUser, Long id, String firstName, String lastName, String email, String role, Date lastActive){
     emptyUser.setId(id);
@@ -80,19 +86,19 @@ public class UserServiceImplTest {
 
   @Test
   public void updateLastActiveSetsNewerTimeTest() {
-    User updated = userService.updateLastActive(testUser.getEmail(), testUser);
+    User updated = userService.updateLastActive(testUser.getEmail(), testUser.getId());
     assertTrue(updated.getLastActive().after(lastActive));
   }
   @Test(expected = ResponseStatusException.class)
   public void updateLastActiveAuthenticationFailureThrowsResponseStatusExceptionTest() {
     when(googleAuthService.authenticateUser(anyString(), any(User.class))).thenReturn(false);
-    User updated = userService.updateLastActive(testUser.getEmail(), testUser);
+    User updated = userService.updateLastActive(testUser.getEmail(), testUser.getId());
     assertTrue(false); //this shouldn't run
   }
   @Test(expected = ServerError.class)
   public void updateLastActiveAuthenticationFailureThrowsServerErrorTest() {
     when(userRepository.save(any(User.class))).thenThrow(new DataAccessResourceFailureException("Server down"));
-    User updated = userService.updateLastActive(testUser.getEmail(), testUser);
+    User updated = userService.updateLastActive(testUser.getEmail(), testUser.getId());
     assertTrue(false); //this shouldn't run
   }
 

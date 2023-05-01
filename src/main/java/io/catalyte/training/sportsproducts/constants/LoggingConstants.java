@@ -15,6 +15,8 @@ public class LoggingConstants {
   public static final String EMAIL_NULL = "User must have an email";
   public static final String EMAIL_TAKEN = "Email is unavailable";
   public static final String NO_USER_WITH_EMAIL_FORMAT = "User with email %s does not exist";
+  public static final String UPDATE_USER_REQUEST = "Request received for updateUser";
+  public static final String UPDATE_LAST_ACTIVE = "Request received to update last active time";
 
 
 }
