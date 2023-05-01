@@ -85,8 +85,26 @@ public class UserServiceImpl implements UserService {
 
   }
 
-  public Date updateLastActive(String bearerToken, Long id){
-    return null;
+  public Date updateLastActive(String bearerToken, User user){
+    // AUTHENTICATES USER - SAME EMAIL, SAME PERSON
+    boolean isAuthenticated = googleAuthService.authenticateUser(bearerToken, user);
+
+    if (!isAuthenticated) {
+      logger.error("Email in the request body does not match email from JWT");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "Email in the request body does not match email from JWT Token");
+    }
+
+    user.setLastActive(new Date());
+    try {
+      logger.info("Saved user to");
+      userRepository.save(user);
+    } catch (DataAccessException dae) {
+      logger.error(dae.getMessage());
+      throw new ServerError(dae.getMessage());
+    }
+
+    return user.getLastActive();
   }
 
   /**
