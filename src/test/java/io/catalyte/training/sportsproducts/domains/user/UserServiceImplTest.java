@@ -75,8 +75,8 @@ public class UserServiceImplTest {
 
   @Test
   public void updateLastActiveSetsNewerTimeTest() {
-    Date updatedTime = userService.updateLastActive(testUser.getEmail(), testUser);
-    assertTrue(updatedTime.after(lastActive));
+    User updated = userService.updateLastActive(testUser.getEmail(), testUser);
+    assertTrue(updated.getLastActive().after(lastActive));
   }
 
 }
