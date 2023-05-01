@@ -14,6 +14,7 @@ public class LoggingConstants {
   public static final String SAVED_USER = "Saved user";
   public static final String EMAIL_NULL = "User must have an email";
   public static final String EMAIL_TAKEN = "Email is unavailable";
+  public static final String NO_USER_WITH_EMAIL_FORMAT = "User with email %s does not exist";
 
 
 }

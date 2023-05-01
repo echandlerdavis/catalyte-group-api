@@ -4,6 +4,7 @@ import static io.catalyte.training.sportsproducts.constants.LoggingConstants.EMA
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.EMAIL_TAKEN;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.GOOGLE_AUTHENTICATION_FAILURE;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.NO_EXISTING_USER_FORMAT;
+import static io.catalyte.training.sportsproducts.constants.LoggingConstants.NO_USER_WITH_EMAIL_FORMAT;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.UPDATED_LAST_ACTIVE_FORMAT;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.UPDATED_USER_FORMAT;
 import static io.catalyte.training.sportsproducts.constants.Roles.CUSTOMER;
@@ -13,7 +14,6 @@ import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import io.catalyte.training.sportsproducts.constants.LoggingConstants;
 import java.util.Date;
-import jdk.jpackage.internal.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class UserServiceImpl implements UserService {
 
-  private final Logger logger = LogManager.getLogger(UserController.class);
+  private final Logger logger = LogManager.getLogger(UserServiceImpl.class);
   private final UserRepository userRepository;
   private final GoogleAuthService googleAuthService;
 
@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
     }
 
     if (user == null) {
-      throw new ResourceNotFound("User with email " + email + " does not exist.");
+      throw new ResourceNotFound(String.format(NO_USER_WITH_EMAIL_FORMAT, email));
     }
 
     return user;

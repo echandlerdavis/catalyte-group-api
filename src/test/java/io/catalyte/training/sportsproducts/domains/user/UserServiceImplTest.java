@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import io.catalyte.training.sportsproducts.auth.GoogleAuthService;
+import io.catalyte.training.sportsproducts.exceptions.BadRequest;
+import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.web.server.ResponseStatusException;
 
 @RunWith(MockitoJUnitRunner.class)
 @WebMvcTest(UserServiceImpl.class)
@@ -77,6 +82,18 @@ public class UserServiceImplTest {
   public void updateLastActiveSetsNewerTimeTest() {
     User updated = userService.updateLastActive(testUser.getEmail(), testUser);
     assertTrue(updated.getLastActive().after(lastActive));
+  }
+  @Test(expected = ResponseStatusException.class)
+  public void updateLastActiveAuthenticationFailureThrowsResponseStatusExceptionTest() {
+    when(googleAuthService.authenticateUser(anyString(), any(User.class))).thenReturn(false);
+    User updated = userService.updateLastActive(testUser.getEmail(), testUser);
+    assertTrue(false); //this shouldn't run
+  }
+  @Test(expected = ServerError.class)
+  public void updateLastActiveAuthenticationFailureThrowsServerErrorTest() {
+    when(userRepository.save(any(User.class))).thenThrow(new DataAccessResourceFailureException("Server down"));
+    User updated = userService.updateLastActive(testUser.getEmail(), testUser);
+    assertTrue(false); //this shouldn't run
   }
 
 }
