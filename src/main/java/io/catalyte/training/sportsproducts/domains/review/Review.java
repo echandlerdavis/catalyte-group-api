@@ -8,7 +8,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
-
+//TODO: Figure out if this should just be connected to the Products and therefore I don't need all this mess.
 public class Review {
   private String title;
   private int rating;

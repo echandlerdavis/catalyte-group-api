@@ -1,5 +1,9 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
-public interface ReviewRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
+public interface ReviewRepository extends JpaRepository<Review, Long> {
+  Review findByUserId(Long userId);
 }
