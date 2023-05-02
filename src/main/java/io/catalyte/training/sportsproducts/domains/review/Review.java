@@ -9,11 +9,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Id;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 
 //TODO: Figure out if this should just be connected to the Products and therefore I don't need all this mess.
 @Entity
+@Table(name = "reviews")
 public class Review {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +26,10 @@ public class Review {
   @CreatedDate
   private Instant createdAt;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "userId")
+  @JoinColumn(name = "user_id")
   private User user;
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "productId")
+  @JoinColumn(name = "product_id")
   private Product product;
   public Review(){
 

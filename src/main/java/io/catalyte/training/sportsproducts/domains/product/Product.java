@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.product;
 
 import io.catalyte.training.sportsproducts.domains.review.Review;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -65,7 +66,7 @@ public class Product {
       String type, String releaseDate,
       String brand,String imageSrc, String material,
       Integer quantity, Double price, Boolean active, String globalProductCode,
-      String styleNumber, String secondaryColorCode, String primaryColorCode) {
+      String styleNumber, String secondaryColorCode, String primaryColorCode, Set<Review> reviews) {
     this.name = name;
     this.description = description;
     this.demographic = demographic;
@@ -82,6 +83,7 @@ public class Product {
     this.styleNumber = styleNumber;
     this.secondaryColorCode = secondaryColorCode;
     this.primaryColorCode = primaryColorCode;
+    this.reviews = reviews;
   }
 
   public Long getId() {

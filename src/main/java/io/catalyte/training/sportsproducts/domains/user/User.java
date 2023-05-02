@@ -20,7 +20,7 @@ public class User {
   String role;
   String firstName;
   String lastName;
-  @OneToMany(mappedBy = "users")
+  @OneToMany(mappedBy = "user")
   @OnDelete(action = OnDeleteAction.CASCADE)
   Set<Review> reviewsWritten;
 
