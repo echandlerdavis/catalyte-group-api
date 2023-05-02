@@ -1,5 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.user.User;
 import java.time.Instant;
@@ -30,6 +31,7 @@ public class Review {
   private User user;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id")
+  @JsonIgnore
   private Product product;
   public Review(){
 

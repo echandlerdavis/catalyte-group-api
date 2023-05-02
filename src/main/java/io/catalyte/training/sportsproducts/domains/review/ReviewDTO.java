@@ -19,15 +19,17 @@ public class ReviewDTO {
   private String review;
   private Instant createdAt;
   private User user;
+  private Product product;
 //  private Long id;
   public ReviewDTO(){};
 
-  public ReviewDTO(String title, int rating, String review, Instant createdAt, User user) {
+  public ReviewDTO(String title, int rating, String review, Instant createdAt, User user, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
     this.user = user;
+    this.product = product;
   }
 
   public String getTitle() {
@@ -70,7 +72,14 @@ public class ReviewDTO {
     this.user = user;
   }
 
-//  public Long getId() {
+  public Product getProduct() {
+    return product;
+  }
+
+  public void setProduct(Product product) {
+    this.product = product;
+  }
+  //  public Long getId() {
 //    return id;
 //  }
 //

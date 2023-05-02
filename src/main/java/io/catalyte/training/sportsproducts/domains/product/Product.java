@@ -218,6 +218,14 @@ public class Product {
     this.price = price;
   }
 
+  public Set<Review> getReviews() {
+    return reviews;
+  }
+
+  public void setReviews(Set<Review> reviews) {
+    this.reviews = reviews;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -337,6 +345,7 @@ public class Product {
         ", material'" + material + '\'' +
         ", price'" + price + '\'' +
       ", quantity'" + quantity + '\'' +
+            ", reviews'" + reviews + '\''+
         '}';
   }
 }
