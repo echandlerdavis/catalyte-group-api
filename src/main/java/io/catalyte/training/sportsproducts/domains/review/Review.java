@@ -1,37 +1,44 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
+import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.user.User;
 import java.time.Instant;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import org.springframework.data.annotation.CreatedBy;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
 //TODO: Figure out if this should just be connected to the Products and therefore I don't need all this mess.
+@Entity
 public class Review {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
   private String title;
   private int rating;
   private String review;
   @CreatedDate
   private Instant createdAt;
-  @CreatedBy
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "userId")
   private User user;
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "productId")
+  private Product product;
   public Review(){
 
   }
-  public Review(String title, int rating, String review, Instant createdAt, User user, Long id) {
+  public Review(String title, int rating, String review, Instant createdAt, User user, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
     this.user = user;
-    this.id = id;
+    this.product = product;
   }
 
   public String getTitle() {
@@ -79,5 +86,13 @@ public class Review {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Product getProduct() {
+    return product;
+  }
+
+  public void setProduct(Product product) {
+    this.product = product;
   }
 }

@@ -1,5 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
+import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.user.User;
 import java.time.Instant;
 import javax.validation.constraints.Max;
@@ -18,16 +19,15 @@ public class ReviewDTO {
   private String review;
   private Instant createdAt;
   private User user;
-  private Long id;
+//  private Long id;
   public ReviewDTO(){};
 
-  public ReviewDTO(String title, int rating, String review, Instant createdAt, User user, Long id) {
+  public ReviewDTO(String title, int rating, String review, Instant createdAt, User user) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
     this.user = user;
-    this.id = id;
   }
 
   public String getTitle() {
@@ -70,11 +70,11 @@ public class ReviewDTO {
     this.user = user;
   }
 
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
+//  public Long getId() {
+//    return id;
+//  }
+//
+//  public void setId(Long id) {
+//    this.id = id;
+//  }
 }

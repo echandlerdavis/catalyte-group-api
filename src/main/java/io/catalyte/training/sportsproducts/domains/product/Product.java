@@ -1,9 +1,15 @@
 package io.catalyte.training.sportsproducts.domains.product;
 
+import io.catalyte.training.sportsproducts.domains.review.Review;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * This class is a representation of a sports apparel product.
@@ -46,6 +52,10 @@ public class Product {
   private String globalProductCode;
 
   private Boolean active;
+
+  @OneToMany(mappedBy = "product")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Set<Review> reviews;
 
   public Product() {
   }

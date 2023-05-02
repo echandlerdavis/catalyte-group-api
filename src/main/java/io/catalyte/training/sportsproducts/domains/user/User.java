@@ -1,6 +1,10 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
+import io.catalyte.training.sportsproducts.domains.review.Review;
+import java.util.Set;
 import javax.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * User entity in database
@@ -16,6 +20,9 @@ public class User {
   String role;
   String firstName;
   String lastName;
+  @OneToMany(mappedBy = "users")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  Set<Review> reviewsWritten;
 
   public User() {}
 

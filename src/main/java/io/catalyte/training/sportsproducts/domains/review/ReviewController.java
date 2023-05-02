@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +24,13 @@ public class ReviewController {
   @Autowired
   private ReviewService reviewService;
 
-  @GetMapping(value = "/reviews")
-  public ResponseEntity<List<Review>> getAllReviews(){
+  @GetMapping(value = "products/{productId}/reviews")
+  public ResponseEntity<List<Review>> getAllReviewsByProductId(@PathVariable(value = "productId") Long productId){
     logger.info("Request received for getAllReviews");
-    return new ResponseEntity<>(reviewService.getAllReviews(), HttpStatus.OK);
+    return new ResponseEntity<>(reviewService.getAllReviewsByProductId(productId), HttpStatus.OK);
   }
 
-  @PostMapping
+  @PostMapping(value = "products/{productId}/reviews")
   @ResponseStatus(value = HttpStatus.OK)
   public ResponseEntity<Review> postReview(@Valid @RequestBody ReviewDTO reviewDTO){
     logger.info("Request received for postReview");
