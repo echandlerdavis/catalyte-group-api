@@ -137,22 +137,6 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
            throw new ServerError(e.getMessage());
        }
     }
-
-    /**
-     * Validate that the given code exists and is applicable
-     * @param title String code of the code being used
-     * @return boolean
-     */
-    @Override
-    public String verifyCode(String title) {
-        logger.info(String.format("Validating code %s", title));
-        if (getPromotionalCodeByTitle(title) == null) {
-            logger.info(String.format("Promotional code %s does not exist", title));
-            return StringConstants.INVALID_CODE;
-        }
-        return "";
-    }
-
     /**
      * Applies the given promotional code to the given price and returns the discounted price.
      *

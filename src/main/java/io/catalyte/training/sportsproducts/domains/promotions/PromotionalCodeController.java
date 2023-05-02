@@ -1,7 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import io.catalyte.training.sportsproducts.constants.Paths;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import java.math.BigDecimal;
  * related to promotional codes.
  */
 @RestController
-@RequestMapping(value = "promotionalCodes")
+@RequestMapping(value = Paths.PROMOCODE_PATH)
 public class PromotionalCodeController {
 
     private final PromotionalCodeService promotionalCodeService;
@@ -67,10 +67,10 @@ public class PromotionalCodeController {
      * @param title Title of the desired code
      * @return String - will be an error notification it the code is not valid, or "" if it is valid
      */
-    @GetMapping(value = "/title/{title}/verify")
-    public ResponseEntity<String> verifyCode(@PathVariable String title){
-        String errors = promotionalCodeService.verifyCode(title);
-        return new ResponseEntity<>(errors, HttpStatus.OK);
+    @GetMapping(value = "/{title}")
+    public ResponseEntity<PromotionalCode> verifyCode(@PathVariable String title){
+        PromotionalCode code = promotionalCodeService.getPromotionalCodeByTitle(title);
+        return new ResponseEntity<>(code, HttpStatus.OK);
     }
 
     public static class DuplicatePromoCodeException extends Exception {

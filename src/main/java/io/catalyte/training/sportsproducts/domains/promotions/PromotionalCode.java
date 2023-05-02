@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -81,5 +82,23 @@ public class PromotionalCode {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PromotionalCode)) {
+            return false;
+        }
+        PromotionalCode that = (PromotionalCode) o;
+        return title.equals(that.title) && Objects.equals(description, that.description)
+            && type == that.type && rate.equals(that.rate) && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, description, type, rate, id);
     }
 }

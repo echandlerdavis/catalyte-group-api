@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.security.core.parameters.P;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -119,10 +120,11 @@ public class PromotionalCodeServiceImplTest {
 
     @Test
     public void isValidCodeReturnsEmptyStringForExistingCodeTest() {
-    when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(new PromotionalCode());
+        PromotionalCode testCode = new PromotionalCode("title", "description", PromotionalCodeType.FLAT, BigDecimal.valueOf(5));
+    when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(testCode);
 
-    String expected = "";
-    String actual = promotionalCodeServiceImpl.verifyCode("valid title");
+    PromotionalCode expected = testCode;
+    PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("valid title");
 
     assertEquals(expected, actual);
     }
@@ -130,8 +132,8 @@ public class PromotionalCodeServiceImplTest {
     public void isValidCodeReturnsErrorMessageForNonExistingTitleTest() {
         when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(null);
 
-        String expected = StringConstants.INVALID_CODE;
-        String actual = promotionalCodeServiceImpl.verifyCode("invalid title");
+        PromotionalCode expected = null;
+        PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("invalid title");
 
         assertEquals(expected, actual);
     }

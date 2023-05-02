@@ -7,6 +7,4 @@ public class Paths {
   public static final String PURCHASES_PATH = "/purchases";
   public static final String USERS_PATH = "/users";
   public static final String PROMOCODE_PATH = "/promotionalCodes";
-  public static final String PROMOCODE_VERIFY_FORMAT = PROMOCODE_PATH + "/title/%s/verify";
-
 }

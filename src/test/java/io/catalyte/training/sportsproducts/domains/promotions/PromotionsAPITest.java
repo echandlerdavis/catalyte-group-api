@@ -86,12 +86,12 @@ public class PromotionsAPITest {
         PromotionalCode invalidCode = new PromotionalCode(invalidTitle, "newDescription", PromotionalCodeType.PERCENT, BigDecimal.valueOf(5));
         String expectedJson = String.format("{\"error\": \"%s\"}", StringConstants.INVALID_CODE);
         //test for a bad code
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format(Paths.PROMOCODE_VERIFY_FORMAT, invalidTitle)))
+        mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + invalidTitle))
             .andExpect(MockMvcResultMatchers.status().isOk());
         //test for a good code
         //save code first
         savePromotionalCode(testCode);
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format(Paths.PROMOCODE_VERIFY_FORMAT, testCode.getTitle())))
+        mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
             .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
