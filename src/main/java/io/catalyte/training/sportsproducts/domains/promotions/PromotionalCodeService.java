@@ -27,4 +27,5 @@ public interface PromotionalCodeService {
     PromotionalCode getPromotionalCodeByTitle(String title);
 
     String verifyCode(String title);
+    void deletePromotionalCode(PromotionalCode code);
 }

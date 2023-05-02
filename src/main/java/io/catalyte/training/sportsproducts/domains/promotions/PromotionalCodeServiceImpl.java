@@ -188,5 +188,16 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
         }
     }
 
+    public void deletePromotionalCode(PromotionalCode code) {
+        try {
+            promotionalCodeRepository.delete(code);
+        } catch (DataAccessException e) {
+            // Log the error message
+            logger.error("Error deleting code: " + e.getMessage());
+            // Throw a ServerError exception with the caught exception's message
+            throw new ServerError(e.getMessage());
+        }
+    }
+
 }
 

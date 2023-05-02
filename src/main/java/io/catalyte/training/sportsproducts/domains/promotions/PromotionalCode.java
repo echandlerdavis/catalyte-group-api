@@ -1,5 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,13 +14,13 @@ import java.math.BigDecimal;
 @Entity
 public class PromotionalCode {
 
-    private String code;
     private String title;
     private String description;
     private PromotionalCodeType type;
     private BigDecimal rate;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     /**
@@ -42,15 +43,6 @@ public class PromotionalCode {
 
 
     }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public String getTitle() {
         return title;
     }
