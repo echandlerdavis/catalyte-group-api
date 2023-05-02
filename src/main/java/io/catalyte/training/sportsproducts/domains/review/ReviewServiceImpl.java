@@ -1,5 +1,9 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
+import io.catalyte.training.sportsproducts.domains.product.Product;
+import io.catalyte.training.sportsproducts.domains.product.ProductService;
+import io.catalyte.training.sportsproducts.domains.user.UserService;
+import io.catalyte.training.sportsproducts.domains.user.UserServiceImpl;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.util.List;
@@ -14,16 +18,21 @@ public class ReviewServiceImpl implements ReviewService{
 
   private final Logger logger = LogManager.getLogger(ReviewServiceImpl.class);
 
-  ReviewRepository reviewRepository;
+  private final ReviewRepository reviewRepository;
+  private final ProductService productService;
+  private final UserService userService;
 
   @Autowired
-  public ReviewServiceImpl(ReviewRepository reviewRepository){
+  public ReviewServiceImpl(ReviewRepository reviewRepository, ProductService productService,
+      UserService userService){
     this.reviewRepository = reviewRepository;
+    this.productService = productService;
+    this.userService = userService;
   }
 
-  public List<Review> getAllReviews(){
+  public List<Review> getAllReviewsByProductId(Long productId){
     try{
-      return reviewRepository.findAll();
+      return reviewRepository.findByProductId(productId);
     } catch (DataAccessException e){
       logger.error(e.getMessage());
       throw new ServerError(e.getMessage());
