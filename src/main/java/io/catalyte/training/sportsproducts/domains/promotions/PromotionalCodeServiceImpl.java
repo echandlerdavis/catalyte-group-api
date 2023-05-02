@@ -1,5 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,9 +125,9 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
     @Override
     public PromotionalCode getPromotionalCodeByTitle(String title) {
        try {
-           List<PromotionalCode> codes = (List<PromotionalCode>) promotionalCodeRepository.findByTitle(title);
-           if (codes != null && !codes.isEmpty()) {
-               return codes.get(0);
+           PromotionalCode code = promotionalCodeRepository.findByTitle(title);
+           if (code != null) {
+               return code;
            }
            return null;
        } catch (DataAccessException e) {
@@ -135,6 +136,21 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
            // Throw a ServerError exception with the caught exception's message
            throw new ServerError(e.getMessage());
        }
+    }
+
+    /**
+     * Validate that the given code exists and is applicable
+     * @param title String code of the code being used
+     * @return boolean
+     */
+    @Override
+    public String verifyCode(String title) {
+        logger.info(String.format("Validating code %s", title));
+        if (getPromotionalCodeByTitle(title) == null) {
+            logger.info(String.format("Promotional code %s does not exist", title));
+            return StringConstants.INVALID_CODE;
+        }
+        return "";
     }
 
     /**

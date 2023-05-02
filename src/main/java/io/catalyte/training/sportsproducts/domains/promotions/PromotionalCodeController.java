@@ -1,11 +1,15 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -16,6 +20,7 @@ import java.math.BigDecimal;
  * related to promotional codes.
  */
 @RestController
+@RequestMapping(value = "promotionalCodes")
 public class PromotionalCodeController {
 
     private final PromotionalCodeService promotionalCodeService;
@@ -42,7 +47,7 @@ public class PromotionalCodeController {
      * @return a {@code ResponseEntity} containing the created promotional code and the HTTP status code
      * @throws IllegalArgumentException if the promotional code already exists
      */
-    @PostMapping("/promotionalCodes")
+    @PostMapping
     public ResponseEntity<PromotionalCode> createPromotionalCode(@Valid @RequestBody PromotionalCodeDTO dto) {
         if(dto.getType() == null || dto.getRate() == null) {
             throw new BadRequest("Type and rate must not be null");
@@ -55,6 +60,17 @@ public class PromotionalCodeController {
         }
         PromotionalCode promotionalCode = promotionalCodeService.createPromotionalCode(dto);
         return new ResponseEntity<>(promotionalCode, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint to verify that the user provided promotional code exists
+     * @param title Title of the desired code
+     * @return String - will be an error notification it the code is not valid, or "" if it is valid
+     */
+    @GetMapping(value = "/title/{title}/verify")
+    public ResponseEntity<String> verifyCode(@PathVariable String title){
+        String errors = promotionalCodeService.verifyCode(title);
+        return new ResponseEntity<>(errors, HttpStatus.OK);
     }
 
     public static class DuplicatePromoCodeException extends Exception {

@@ -1,5 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,6 +115,25 @@ public class PromotionalCodeServiceImplTest {
         double actualPrice = promotionalCodeServiceImpl.applyPromotionalCode(title, BigDecimal.valueOf(price)).doubleValue();
 
         assertEquals(price, actualPrice, 0.0001);
+    }
+
+    @Test
+    public void isValidCodeReturnsEmptyStringForExistingCodeTest() {
+    when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(new PromotionalCode());
+
+    String expected = "";
+    String actual = promotionalCodeServiceImpl.verifyCode("valid title");
+
+    assertEquals(expected, actual);
+    }
+    @Test
+    public void isValidCodeReturnsErrorMessageForNonExistingTitleTest() {
+        when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(null);
+
+        String expected = StringConstants.INVALID_CODE;
+        String actual = promotionalCodeServiceImpl.verifyCode("invalid title");
+
+        assertEquals(expected, actual);
     }
 }
 

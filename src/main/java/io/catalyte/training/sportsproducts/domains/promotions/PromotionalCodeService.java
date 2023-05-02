@@ -25,4 +25,6 @@ public interface PromotionalCodeService {
     List<PromotionalCode> getAllPromotionalCodes();
 
     PromotionalCode getPromotionalCodeByTitle(String title);
+
+    String verifyCode(String title);
 }
