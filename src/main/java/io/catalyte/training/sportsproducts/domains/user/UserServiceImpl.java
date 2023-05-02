@@ -14,7 +14,6 @@ import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import io.catalyte.training.sportsproducts.constants.LoggingConstants;
 import java.util.Date;
-import javax.xml.crypto.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,22 +94,10 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User updateLastActive(String bearerToken, Long id){
-    User user = null;
-    //get the user object
-    try {
-      user = userRepository.findById(id).get();
-    } catch (DataAccessException e) {
-      logger.error(e.getMessage());
-      throw new ServerError(e.getMessage());
-    }
-    //make sure user exists
-    if (user == null) {
-      logger.error(String.format(NO_EXISTING_USER_FORMAT, id));
-      throw new ResourceNotFound(String.format(NO_EXISTING_USER_FORMAT, id));
-    }
+  public User updateLastActive(String bearerToken, Long id, User user){
+    logger.info(String.format(UPDATED_LAST_ACTIVE_FORMAT, id));
     user.setLastActive(new Date());
-    return updateUser(bearerToken, user.getId(), user );
+    return updateUser(bearerToken, id, user );
   }
 
   /**

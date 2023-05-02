@@ -64,15 +64,16 @@ public class UserController {
   @PutMapping(path = "/{id}/updateLastActive")
   public ResponseEntity<Boolean> updateLastActive(
       @PathVariable Long id,
-      @RequestHeader(AUTHORIZATION_HEADER) String bearerToken
+      @RequestHeader(AUTHORIZATION_HEADER) String bearerToken,
+      @RequestBody User user
   ) {
     logger.info(UPDATE_LAST_ACTIVE);
-    User savedUser = userService.updateLastActive(bearerToken, id);
+    User savedUser = userService.updateLastActive(bearerToken, id, user);
     if (savedUser != null) {
       return new ResponseEntity<>(Boolean.TRUE ,HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(Boolean.FALSE, HttpStatus.OK);
     }
+
+    return new ResponseEntity<>(Boolean.FALSE, HttpStatus.OK);
   }
 
   /**
