@@ -30,10 +30,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class ProductApiTest {
 
-    @Autowired
-    private WebApplicationContext wac;
+  @Autowired
+  private WebApplicationContext wac;
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
     @Autowired
     ProductRepository productRepository;
@@ -86,17 +86,17 @@ public class ProductApiTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void getProductByIdReturnsProductWith200() throws Exception {
-        mockMvc.perform(get(PRODUCTS_PATH + "/1"))
-                .andExpect(status().isOk());
-    }
+  @Test
+  public void getProductByIdReturnsProductWith200() throws Exception {
+    mockMvc.perform(get(PRODUCTS_PATH + "/1"))
+        .andExpect(status().isOk());
+  }
 
-    @Test
-    public void getDistinctTypesReturnsWith200() throws Exception {
-        mockMvc.perform(get(PRODUCTS_PATH + "/types"))
-                .andExpect(status().isOk());
-    }
+  @Test
+  public void getDistinctTypesReturnsWith200() throws Exception {
+    mockMvc.perform(get(PRODUCTS_PATH + "/types"))
+        .andExpect(status().isOk());
+  }
 
     @Test
     public void getDistinctBrandsReturnsWith200() throws Exception {

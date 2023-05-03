@@ -162,5 +162,4 @@ public class ProductController {
     logger.info("Request received for getProductsByFilters: " + filters.toString());
     return new ResponseEntity<>(productService.getProductsByFilters(filters), HttpStatus.OK);
   }
-
 }
