@@ -3,6 +3,7 @@ package io.catalyte.training.sportsproducts.domains.promotions;
 import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
+import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,12 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
         promotionalCode.setDescription(promotionalCodeDTO.getDescription());
         promotionalCode.setType(promotionalCodeDTO.getType());
         promotionalCode.setRate(promotionalCodeDTO.getRate());
+
+        //check for that title is available
+        PromotionalCode existingTitle = promotionalCodeRepository.findByTitle(promotionalCode.getTitle());
+        if (existingTitle != null) {
+            throw new IllegalArgumentException(String.format("Title %s is already in use", existingTitle.getTitle()));
+        }
 
         try {
             // validate the promotional code before saving

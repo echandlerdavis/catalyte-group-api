@@ -68,7 +68,7 @@ public class PromotionalCodeController {
      * @return String - will be an error notification it the code is not valid, or "" if it is valid
      */
     @GetMapping(value = "/{title}")
-    public ResponseEntity<PromotionalCode> verifyCode(@PathVariable String title){
+    public ResponseEntity<PromotionalCode> getByTitle(@PathVariable String title){
         PromotionalCode code = promotionalCodeService.getPromotionalCodeByTitle(title);
         return new ResponseEntity<>(code, HttpStatus.OK);
     }

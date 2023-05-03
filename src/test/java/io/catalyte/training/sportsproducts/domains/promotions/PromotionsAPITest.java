@@ -17,12 +17,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -70,9 +73,9 @@ public class PromotionsAPITest {
 
     @Test
     public void createPromotionalCodeShouldReturn201StatusWhenGivenValidInput() throws Exception {
-        PromotionalCode promotionalCode = new PromotionalCode(title, description, PromotionalCodeType.FLAT, rate);
-        String expectedJson = "{\"title\": \"SUMMER2015\", \"description\": \"Our summer discount for the Q3 2015 campaign\", \"type\": \"FLAT\", \"rate\": 10.00}";
-
+        String expectedJson = "{\"title\": \"SUMMER2016\", \"description\": \"Our summer discount for the Q3 2016 campaign\", \"type\": \"FLAT\", \"rate\": 10.00}";
+        testCode.setTitle("SUMMER2016");
+        testCode.setDescription("Our summer discount for the Q3 2016 campaign");
         mockMvc.perform(MockMvcRequestBuilders.post("/promotionalCodes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(testCode)))
@@ -81,18 +84,24 @@ public class PromotionsAPITest {
     }
 
     @Test
-    public void verifyCodeReturns200StatusNoMatterWhatTest() throws Exception {
+    public void getByTitleReturns200StatusNoMatterWhatTest() throws Exception {
         String invalidTitle = "invalidTitle";
-        PromotionalCode invalidCode = new PromotionalCode(invalidTitle, "newDescription", PromotionalCodeType.PERCENT, BigDecimal.valueOf(5));
         String expectedJson = String.format("{\"error\": \"%s\"}", StringConstants.INVALID_CODE);
         //test for a bad code
         mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + invalidTitle))
             .andExpect(MockMvcResultMatchers.status().isOk());
         //test for a good code
         //save code first
-        savePromotionalCode(testCode);
         mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
             .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    public void getByTitleReturnsCorrectCodeTest() throws Exception {
+        String expectedJson = mapper.writeValueAsString(testCode);
+        savePromotionalCode(testCode);
+        mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
+            .andExpect(MockMvcResultMatchers.content()
+                .json(expectedJson));
     }
 }
 

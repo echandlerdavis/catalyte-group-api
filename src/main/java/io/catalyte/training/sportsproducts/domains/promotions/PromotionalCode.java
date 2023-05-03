@@ -2,11 +2,13 @@ package io.catalyte.training.sportsproducts.domains.promotions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import javax.persistence.UniqueConstraint;
 
 /**
  * This class represents a promotional code, which is used to offer discounts
@@ -44,6 +46,7 @@ public class PromotionalCode {
 
 
     }
+    @Column(unique = true)
     public String getTitle() {
         return title;
     }
@@ -100,5 +103,16 @@ public class PromotionalCode {
     @Override
     public int hashCode() {
         return Objects.hash(title, description, type, rate, id);
+    }
+
+    @Override
+    public String toString() {
+        return "PromotionalCode{" +
+            "title='" + title + '\'' +
+            ", description='" + description + '\'' +
+            ", type=" + type +
+            ", rate=" + rate +
+            ", id=" + id +
+            '}';
     }
 }
