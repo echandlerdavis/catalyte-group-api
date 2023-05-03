@@ -38,6 +38,7 @@ public class UserController {
       @RequestHeader("Authorization") String bearerToken
   ) {
     logger.info("Request received for createUser");
+
     return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
   }
 

@@ -1,6 +1,8 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User entity in database
@@ -16,22 +18,23 @@ public class User {
   String role;
   String firstName;
   String lastName;
+  String billingAddress;
 
-  public User() {}
-
-  public User(Long id, String email, String role, String firstName, String lastName) {
+  public User(Long id, String email, String role, String firstName, String lastName, String billingAddress) {
     this.id = id;
     this.email = email;
     this.role = role;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.billingAddress = billingAddress;
   }
 
-  public User(String email, String role, String firstName, String lastName) {
+  public User(String email, String role, String firstName, String lastName, String billingAddress) {
     this.email = email;
     this.role = role;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.billingAddress = billingAddress;
   }
 
   public Long getId() {
@@ -74,6 +77,14 @@ public class User {
     this.lastName = lastName;
   }
 
+  public String getBillingAddress() {
+    return billingAddress;
+  }
+
+  public void setBillingAddress(String billingAddress) {
+    this.billingAddress = billingAddress;
+  }
+
   @Override
   public String toString() {
     return "User{" +
@@ -82,6 +93,17 @@ public class User {
         ", role='" + role + '\'' +
         ", firstName='" + firstName + '\'' +
         ", lastName='" + lastName + '\'' +
+        ", billingAddress='" + billingAddress + '\'' +
         '}';
+  }
+
+  public static List<User> getTestUsers() {
+    List<User> testUsers = new ArrayList<>();
+    testUsers.add(new User("cgandy@catalyte.io", "customer", "Casey", "Gandy", "123 Main St, Anytown, USA"));
+    testUsers.add(new User("cdavis@catalyte.io", "customer", "Chandler", "Davis", "123 Main St, Anytown, USA"));
+    testUsers.add(new User("dduval@catalyte.io", "customer", "Devin", "Duval", "123 Main St, Anytown, USA"));
+    testUsers.add(new User("bmiller@catalyte.io", "customer", "Blake", "Miller", "123 Main St, Anytown, USA"));
+    testUsers.add(new User("kfreeman@catalyte.io", "customer", "Kaschae", "Freeman", "123 Main St, Anytown, USA"));
+    return testUsers;
   }
 }

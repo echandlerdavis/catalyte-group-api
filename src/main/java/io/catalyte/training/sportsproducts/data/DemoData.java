@@ -95,7 +95,7 @@ public class DemoData implements CommandLineRunner {
     Purchase purchase4 = new Purchase();
     billingAddress.setEmail("blah");
 
-    User user = new User("amir@amir.com", "Customer", "Amir", "Sharapov");
+    User user = new User("amir@amir.com", "Customer", "Amir", "Sharapov", "123 Main St. Anytown, USA");
     userRepository.save(user);
 
     purchase4.setBillingAddress(billingAddress);
