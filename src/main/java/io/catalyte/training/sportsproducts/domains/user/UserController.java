@@ -6,6 +6,7 @@ import org.apache.logging.log4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 /**
  * Rest controller for the user entity
@@ -74,4 +75,14 @@ public class UserController {
     return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatus.OK);
   }
 
+  /**
+   * Controller method for getting 'dummy' user test data
+   *
+   * @return List<User> - Test user data
+   */
+  @GetMapping(path = "/test-users")
+  public ResponseEntity<List<User>> getTestUsers() {
+    logger.info("Request received for getTestUsers");
+    return new ResponseEntity<>(User.TEST_USERS, HttpStatus.OK);
+  }
 }

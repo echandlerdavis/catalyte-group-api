@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.user;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -97,13 +98,11 @@ public class User {
         '}';
   }
 
-  public static List<User> getTestUsers() {
-    List<User> testUsers = new ArrayList<>();
-    testUsers.add(new User("cgandy@catalyte.io", "customer", "Casey", "Gandy", "123 Main St, Anytown, USA"));
-    testUsers.add(new User("cdavis@catalyte.io", "customer", "Chandler", "Davis", "123 Main St, Anytown, USA"));
-    testUsers.add(new User("dduval@catalyte.io", "customer", "Devin", "Duval", "123 Main St, Anytown, USA"));
-    testUsers.add(new User("bmiller@catalyte.io", "customer", "Blake", "Miller", "123 Main St, Anytown, USA"));
-    testUsers.add(new User("kfreeman@catalyte.io", "customer", "Kaschae", "Freeman", "123 Main St, Anytown, USA"));
-    return testUsers;
-  }
+  public static final List<User> TEST_USERS = Arrays.asList(
+    new User("cgandy@catalyte.io", "customer", "Casey", "Gandy", "123 Main St, Seattle, WA 98101"),
+    new User("cdavis@catalyte.io", "customer", "Chandler", "Davis", "123 Main St, Seattle, WA 98101"),
+    new User("dduval@catalyte.io", "customer", "Devin", "Duval", "123 Main St, Seattle, WA 98101"),
+    new User("bmiller@catalyte.io", "customer", "Blake", "Miller", "123 Main St, Seattle, WA 98101"),
+    new User("kfreeman@catalyte.io", "customer", "Kaschae", "Freeman", "123 Main St, Seattle, WA 98101")
+  );
 }
