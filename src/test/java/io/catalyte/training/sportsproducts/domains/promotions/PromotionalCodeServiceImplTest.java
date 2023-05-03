@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.promotions;
 
 import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
+import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import java.util.List;
 import org.springframework.security.core.parameters.P;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -128,14 +130,13 @@ public class PromotionalCodeServiceImplTest {
 
     assertEquals(expected, actual);
     }
-    @Test
-    public void isValidCodeReturnsErrorMessageForNonExistingTitleTest() {
+    @Test(expected = ResourceNotFound.class)
+    public void getPromotionalCodeByTitleThrowsResourceNotFoundForNonExistingTitleTest() {
         when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(null);
 
-        PromotionalCode expected = null;
         PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("invalid title");
 
-        assertEquals(expected, actual);
+        assertTrue(false); //should not run
     }
 }
 

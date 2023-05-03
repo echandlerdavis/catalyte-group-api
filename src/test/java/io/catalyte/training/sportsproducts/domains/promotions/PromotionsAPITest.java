@@ -1,8 +1,11 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import static org.junit.Assert.assertTrue;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.catalyte.training.sportsproducts.constants.Paths;
 import io.catalyte.training.sportsproducts.constants.StringConstants;
+import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -74,24 +78,23 @@ public class PromotionsAPITest {
     }
 
     @Test
-    public void getByTitleReturns200StatusNoMatterWhatTest() throws Exception {
-        String invalidTitle = "invalidTitle";
-        String expectedJson = String.format("{\"error\": \"%s\"}", StringConstants.INVALID_CODE);
-        //test for a bad code
-        mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + invalidTitle))
-            .andExpect(MockMvcResultMatchers.status().isOk());
-        //test for a good code
-        //save code first
+    public void getByTitleReturns200StatusTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
             .andExpect(MockMvcResultMatchers.status().isOk());
     }
     @Test
-    public void getByTitleReturnsCorrectCodeTest() throws Exception {
+    public void getByTitleReturnsCodeJsonTest() throws Exception {
         String expectedJson = mapper.writeValueAsString(testCode);
         savePromotionalCode(testCode);
         mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
             .andExpect(MockMvcResultMatchers.content()
                 .json(expectedJson));
+    }
+    @Test
+    public void getByTitleReturns404ErrorTest() throws Exception {
+        testCode.setTitle("NewTitle");
+        mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }
 

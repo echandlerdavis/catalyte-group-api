@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.promotions;
 
 import io.catalyte.training.sportsproducts.constants.Paths;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
+import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,8 +70,7 @@ public class PromotionalCodeController {
      */
     @GetMapping(value = "/{title}")
     public ResponseEntity<PromotionalCode> getByTitle(@PathVariable String title){
-        PromotionalCode code = promotionalCodeService.getPromotionalCodeByTitle(title);
-        return new ResponseEntity<>(code, HttpStatus.OK);
+        return new ResponseEntity<>(promotionalCodeService.getPromotionalCodeByTitle(title), HttpStatus.OK);
     }
 
     public static class DuplicatePromoCodeException extends Exception {

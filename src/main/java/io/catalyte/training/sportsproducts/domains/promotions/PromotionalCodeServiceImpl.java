@@ -1,6 +1,8 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
+import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -134,7 +136,8 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
            if (code != null) {
                return code;
            }
-           return null;
+           logger.info(StringConstants.INVALID_CODE);
+           throw new ResourceNotFound(StringConstants.INVALID_CODE);
        } catch (DataAccessException e) {
            // Log the error message
            logger.error("Error getting promotional code by title: " + e.getMessage());
