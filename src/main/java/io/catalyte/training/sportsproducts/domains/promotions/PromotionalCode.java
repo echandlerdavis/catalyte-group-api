@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
-import javax.persistence.UniqueConstraint;
 
 /**
  * This class represents a promotional code, which is used to offer discounts
