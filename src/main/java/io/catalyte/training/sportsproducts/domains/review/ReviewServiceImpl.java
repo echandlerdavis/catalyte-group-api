@@ -39,20 +39,20 @@ public class ReviewServiceImpl implements ReviewService{
     }
   }
 
-  public Review postReview(Long productId, ReviewDTO reviewDTO){
-//    TODO: add validation to this.
-//    TODO: figure out if you need to set the id, user and createdAt or if that's automatic.
-    Review review = new Review();
-    review.setTitle(reviewDTO.getTitle());
-    review.setReview(reviewDTO.getReview());
-    review.setRating(reviewDTO.getRating());
-    review.setProduct(productService.getProductById(productId));
-
-    try{
-      return reviewRepository.save(review);
-    } catch (DataAccessException e){
-      logger.error(e.getMessage());
-      throw new BadRequest(e.getMessage());
-    }
-  }
+//  public Review postReview(Long productId, ReviewDTO reviewDTO){
+////    TODO: add validation to this.
+////    TODO: figure out if you need to set the id, user and createdAt or if that's automatic.
+//    Review review = new Review();
+//    review.setTitle(reviewDTO.getTitle());
+//    review.setReview(reviewDTO.getReview());
+//    review.setRating(reviewDTO.getRating());
+//    review.setProduct(productService.getProductById(productId));
+//
+//    try{
+//      return reviewRepository.save(review);
+//    } catch (DataAccessException e){
+//      logger.error(e.getMessage());
+//      throw new BadRequest(e.getMessage());
+//    }
+//  }
 }
