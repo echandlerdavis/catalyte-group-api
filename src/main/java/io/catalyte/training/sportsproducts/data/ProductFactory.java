@@ -111,7 +111,7 @@ public class ProductFactory {
 
   private static final String[] reviews = {
       "I loved it!",
-      "I loved it, and let me explain to you why I loved it. The fit? Phenomenal. Performance? Unreal! Don't even get me started on the look. Got compliments all day. Double takes. 'Where did you get that?' everyone kept asking me. 'Why, only at the best Sports Apparel Website around, silly!' I'd reply. Just buy it already!",
+      "I loved it, and let me explain to you why I loved it. The fit? Phenomenal. Performance? Unreal! Don't even get me started on the look. Got compliments all day. Double takes.",
       "10 out of 10 would recommend",
       "This was such an amazing product, and also received excellent customer service. Thanks, sports apparel website!"
   };
@@ -275,9 +275,21 @@ public class ProductFactory {
     return randomGenerator.nextInt(4) + 1;
   }
 
-  public static Review createRandomReview(Product product){
+  public List<Review> generateRandomReviews(Product product){
+
+    List<Review> reviewList = new ArrayList<>();
+    int numberOfReviews = randomGenerator.nextInt(10);
+
+    for(int i = 0; i < numberOfReviews; i++){
+      reviewList.add(createRandomReview(product, (i + 1)));
+    }
+
+    return reviewList;
+  }
+
+  public static Review createRandomReview(Product product, int number){
     Review review = new Review();
-    review.setTitle("Review #" + review.getId());
+    review.setTitle("Review #" + number);
     review.setReview(getReviewContent());
     review.setRating(getReviewRating());
     review.setUserName(getReviewUserName());
@@ -287,17 +299,6 @@ public class ProductFactory {
     return review;
   }
 
-  public List<Review> generateRandomReviews(Product product){
-
-    List<Review> reviewList = new ArrayList<>();
-    int numberOfReviews = randomGenerator.nextInt(10);
-
-    for(int i = 0; i < numberOfReviews; i++){
-      reviewList.add(createRandomReview(product));
-    }
-
-    return reviewList;
-  }
   /**
    * Generates a number of random products based on input.
    *
@@ -346,7 +347,6 @@ public class ProductFactory {
     product.setReleaseDate(String.valueOf(
         ProductFactory.between(LocalDate.parse("2000-01-01"), LocalDate.now())));
     product.setActive(ProductFactory.isActive());
-    product.setReviews(generateRandomReviews(product));
 
     return product;
   }

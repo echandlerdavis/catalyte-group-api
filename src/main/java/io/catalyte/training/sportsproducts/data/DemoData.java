@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.data;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
+import io.catalyte.training.sportsproducts.domains.review.Review;
 import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
 import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
@@ -76,6 +77,11 @@ public class DemoData implements CommandLineRunner {
 
     // Generate products
     List<Product> productList = productFactory.generateRandomProducts(numberOfProducts);
+    for (Product product : productList) {
+      List<Review> reviewList = productFactory.generateRandomReviews(product);
+      product.setReviews(reviewList);
+      reviewRepository.saveAll(reviewList);
+    }
 
     // Persist them to the database
     logger.info("Loading " + numberOfProducts + " products...");
