@@ -14,15 +14,22 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
+  @Column(name = "email", insertable = false, updatable = false)
   String email;
+  @Column
   String role;
+  @Column
   String firstName;
+  @Column
   String lastName;
   @Embedded
   BillingAddress billingAddress;
 
-  public User() {
-    // Empty constructor for pulling on some parts of the User data, and not all.
+  public User(String email, String firstName, String lastName, BillingAddress billingAddress) {
+    this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.billingAddress = billingAddress;
   }
 
   public User(Long id, String email, String role, String firstName, String lastName, BillingAddress billingAddress) {
@@ -103,15 +110,15 @@ public class User {
   }
 
   public static final List<User> TEST_USERS = Arrays.asList(
-    new User("cgandy@catalyte.io", "customer", "Casey", "Gandy",
+    new User("cgandy@catalyte.io","Casey", "Gandy",
             new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
-    new User("cdavis@catalyte.io", "customer", "Chandler", "Davis",
+    new User("cdavis@catalyte.io","Chandler", "Davis",
             new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
-    new User("dduval@catalyte.io", "customer", "Devin", "Duval",
+    new User("dduval@catalyte.io","Devin", "Duval",
             new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
-    new User("bmiller@catalyte.io", "customer", "Blake", "Miller",
+    new User("bmiller@catalyte.io","Blake", "Miller",
             new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
-    new User("kfreeman@catalyte.io", "customer", "Kaschae", "Freeman",
+    new User("kfreeman@catalyte.io", "Kaschae", "Freeman",
             new BillingAddress("123 Main St", "", "Seattle", "WA", 98101))
   );
 }
