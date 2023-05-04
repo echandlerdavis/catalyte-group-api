@@ -8,6 +8,7 @@ import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import io.catalyte.training.sportsproducts.domains.purchase.PurchaseRepository;
 import io.catalyte.training.sportsproducts.domains.review.ReviewRepository;
 import io.catalyte.training.sportsproducts.domains.user.*;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,13 +75,14 @@ public class DemoData implements CommandLineRunner {
       // If it's not a string, set it to be a default value
       numberOfProducts = DEFAULT_NUMBER_OF_PRODUCTS;
     }
-
+    List<Review> reviewList = new ArrayList<>();
     // Generate products
     List<Product> productList = productFactory.generateRandomProducts(numberOfProducts);
     for (Product product : productList) {
-      List<Review> reviewList = productFactory.generateRandomReviews(product);
+      Review review = productFactory.createRandomReview(product, 1);
+      reviewList.add(review);
       product.setReviews(reviewList);
-      reviewRepository.saveAll(reviewList);
+      reviewRepository.save(review);
     }
 
     // Persist them to the database

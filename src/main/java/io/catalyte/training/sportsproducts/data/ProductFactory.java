@@ -295,6 +295,7 @@ public class ProductFactory {
     review.setUserName(getReviewUserName());
     review.setCreatedAt(String.valueOf(
         between(LocalDate.parse(product.getReleaseDate()), LocalDate.now())));
+    review.setProduct(product);
 
     return review;
   }

@@ -3,12 +3,14 @@ package io.catalyte.training.sportsproducts.domains.product;
 import io.catalyte.training.sportsproducts.domains.review.Review;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -54,7 +56,7 @@ public class Product {
 
   private Boolean active;
 
-  @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @OnDelete(action = OnDeleteAction.CASCADE)
   private List<Review> reviews;
 
