@@ -21,6 +21,10 @@ public class User {
   String lastName;
   String billingAddress;
 
+  public User() {
+    // Empty constructor for pulling on some parts of the User data, and not all.
+  }
+
   public User(Long id, String email, String role, String firstName, String lastName, String billingAddress) {
     this.id = id;
     this.email = email;
