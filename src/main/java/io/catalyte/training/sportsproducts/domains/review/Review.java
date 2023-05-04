@@ -24,11 +24,12 @@ public class Review {
   private String title;
   private int rating;
   private String review;
-  @CreatedDate
-  private Instant createdAt;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  private User user;
+//  @CreatedDate
+  private String createdAt;
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "user_id")
+//  @JsonIgnore
+  private String userName;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id")
   @JsonIgnore
@@ -36,12 +37,12 @@ public class Review {
   public Review(){
 
   }
-  public Review(String title, int rating, String review, Instant createdAt, User user, Product product) {
+  public Review(String title, int rating, String review, String createdAt, String userName, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
-    this.user = user;
+    this.userName = userName;
     this.product = product;
   }
 
@@ -61,20 +62,20 @@ public class Review {
     this.review = review;
   }
 
-  public Instant getCreatedAt() {
+  public String getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(Instant createdAt) {
+  public void setCreatedAt(String createdAt) {
     this.createdAt = createdAt;
   }
 
-  public User getUser() {
-    return user;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
   public int getRating() {
     return rating;
