@@ -56,7 +56,7 @@ public class Product {
 
   private Boolean active;
 
-  @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "product")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private List<Review> reviews;
 

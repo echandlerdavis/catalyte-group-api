@@ -78,6 +78,9 @@ public class DemoData implements CommandLineRunner {
     List<Review> reviewList = new ArrayList<>();
     // Generate products
     List<Product> productList = productFactory.generateRandomProducts(numberOfProducts);
+
+    productRepository.saveAll(productList);
+
     for (Product product : productList) {
       Review review = productFactory.createRandomReview(product, 1);
       reviewList.add(review);
@@ -87,7 +90,7 @@ public class DemoData implements CommandLineRunner {
 
     // Persist them to the database
     logger.info("Loading " + numberOfProducts + " products...");
-    productRepository.saveAll(productList);
+
     logger.info("Data load completed. You can make requests now.");
 
     Purchase purchase1 = new Purchase();
