@@ -1,7 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,13 +18,14 @@ public class User {
   String role;
   String firstName;
   String lastName;
-  String billingAddress;
+  @Embedded
+  BillingAddress billingAddress;
 
   public User() {
     // Empty constructor for pulling on some parts of the User data, and not all.
   }
 
-  public User(Long id, String email, String role, String firstName, String lastName, String billingAddress) {
+  public User(Long id, String email, String role, String firstName, String lastName, BillingAddress billingAddress) {
     this.id = id;
     this.email = email;
     this.role = role;
@@ -34,7 +34,7 @@ public class User {
     this.billingAddress = billingAddress;
   }
 
-  public User(String email, String role, String firstName, String lastName, String billingAddress) {
+  public User(String email, String role, String firstName, String lastName, BillingAddress billingAddress) {
     this.email = email;
     this.role = role;
     this.firstName = firstName;
@@ -82,11 +82,11 @@ public class User {
     this.lastName = lastName;
   }
 
-  public String getBillingAddress() {
+  public BillingAddress getBillingAddress() {
     return billingAddress;
   }
 
-  public void setBillingAddress(String billingAddress) {
+  public void setBillingAddress(BillingAddress billingAddress) {
     this.billingAddress = billingAddress;
   }
 
@@ -103,10 +103,15 @@ public class User {
   }
 
   public static final List<User> TEST_USERS = Arrays.asList(
-    new User("cgandy@catalyte.io", "customer", "Casey", "Gandy", "123 Main St, Seattle, WA 98101"),
-    new User("cdavis@catalyte.io", "customer", "Chandler", "Davis", "123 Main St, Seattle, WA 98101"),
-    new User("dduval@catalyte.io", "customer", "Devin", "Duval", "123 Main St, Seattle, WA 98101"),
-    new User("bmiller@catalyte.io", "customer", "Blake", "Miller", "123 Main St, Seattle, WA 98101"),
-    new User("kfreeman@catalyte.io", "customer", "Kaschae", "Freeman", "123 Main St, Seattle, WA 98101")
+    new User("cgandy@catalyte.io", "customer", "Casey", "Gandy",
+            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
+    new User("cdavis@catalyte.io", "customer", "Chandler", "Davis",
+            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
+    new User("dduval@catalyte.io", "customer", "Devin", "Duval",
+            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
+    new User("bmiller@catalyte.io", "customer", "Blake", "Miller",
+            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
+    new User("kfreeman@catalyte.io", "customer", "Kaschae", "Freeman",
+            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101))
   );
 }

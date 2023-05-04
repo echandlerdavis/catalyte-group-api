@@ -95,7 +95,8 @@ public class DemoData implements CommandLineRunner {
     Purchase purchase4 = new Purchase();
     billingAddress.setEmail("blah");
 
-    User user = new User("amir@amir.com", "Customer", "Amir", "Sharapov", "123 Main St. Anytown, USA");
+    User user = new User("amir@amir.com", "Customer", "Amir", "Sharapov",
+            new io.catalyte.training.sportsproducts.domains.user.BillingAddress("123 Main St", "", "Seattle", "WA",98101));
     userRepository.save(user);
 
     purchase4.setBillingAddress(billingAddress);

@@ -29,6 +29,14 @@ public class BillingAddress {
         this.phone = phone;
     }
 
+    public BillingAddress(String billingStreet, String billingStreet2, String billingCity, String billingState, int billingZip) {
+        this.billingStreet = billingStreet;
+        this.billingStreet2 = billingStreet2;
+        this.billingCity = billingCity;
+        this.billingState = billingState;
+        this.billingZip = billingZip;
+    }
+
     public String getBillingStreet() {
         return billingStreet;
     }
