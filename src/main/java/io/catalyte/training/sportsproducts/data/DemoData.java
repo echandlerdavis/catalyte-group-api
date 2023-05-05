@@ -75,18 +75,18 @@ public class DemoData implements CommandLineRunner {
       // If it's not a string, set it to be a default value
       numberOfProducts = DEFAULT_NUMBER_OF_PRODUCTS;
     }
-    List<Review> reviewList = new ArrayList<>();
     // Generate products
     List<Product> productList = productFactory.generateRandomProducts(numberOfProducts);
-    for (Product product : productList) {
-      Review review = productFactory.createRandomReview(product, 1);
-      reviewList.add(review);
-      product.setReviews(reviewList);
-      reviewRepository.save(review);
-    }
+
 
     // Persist them to the database
     logger.info("Loading " + numberOfProducts + " products...");
+
+    for (Product product : productList) {
+      List<Review> reviewList = productFactory.generateRandomReviews(product);
+      product.setReviews(reviewList);
+      reviewRepository.saveAll(reviewList);
+    }
     productRepository.saveAll(productList);
     logger.info("Data load completed. You can make requests now.");
 

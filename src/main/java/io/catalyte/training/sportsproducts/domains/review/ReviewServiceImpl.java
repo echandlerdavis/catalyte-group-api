@@ -47,6 +47,8 @@ public class ReviewServiceImpl implements ReviewService{
     review.setReview(reviewDTO.getReview());
     review.setRating(reviewDTO.getRating());
     review.setProduct(productService.getProductById(productId));
+    review.setCreatedAt(reviewDTO.getCreatedAt());
+    review.setUserName(reviewDTO.getUserName());
 
     try{
       return reviewRepository.save(review);

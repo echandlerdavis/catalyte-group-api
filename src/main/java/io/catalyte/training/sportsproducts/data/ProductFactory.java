@@ -295,7 +295,6 @@ public class ProductFactory {
     review.setUserName(getReviewUserName());
     review.setCreatedAt(String.valueOf(
         between(LocalDate.parse(product.getReleaseDate()), LocalDate.now())));
-    review.setProduct(product);
 
     return review;
   }
@@ -348,7 +347,7 @@ public class ProductFactory {
     product.setReleaseDate(String.valueOf(
         ProductFactory.between(LocalDate.parse("2000-01-01"), LocalDate.now())));
     product.setActive(ProductFactory.isActive());
-
+    product.setReviews(new ArrayList<Review>());
     return product;
   }
 

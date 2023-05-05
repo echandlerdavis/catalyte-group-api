@@ -31,8 +31,7 @@ public class Review {
 //  @JoinColumn(name = "user_id")
 //  @JsonIgnore
   private String userName;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "product_id")
+  @ManyToOne
   @JsonIgnore
   private Product product;
   public Review(){
