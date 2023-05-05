@@ -81,13 +81,13 @@ public class DemoData implements CommandLineRunner {
 
     // Persist them to the database
     logger.info("Loading " + numberOfProducts + " products...");
+    productRepository.saveAll(productList);
 
     for (Product product : productList) {
       List<Review> reviewList = productFactory.generateRandomReviews(product);
       product.setReviews(reviewList);
       reviewRepository.saveAll(reviewList);
     }
-    productRepository.saveAll(productList);
     logger.info("Data load completed. You can make requests now.");
 
     Purchase purchase1 = new Purchase();
