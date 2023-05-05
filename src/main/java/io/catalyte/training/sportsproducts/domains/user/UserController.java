@@ -74,15 +74,4 @@ public class UserController {
     logger.info("Request received for getUserByEmail");
     return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatus.OK);
   }
-
-  /**
-   * Controller method for getting 'dummy' user test data
-   *
-   * @return List<User> - Test user data
-   */
-  @GetMapping(path = "/test-users")
-  public ResponseEntity<List<User>> getTestUsers() {
-    logger.info("Request received for getTestUsers");
-    return new ResponseEntity<>(User.TEST_USERS, HttpStatus.OK);
-  }
 }

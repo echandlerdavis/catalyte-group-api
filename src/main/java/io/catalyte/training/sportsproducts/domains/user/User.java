@@ -108,17 +108,4 @@ public class User {
         ", billingAddress='" + billingAddress + '\'' +
         '}';
   }
-
-  public static final List<User> TEST_USERS = Arrays.asList(
-    new User("cgandy@catalyte.io","Casey", "Gandy",
-            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
-    new User("cdavis@catalyte.io","Chandler", "Davis",
-            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
-    new User("dduval@catalyte.io","Devin", "Duval",
-            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
-    new User("bmiller@catalyte.io","Blake", "Miller",
-            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101)),
-    new User("kfreeman@catalyte.io", "Kaschae", "Freeman",
-            new BillingAddress("123 Main St", "", "Seattle", "WA", 98101))
-  );
 }
