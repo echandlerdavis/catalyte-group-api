@@ -1,6 +1,8 @@
 package io.catalyte.training.sportsproducts.domains.product;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.catalyte.training.sportsproducts.data.ProductFactory;
+import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.Every;
 import org.junit.After;
@@ -9,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -20,8 +23,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import static io.catalyte.training.sportsproducts.constants.Paths.PRODUCTS_PATH;
+import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -434,6 +441,20 @@ public class ProductApiTest {
         filterString.append("&material=" + materialsString);
 
         return filterString;
+    }
+
+    @Test
+    public void saveProductReturnsProductObject() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        MockHttpServletResponse response = mockMvc.perform(post(PRODUCTS_PATH)
+            .contentType("application/json")
+            .content(mapper.writeValueAsString(testProduct1)))
+            .andReturn().getResponse();
+
+        Product returnedProduct = mapper.readValue(response.getContentAsString(), Product.class);
+
+        assert(returnedProduct.equals(testProduct1));
+        assertNotNull(returnedProduct.getId());
     }
 
 }
