@@ -444,11 +444,12 @@ public class ProductApiTest {
     }
 
     @Test
-    public void saveProductReturnsProductObject() throws Exception {
+    public void saveProductReturns201WithProductObject() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         MockHttpServletResponse response = mockMvc.perform(post(PRODUCTS_PATH)
             .contentType("application/json")
             .content(mapper.writeValueAsString(testProduct1)))
+            .andExpect(status().isCreated())
             .andReturn().getResponse();
 
         Product returnedProduct = mapper.readValue(response.getContentAsString(), Product.class);
