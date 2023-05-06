@@ -1,5 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
+import javax.annotation.Nullable;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -8,24 +10,34 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class BillingAddress {
 
+    @Nullable
+    @Column(nullable = true)
     private String billingStreet;
+    @Nullable
+    @Column(nullable = true)
     private String billingStreet2;
+    @Nullable
+    @Column(nullable = true)
     private String billingCity;
+    @Nullable
+    @Column(nullable = true)
     private String billingState;
+    @Nullable
+    @Column(nullable = true)
     private int billingZip;
-    private String email;
+    @Nullable
+    @Column(nullable = true)
     private String phone;
 
     public BillingAddress() {
     }
 
-    public BillingAddress(String billingStreet, String billingStreet2, String billingCity, String billingState, int billingZip, String email, String phone) {
+    public BillingAddress(String billingStreet, String billingStreet2, String billingCity, String billingState, int billingZip, String phone) {
         this.billingStreet = billingStreet;
         this.billingStreet2 = billingStreet2;
         this.billingCity = billingCity;
         this.billingState = billingState;
         this.billingZip = billingZip;
-        this.email = email;
         this.phone = phone;
     }
 
@@ -77,14 +89,6 @@ public class BillingAddress {
         this.billingZip = billingZip;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -102,7 +106,7 @@ public class BillingAddress {
             return false;
         }
 
-        io.catalyte.training.sportsproducts.domains.purchase.BillingAddress that = (io.catalyte.training.sportsproducts.domains.purchase.BillingAddress) o;
+        io.catalyte.training.sportsproducts.domains.user.BillingAddress that = (io.catalyte.training.sportsproducts.domains.user.BillingAddress) o;
 
         if (getBillingZip() != that.getBillingZip()) {
             return false;
@@ -123,9 +127,7 @@ public class BillingAddress {
                 : that.getBillingState() != null) {
             return false;
         }
-        if (getEmail() != null ? !getEmail().equals(that.getEmail()) : that.getEmail() != null) {
-            return false;
-        }
+
         return getPhone() != null ? getPhone().equals(that.getPhone()) : that.getPhone() == null;
     }
 
@@ -136,7 +138,6 @@ public class BillingAddress {
         result = 31 * result + (getBillingCity() != null ? getBillingCity().hashCode() : 0);
         result = 31 * result + (getBillingState() != null ? getBillingState().hashCode() : 0);
         result = 31 * result + getBillingZip();
-        result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
         result = 31 * result + (getPhone() != null ? getPhone().hashCode() : 0);
         return result;
     }
@@ -149,7 +150,6 @@ public class BillingAddress {
                 ", billingCity='" + billingCity + '\'' +
                 ", billingState='" + billingState + '\'' +
                 ", billingZip=" + billingZip +
-                ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 '}';
     }

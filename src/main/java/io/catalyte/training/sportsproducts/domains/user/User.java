@@ -14,7 +14,7 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
-  @Column(name = "email", insertable = false, updatable = false)
+  @Column
   String email;
   @Column
   String role;
@@ -24,6 +24,10 @@ public class User {
   String lastName;
   @Embedded
   BillingAddress billingAddress;
+
+  public User() {
+    // Empty Constructor to push single User data to UI.
+  }
 
   public User(String email, String firstName, String lastName, BillingAddress billingAddress) {
     this.email = email;
