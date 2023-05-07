@@ -1,5 +1,6 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
+import java.util.Date;
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +26,10 @@ public class User {
   @Embedded
   BillingAddress billingAddress;
 
+  Date lastActive;
+
   public User() {
-    // Empty Constructor to push single User data to UI.
+    // Empty Constructor
   }
 
   public User(String email, String firstName, String lastName, BillingAddress billingAddress) {
@@ -92,6 +95,14 @@ public class User {
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
+  public Date getLastActive() {
+    return lastActive;
+  }
+
+  public void setLastActive(Date lastActive) {
+    this.lastActive = lastActive;
+  }
+
 
   public BillingAddress getBillingAddress() {
     return billingAddress;
@@ -109,7 +120,6 @@ public class User {
         ", role='" + role + '\'' +
         ", firstName='" + firstName + '\'' +
         ", lastName='" + lastName + '\'' +
-        ", billingAddress='" + billingAddress + '\'' +
         '}';
   }
 }
