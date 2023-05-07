@@ -528,6 +528,7 @@ public class ProductApiTest {
                   .content(mapper.writeValueAsString(newProduct)))
                   .andExpect(status().isBadRequest())
                   .andReturn().getResponse();
+        System.out.println("response = " + response);
         HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
         String[] responseErrors = responseMap.get("errorMessage").toString().split("\n");
         List<String> errorsList = Arrays.asList(responseErrors);

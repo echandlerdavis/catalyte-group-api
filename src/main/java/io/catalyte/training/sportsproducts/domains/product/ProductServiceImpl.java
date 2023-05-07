@@ -273,8 +273,7 @@ public class ProductServiceImpl implements ProductService {
             //Check if the value for the product's field is null or empty and place in the corresponding list
             if (productMap.get(field) == null) {
                 nullFields.add(field);
-            }
-            if (productMap.get(field).toString().trim() == "") {
+            } else if (productMap.get(field).toString().trim() == "") {
                 emptyFields.add(field);
             }
         });
