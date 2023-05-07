@@ -1,8 +1,12 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
+import io.catalyte.training.sportsproducts.constants.LoggingConstants;
 import io.catalyte.training.sportsproducts.constants.Paths;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
+import java.util.Locale;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +29,7 @@ import java.math.BigDecimal;
 public class PromotionalCodeController {
 
     private final PromotionalCodeService promotionalCodeService;
+    private final Logger logger = LogManager.getLogger(PromotionalCodeController.class);
 
     /**
      * Creates a new {@code PromotionalCodeController} instance with the specified
@@ -70,6 +75,7 @@ public class PromotionalCodeController {
      */
     @GetMapping(value = "/{title}")
     public ResponseEntity<PromotionalCode> getByTitle(@PathVariable String title){
+        logger.info(String.format(LoggingConstants.GET_PROMOCODE_FORMAT, title));
         return new ResponseEntity<>(promotionalCodeService.getPromotionalCodeByTitle(title), HttpStatus.OK);
     }
 
