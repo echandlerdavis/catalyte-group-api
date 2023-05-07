@@ -1,6 +1,8 @@
 package io.catalyte.training.sportsproducts.domains.product;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.data.ProductFactory;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import org.hamcrest.Matchers;
@@ -18,9 +20,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static io.catalyte.training.sportsproducts.constants.Paths.PRODUCTS_PATH;
 import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH;
@@ -458,4 +458,85 @@ public class ProductApiTest {
         assertNotNull(returnedProduct.getId());
     }
 
+    @Test
+    public void SaveProductReturns400IfPriceIsNegativeNumber() throws Exception {
+        Product newProduct = productFactory.createRandomProduct();
+        newProduct.setPrice(-1.00);
+        ObjectMapper mapper = new ObjectMapper();
+        MockHttpServletResponse response = mockMvc.perform(post(PRODUCTS_PATH)
+                        .contentType("application/json")
+                        .content(mapper.writeValueAsString(newProduct)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+        HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+        assertTrue(responseMap.get("errorMessage").equals(StringConstants.PRODUCT_PRICE_INVALID));
+    }
+
+    @Test
+    public void SaveProductReturns400IQuantityIsNegativeNumber() throws Exception {
+        Product newProduct = productFactory.createRandomProduct();
+        newProduct.setQuantity(-1);
+        ObjectMapper mapper = new ObjectMapper();
+        MockHttpServletResponse response = mockMvc.perform(post(PRODUCTS_PATH)
+                        .contentType("application/json")
+                        .content(mapper.writeValueAsString(newProduct)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+        HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+        assertTrue(responseMap.get("errorMessage").equals(StringConstants.PRODUCT_QUANTITY_INVALID));
+    }
+
+    @Test
+    public void SaveProductReturns400IfFieldsAreNull() throws Exception {
+        Product newProduct = productFactory.createRandomProduct();
+        newProduct.setActive(null);
+        newProduct.setBrand(null);
+        ObjectMapper mapper = new ObjectMapper();
+        MockHttpServletResponse response = mockMvc.perform(post(PRODUCTS_PATH)
+                        .contentType("application/json")
+                        .content(mapper.writeValueAsString(newProduct)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+        HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+        assertTrue(responseMap.get("errorMessage").equals(StringConstants.PRODUCT_FIELDS_NULL(Arrays.asList("brand", "active"))));
+    }
+
+    @Test
+    public void SaveProductReturns400IfFieldsAreEmpty() throws Exception {
+        Product newProduct = productFactory.createRandomProduct();
+        newProduct.setCategory("");
+        newProduct.setBrand("");
+        ObjectMapper mapper = new ObjectMapper();
+        MockHttpServletResponse response = mockMvc.perform(post(PRODUCTS_PATH)
+                        .contentType("application/json")
+                        .content(mapper.writeValueAsString(newProduct)))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse();
+        HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+        assertTrue(responseMap.get("errorMessage").equals(StringConstants.PRODUCT_FIELDS_EMPTY(Arrays.asList("brand", "category"))));
+    }
+
+    @Test
+    public void SaveProductReturns400WithListOfAllErrors() throws Exception {
+        Product newProduct = productFactory.createRandomProduct();
+        newProduct.setActive(null);
+        newProduct.setBrand("");
+        newProduct.setPrice(-2.00);
+        newProduct.setQuantity(-2);
+        ObjectMapper mapper = new ObjectMapper();
+        MockHttpServletResponse response = mockMvc.perform(
+                post(PRODUCTS_PATH)
+                  .contentType("application/json")
+                  .content(mapper.writeValueAsString(newProduct)))
+                  .andExpect(status().isBadRequest())
+                  .andReturn().getResponse();
+        HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+        String[] responseErrors = responseMap.get("errorMessage").toString().split("\n");
+        List<String> errorsList = Arrays.asList(responseErrors);
+        assertTrue(errorsList.containsAll(Arrays.asList(
+                StringConstants.PRODUCT_PRICE_INVALID,
+                StringConstants.PRODUCT_QUANTITY_INVALID,
+                StringConstants.PRODUCT_FIELDS_NULL(Arrays.asList("active")),
+                StringConstants.PRODUCT_FIELDS_EMPTY(Arrays.asList("brand")))));
+    }
 }
