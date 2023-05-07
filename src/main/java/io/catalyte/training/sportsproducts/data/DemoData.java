@@ -2,16 +2,23 @@ package io.catalyte.training.sportsproducts.data;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
+import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
+import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeRepository;
+import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeType;
 import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import io.catalyte.training.sportsproducts.domains.purchase.PurchaseRepository;
 import io.catalyte.training.sportsproducts.domains.user.*;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,6 +40,9 @@ public class DemoData implements CommandLineRunner {
 
   @Autowired
   private PurchaseRepository purchaseRepository;
+
+  @Autowired
+  private PromotionalCodeRepository promotionalCodeRepository;
 
   @Autowired
   private Environment env;
@@ -101,6 +111,30 @@ public class DemoData implements CommandLineRunner {
     purchase4.setBillingAddress(billingAddress);
 
     purchaseRepository.save(purchase4);
+
+    Calendar cal = Calendar.getInstance();
+    Date today = new Date();
+    cal.setTime(today);
+    cal.add(Calendar.DATE, 1);
+    Date end = cal.getTime();
+
+    promotionalCodeRepository.save(
+        new PromotionalCode(
+            "FlatTest",
+            "Flat rate test",
+            PromotionalCodeType.FLAT,
+            BigDecimal.valueOf(25),
+            today,
+            end));
+
+    promotionalCodeRepository.save(
+        new PromotionalCode(
+            "PercentageTest",
+            "Percentage rate test",
+            PromotionalCodeType.PERCENT,
+            BigDecimal.valueOf(25),
+            today,
+            end));
 
   }
 

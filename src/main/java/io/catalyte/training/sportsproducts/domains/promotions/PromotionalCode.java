@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,9 @@ public class PromotionalCode {
     private String description;
     private PromotionalCodeType type;
     private BigDecimal rate;
+
+    private Date startDate;
+    private Date endDate;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -41,10 +45,32 @@ public class PromotionalCode {
         this.rate = rate;
     }
 
+    public PromotionalCode(String title, String description, PromotionalCodeType type, BigDecimal rate, Date startDate, Date endDate) {
+        this(title, description, type, rate);
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public PromotionalCode() {
 
 
     }
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
     @Column(unique = true)
     public String getTitle() {
         return title;
