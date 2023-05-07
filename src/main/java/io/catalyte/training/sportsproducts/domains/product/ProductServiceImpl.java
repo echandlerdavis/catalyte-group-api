@@ -274,7 +274,7 @@ public class ProductServiceImpl implements ProductService {
             if (productMap.get(field) == null) {
                 nullFields.add(field);
             }
-            if (productMap.get(field) == "") {
+            if (productMap.get(field).toString().trim() == "") {
                 emptyFields.add(field);
             }
         });
