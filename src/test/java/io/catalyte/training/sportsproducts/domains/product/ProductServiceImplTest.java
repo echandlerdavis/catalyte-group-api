@@ -83,7 +83,8 @@ public class ProductServiceImplTest {
                 "po-6123888",
                 "sc88763",
                 "#f092b0",
-                "#51b46d");
+                "#51b46d",
+            {{}, {}});
         testProduct2 = new Product(
                 "Test2",
                 "product created for testing purposes",
@@ -100,7 +101,8 @@ public class ProductServiceImplTest {
                 "po-2151664",
                 "sc72141",
                 "#3079ab",
-                "sc72141");
+                "sc72141",
+            {{},{}});
 
         testProductsList.add(testProduct1);
         testProductsList.add(testProduct2);
