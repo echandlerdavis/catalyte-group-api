@@ -135,6 +135,30 @@ public class DemoData implements CommandLineRunner {
             BigDecimal.valueOf(25),
             today,
             end));
+    cal.add(Calendar.DATE, -2);
+    promotionalCodeRepository.save(
+        new PromotionalCode(
+            "ExpiredCode",
+            "Expired test",
+            PromotionalCodeType.FLAT,
+            BigDecimal.valueOf(10),
+            today,
+            cal.getTime()
+        )
+    );
+    cal.add(Calendar.DATE, 2);
+    Date tomorrow = cal.getTime();
+    cal.add(Calendar.DATE, 1);
+    promotionalCodeRepository.save(
+        new PromotionalCode(
+            "InactiveCode",
+            "Inactive test",
+            PromotionalCodeType.PERCENT,
+            BigDecimal.valueOf(10),
+            tomorrow,
+            cal.getTime()
+        )
+    );
 
   }
 
