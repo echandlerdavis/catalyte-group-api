@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.product;
 
 import io.catalyte.training.sportsproducts.data.ProductFactory;
+import io.catalyte.training.sportsproducts.domains.review.Review;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import org.junit.Before;
@@ -37,10 +38,14 @@ public class ProductServiceImplTest {
     Product testProduct1;
 
     Product testProduct2;
-
+    Review testReview1;
+    Review testReview2;
+    Review testReview3;
     ProductFactory productFactory;
 
     List<Product> testProductsList = new ArrayList<>();
+    List<Review> testReviewsListForProduct1 = new ArrayList<>();
+    List<Review> testReviewsListForProduct2 = new ArrayList<>();
 
     List<String> brands = new ArrayList<>();
     List<String> categories = new ArrayList<>();
@@ -67,6 +72,34 @@ public class ProductServiceImplTest {
 
         // Create Two Random Test Products
         productFactory = new ProductFactory();
+        testReview1 = new Review(
+            "Test Review 1",
+            4,
+            "This is an example of a review for test product 1",
+            "2005-11-01",
+            "testUserNameOne",
+            testProduct1
+            );
+        testReview2 = new Review(
+            "Test Review 2",
+            2,
+            "This is a second example of a review for test product 1",
+            "2007-25-03",
+            "testUserNameTwo",
+            testProduct1
+        );
+        testReview3 = new Review(
+            "Test Review 3",
+            5,
+            "This is an example of a review for test product 2",
+            "2010-13-01",
+            "testUserNameThree",
+            testProduct2
+        );
+        testReviewsListForProduct1.add(testReview1);
+        testReviewsListForProduct1.add(testReview2);
+        testReviewsListForProduct2.add(testReview3);
+
         testProduct1 = new Product(
                 "Test1",
                 "product created for testing purposes",
@@ -84,7 +117,8 @@ public class ProductServiceImplTest {
                 "sc88763",
                 "#f092b0",
                 "#51b46d",
-            {{}, {}});
+            testReviewsListForProduct1
+            );
         testProduct2 = new Product(
                 "Test2",
                 "product created for testing purposes",
@@ -102,7 +136,8 @@ public class ProductServiceImplTest {
                 "sc72141",
                 "#3079ab",
                 "sc72141",
-            {{},{}});
+            testReviewsListForProduct2
+            );
 
         testProductsList.add(testProduct1);
         testProductsList.add(testProduct2);
