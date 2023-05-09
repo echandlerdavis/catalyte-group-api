@@ -204,16 +204,16 @@ public class ProductServiceImpl implements ProductService {
         List<String> nullFields = getFieldsEmptyOrNull(product).get("nullFields");
         Boolean quantityIsValid = validateProductQuantity(product);
 
-        if (!priceIsValid) {
-            errors.add(StringConstants.PRODUCT_PRICE_INVALID);
+        if (!nullFields.isEmpty()) {
+            errors.add(StringConstants.PRODUCT_FIELDS_NULL(nullFields));
         }
 
         if (!emptyFields.isEmpty()) {
             errors.add(StringConstants.PRODUCT_FIELDS_EMPTY(emptyFields));
         }
 
-        if (!nullFields.isEmpty()) {
-            errors.add(StringConstants.PRODUCT_FIELDS_NULL(nullFields));
+        if (!priceIsValid) {
+            errors.add(StringConstants.PRODUCT_PRICE_INVALID);
         }
 
         if (!quantityIsValid) {
@@ -234,11 +234,14 @@ public class ProductServiceImpl implements ProductService {
      * @return boolean if product price is valid
      */
     public Boolean validateProductPrice(Product product) {
+        if (product.getPrice() != null) {
         //Split price by the decimal
         String[] priceString = String.valueOf(product.getPrice()).split("\\.");
         Boolean priceMoreThan2Decimals = priceString[1].length() > 2;
         Boolean priceLessThanZero = product.getPrice() > 0;
         return priceLessThanZero || priceMoreThan2Decimals;
+        }
+        return false;
     }
 
     /**
@@ -247,7 +250,10 @@ public class ProductServiceImpl implements ProductService {
      * @return boolean if product has valid quantity
      */
     public Boolean validateProductQuantity(Product product) {
-        return product.getQuantity() >= 0;
+        if (product.getQuantity() != null) {
+            return product.getQuantity() >= 0;
+        }
+        return false;
     }
 
     /**
