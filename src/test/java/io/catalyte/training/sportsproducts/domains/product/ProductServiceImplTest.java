@@ -84,34 +84,6 @@ public class ProductServiceImplTest {
 
         // Create Two Random Test Products
         productFactory = new ProductFactory();
-        testReview1 = new Review(
-            "Test Review 1",
-            4,
-            "This is an example of a review for test product 1",
-            "2005-11-01",
-            "testUserNameOne",
-            testProduct1
-            );
-        testReview2 = new Review(
-            "Test Review 2",
-            2,
-            "This is a second example of a review for test product 1",
-            "2007-25-03",
-            "testUserNameTwo",
-            testProduct1
-        );
-        testReview3 = new Review(
-            "Test Review 3",
-            5,
-            "This is an example of a review for test product 2",
-            "2010-13-01",
-            "testUserNameThree",
-            testProduct2
-        );
-        testReviewsListForProduct1.add(testReview1);
-        testReviewsListForProduct1.add(testReview2);
-        testReviewsListForProduct2.add(testReview3);
-
         testProduct1 = new Product(
                 "Test1",
                 "product created for testing purposes",
@@ -153,6 +125,35 @@ public class ProductServiceImplTest {
 
         testProductsList.add(testProduct1);
         testProductsList.add(testProduct2);
+
+        //Create two random reviews to construct test products.
+        testReview1 = new Review(
+            "Test Review 1",
+            4,
+            "This is an example of a review for test product 1",
+            "2005-11-01",
+            "testUserNameOne",
+            testProduct1
+        );
+        testReview2 = new Review(
+            "Test Review 2",
+            2,
+            "This is a second example of a review for test product 1",
+            "2007-25-03",
+            "testUserNameTwo",
+            testProduct1
+        );
+        testReview3 = new Review(
+            "Test Review 3",
+            5,
+            "This is an example of a review for test product 2",
+            "2010-13-01",
+            "testUserNameThree",
+            testProduct2
+        );
+        testReviewsListForProduct1.add(testReview1);
+        testReviewsListForProduct1.add(testReview2);
+        testReviewsListForProduct2.add(testReview3);
     }
 
     /**
