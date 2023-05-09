@@ -135,29 +135,14 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
        try {
            PromotionalCode code = promotionalCodeRepository.findByTitle(title);
            if (code != null) {
-               //add stuff to handle an expired or not started promocode
-               Date today = new Date();
-               String errorMessage = null;
-               if (today.compareTo(code.getStartDate()) < 0) {
-                   //error for when code hasn't started
-                   errorMessage = String.format(
-                       StringConstants.EARLY_CODE_FORMAT,
-                       code.getTitle(),
-                       code.getStartDate().toString());
-                   logger.error(errorMessage);
-               } else if (today.compareTo(code.getEndDate()) > 0) {
-                   //error for when code is expired
-                   errorMessage = String.format(
-                       StringConstants.EXPIRED_CODE_FORMAT,
-                       code.getTitle());
-                   logger.error(errorMessage);
-               }
-               if (errorMessage != null) {
-                   throw new BadRequest(errorMessage);
+               //if code is not active today throw error
+               if (!activeNow(code)) {
+                   logger.error(StringConstants.INVALID_CODE);
+                   throw new BadRequest(StringConstants.INVALID_CODE);
                }
                return code;
            }
-
+           //if code is null throw error
            logger.info(StringConstants.INVALID_CODE);
            throw new ResourceNotFound(StringConstants.INVALID_CODE);
        } catch (DataAccessException e) {
@@ -211,6 +196,39 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
             // Throw a ServerError exception with the caught exception's message
             throw new ServerError(e.getMessage());
         }
+    }
+
+    /**
+     * Validate that the given promotional code is valid today.
+     * @param title
+     * @return boolean
+     * @throws ResourceNotFound if the promotional code does not exist
+     * @throws ServerError if service cannot connect to the database
+     */
+    @Override
+    public boolean promotionalCodeIsActive(String title) throws ResourceNotFound, ServerError{
+        PromotionalCode code = null;
+        try {
+            code = promotionalCodeRepository.findByTitle(title);
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            throw new ServerError(e.getMessage());
+        }
+        if (code != null) {
+            return activeNow(code);
+        } else {
+            throw new ResourceNotFound(StringConstants.INVALID_CODE);
+        }
+    }
+
+    /**
+     * check that code is active now
+     * @param code PromtionalCode
+     * @return boolean
+     */
+    private boolean activeNow(PromotionalCode code) {
+        Date today = new Date();
+        return today.compareTo(code.getStartDate()) > 0 && today.compareTo(code.getEndDate()) < 0;
     }
 
 }

@@ -32,7 +32,5 @@ public class StringConstants {
   public static final String AUTHORIZATION_HEADER = "Authorization";
 
   //Error Messages - PromotionalCodes
-  public static final String INVALID_CODE = "Invalid code";
-  public static final String EXPIRED_CODE_FORMAT = "Promotional Code %s has expired";
-  public static final String EARLY_CODE_FORMAT = "Promotional Code %s is not valid until %s";
+  public static final String INVALID_CODE = "This promotional code is invalid at this time.";
 }
