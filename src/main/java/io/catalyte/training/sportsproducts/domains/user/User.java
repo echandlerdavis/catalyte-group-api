@@ -20,9 +20,9 @@ public class User {
   private String firstName;
   private String lastName;
   @Embedded
-  BillingAddress billingAddress;
+  private BillingAddress billingAddress;
 
-  Date lastActive;
+  private Date lastActive;
 
   public User() {
     // Empty Constructor
