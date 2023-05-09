@@ -33,4 +33,6 @@ public class StringConstants {
 
   //Error Messages - PromotionalCodes
   public static final String INVALID_CODE = "Invalid code";
+  public static final String EXPIRED_CODE_FORMAT = "Promotional Code %s has expired";
+  public static final String EARLY_CODE_FORMAT = "Promotional Code %s is not valid until %s";
 }

@@ -69,6 +69,16 @@ public class ExceptionController {
         ExceptionResponse response = new ExceptionResponse(UNPROCESSABLE_ITEMS, new Date(),exception.getMessage(), exception.getUnprocessed() );
         return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
     }
+    @ExceptionHandler(ExpiredCode.class)
+    protected ResponseEntity<ExceptionResponse> expiredCode(ExpiredCode exception) throws JsonProcessingException {
+        ExceptionResponse response = new ExceptionResponse(INVALID_CODE, new Date(),exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(EarlyCode.class)
+    protected ResponseEntity<ExceptionResponse> earlyCode(EarlyCode exception) throws JsonProcessingException {
+        ExceptionResponse response = new ExceptionResponse(INVALID_CODE, new Date(),exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
 
     /**
      * @param ex exception response.
