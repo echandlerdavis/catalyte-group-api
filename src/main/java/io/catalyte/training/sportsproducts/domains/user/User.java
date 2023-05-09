@@ -14,15 +14,11 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
-  @Column
-  String email;
-  @Column
-  String role;
-  @Column
-  String firstName;
-  @Column
-  String lastName;
+  private Long id;
+  private String email;
+  private String role;
+  private String firstName;
+  private String lastName;
   @Embedded
   BillingAddress billingAddress;
 
