@@ -3,8 +3,10 @@ package io.catalyte.training.sportsproducts.domains.purchase;
 import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductService;
+import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeService;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
+import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import io.catalyte.training.sportsproducts.exceptions.UnprocessableContent;
 import java.text.ParseException;
@@ -31,10 +33,11 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Autowired
     public PurchaseServiceImpl(PurchaseRepository purchaseRepository, ProductService productService,
-                               LineItemRepository lineItemRepository) {
+                               LineItemRepository lineItemRepository, PromotionalCodeService promoCodeService) {
         this.purchaseRepository = purchaseRepository;
         this.productService = productService;
         this.lineItemRepository = lineItemRepository;
+        this.promoCodeService = promoCodeService;
     }
 
     /**
@@ -80,6 +83,20 @@ public class PurchaseServiceImpl implements PurchaseService {
       validateCreditCard(creditCard);
       //product validation
       validateProducts(newPurchase);
+      //promocode validation
+      PromotionalCode appliedCode = newPurchase.getPromoCode();
+      if (appliedCode != null) {
+        try{
+          PromotionalCode actualCode = promoCodeService.getPromotionalCodeByTitle(appliedCode.getTitle());
+          //ensure that the promoCode is valid by replacing the client supplied one with the
+          //one from the database
+          newPurchase.setPromoCode(actualCode);
+        } catch (BadRequest | ResourceNotFound e) {
+          //this means the promocode is either not active or not found
+          newPurchase.setPromoCode(null);
+        }
+
+      }
       //Handle ID received from UI and create savedPurchase
       newPurchase.setId(null);
       Purchase savedPurchase;
