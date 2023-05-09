@@ -2,8 +2,6 @@ package io.catalyte.training.sportsproducts.domains.promotions;
 
 import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
-import io.catalyte.training.sportsproducts.exceptions.EarlyCode;
-import io.catalyte.training.sportsproducts.exceptions.ExpiredCode;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.util.Date;
@@ -139,21 +137,23 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
            if (code != null) {
                //add stuff to handle an expired or not started promocode
                Date today = new Date();
+               String errorMessage = null;
                if (today.compareTo(code.getStartDate()) < 0) {
                    //error for when code hasn't started
-                   final String message = String.format(
+                   errorMessage = String.format(
                        StringConstants.EARLY_CODE_FORMAT,
                        code.getTitle(),
                        code.getStartDate().toString());
-                   logger.error(message);
-                   throw new EarlyCode(message);
+                   logger.error(errorMessage);
                } else if (today.compareTo(code.getEndDate()) > 0) {
                    //error for when code is expired
-                   final String message = String.format(
+                   errorMessage = String.format(
                        StringConstants.EXPIRED_CODE_FORMAT,
                        code.getTitle());
-                   logger.error(message);
-                   throw new ExpiredCode(message);
+                   logger.error(errorMessage);
+               }
+               if (errorMessage != null) {
+                   throw new BadRequest(errorMessage);
                }
                return code;
            }
