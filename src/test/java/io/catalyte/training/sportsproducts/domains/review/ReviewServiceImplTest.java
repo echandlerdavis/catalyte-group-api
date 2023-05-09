@@ -3,10 +3,12 @@ package io.catalyte.training.sportsproducts.domains.review;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import io.catalyte.training.sportsproducts.data.ProductFactory;
 import io.catalyte.training.sportsproducts.domains.product.Product;
+import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,8 @@ public class ReviewServiceImplTest {
 
   @Mock
   private ReviewRepository reviewRepository;
+//  @Mock
+//  private ProductRepository productRepository;
 
   Review testReview1;
   Review testReview2;
@@ -50,9 +54,7 @@ public class ReviewServiceImplTest {
     MockitoAnnotations.initMocks(this);
 
     setTestReviews();
-    testReviewsForProduct1List.add(testReview1);
-    testReviewsForProduct1List.add(testReview2);
-    testReviewsForProduct2List.add(testReview3);
+
 
     when(reviewRepository.findByProductId(anyLong())).thenReturn(testReviewsForProduct1List);
 
@@ -87,7 +89,10 @@ public class ReviewServiceImplTest {
         "testUserNameThree",
         testProduct2
     );
-    
+    testReviewsForProduct1List.add(testReview1);
+    testReviewsForProduct1List.add(testReview2);
+    testReviewsForProduct2List.add(testReview3);
+
     testProduct1.setReviews(testReviewsForProduct1List);
     testProduct2.setReviews(testReviewsForProduct2List);
 
@@ -102,7 +107,7 @@ public class ReviewServiceImplTest {
 
   @Test
   public void getAllReviewsByProductIdThrowsError(){
-    when(reviewRepository.findByProductId(anyLong())).thenThrow(DataAccessException.class);
+    doThrow(new DataAccessException("TEST EXCEPTION") {}).when(reviewRepository).findByProductId(anyLong());
     assertThrows(ServerError.class, () -> reviewServiceImpl.getAllReviewsByProductId(123L));
   }
 
