@@ -13,7 +13,7 @@ public class ReviewServiceImpl implements ReviewService {
 
   private final Logger logger = LogManager.getLogger(ReviewServiceImpl.class);
 
-  private final ReviewRepository reviewRepository;
+  ReviewRepository reviewRepository;
 
   @Autowired
   public ReviewServiceImpl(ReviewRepository reviewRepository) {

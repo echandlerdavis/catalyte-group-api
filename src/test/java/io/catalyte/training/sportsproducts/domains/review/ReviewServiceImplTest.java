@@ -36,8 +36,6 @@ public class ReviewServiceImplTest {
 
   @Mock
   private ReviewRepository reviewRepository;
-//  @Mock
-//  private ProductRepository productRepository;
 
   Review testReview1;
   Review testReview2;
