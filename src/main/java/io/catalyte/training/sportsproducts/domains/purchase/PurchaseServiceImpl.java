@@ -4,11 +4,13 @@ import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductService;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
+import io.catalyte.training.sportsproducts.exceptions.MultipleUnprocessableContent;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import io.catalyte.training.sportsproducts.exceptions.UnprocessableContent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
 import java.util.List;
@@ -145,7 +147,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (lineItemSet == null || lineItemSet.size() ==0 ) throw new BadRequest(StringConstants.PURCHASE_HAS_NO_PRODUCTS);
 
         // Set list of products that are not able to be processed
-        List<Product> unprocessable = new ArrayList<>();
+        List<Product> inactiveProducts = new ArrayList<>();
         List<Product> insufficientStock = new ArrayList<>();
 
         //get products with insufficient inventory
@@ -159,19 +161,29 @@ public class PurchaseServiceImpl implements PurchaseService {
 
             // if product status is not active add the product to list of items unable to be processed
             if (product.getActive() == null || !product.getActive()) {
-                unprocessable.add(product);
+                inactiveProducts.add(product);
             }
             if (lockedProducts.get(product.getId()).getQuantity() < lineItem.getQuantity()) {
               insufficientStock.add(product);
             }
 
         });
+        if (inactiveProducts.size() > 0 && insufficientStock.size() > 0){
+          Map<String, List<Product>> unprocessableMap = new HashMap();
+          unprocessableMap.put(StringConstants.PRODUCT_INACTIVE, inactiveProducts);
+          unprocessableMap.put(StringConstants.INSUFFICIENT_INVENTORY, insufficientStock);
 
-        // If unprocessable list has items throw Unprocessable Content error with list of products
-        if (unprocessable.size() > 0) {
-            throw new UnprocessableContent(StringConstants.PRODUCT_INACTIVE, unprocessable);
+          throw new MultipleUnprocessableContent(StringConstants.UNPROCESSABLE_ITEMS, unprocessableMap);
         }
-        //If nothing is unprocessable, update database inventory
+
+        if (inactiveProducts.size() > 0) {
+          throw new UnprocessableContent(StringConstants.PRODUCT_INACTIVE, inactiveProducts);
+        }
+
+        if (insufficientStock.size() > 0) {
+          throw new UnprocessableContent(StringConstants.INSUFFICIENT_INVENTORY, insufficientStock);
+        }
+      //if all validation passes, dock inventory qtys on the server
       lineItemSet.forEach(lineItem -> {
         Product product = lockedProducts.get(lineItem.getProduct().getId());
         product.setQuantity(product.getQuantity() - lineItem.getQuantity());
