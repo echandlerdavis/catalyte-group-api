@@ -9,9 +9,12 @@ import io.catalyte.training.sportsproducts.exceptions.UnprocessableContent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,6 +145,9 @@ public class PurchaseServiceImpl implements PurchaseService {
         // Set list of products that are not able to be processed
         List<Product> unprocessable = new ArrayList<>();
 
+        //get products with insufficient inventory
+        List<Product> backorderedProducts = findInsufficientlyStockedProducts(lineItemSet);
+
         // Loop through each lineItem for purchase to get product info
         lineItemSet.forEach(lineItem -> {
 
@@ -156,7 +162,11 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         // If unprocessable list has items throw Unprocessable Content error with list of products
         if (unprocessable.size() > 0) {
-            throw new UnprocessableContent(StringConstants.PRODUCT_INACTIVE, unprocessable);
+            throw new UnprocessableContent(StringConstants.PRODUCT_INACTIVE,
+                Stream.concat(unprocessable.stream(),
+                    backorderedProducts.stream())
+                    .collect(
+                Collectors.toList()));
         }
     }
 
@@ -263,6 +273,23 @@ public class PurchaseServiceImpl implements PurchaseService {
         if (expired) {
             throw new BadRequest(StringConstants.CARD_EXPIRED);
         }
+    }
+
+    public List<Product> findInsufficientlyStockedProducts(Set<LineItem> lineItems){
+      List<Long> ids = lineItems.stream()
+          .map(p -> p.getProduct().getId())
+          .collect(Collectors.toList());
+      List<Product> currentProducts = productService.getProductsByIds(ids);
+      Map<Long, Integer> inventoryMap = currentProducts
+          .stream()
+          .collect(
+          Collectors.toMap(
+              Product::getId,
+              Product::getQuantity));
+      return lineItems.stream()
+              .filter(l -> inventoryMap.get(l.getProduct().getId()) < l.getQuantity())
+              .map(l -> l.getProduct())
+              .collect(Collectors.toList());
     }
 
 }
