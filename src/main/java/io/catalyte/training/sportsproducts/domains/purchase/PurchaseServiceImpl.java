@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,8 +79,6 @@ public class PurchaseServiceImpl implements PurchaseService {
       //credit card validation
       CreditCard creditCard = newPurchase.getCreditCard();
       validateCreditCard(creditCard);
-      //product validation
-      validateProducts(newPurchase);
       //Handle ID received from UI and create savedPurchase
       newPurchase.setId(null);
       Purchase savedPurchase;
@@ -96,6 +94,8 @@ public class PurchaseServiceImpl implements PurchaseService {
 
       // after the purchase is persisted and has an id, we need to handle its lineitems and persist them as well
       handleLineItems(newPurchase);
+      //product validation
+      validateProducts(newPurchase);
       savedPurchase.setProducts(lineItemRepository.findByPurchase(newPurchase));
 
     return savedPurchase;
@@ -113,12 +113,14 @@ public class PurchaseServiceImpl implements PurchaseService {
             itemsList.forEach(lineItem -> {
 
                 // retrieve full product information from the database
-                Product product = productService.getProductById(lineItem.getProduct().getId());
+                Product product = productService.getProductById(lineItem.getId());
 
                 // set the product info into the lineitem
                 if (product != null) {
                     lineItem.setProduct(product);
                 }
+                //get rid of the id
+              lineItem.setId(null);
 
                 // set the purchase on the line item
                 lineItem.setPurchase(purchase);
@@ -146,28 +148,30 @@ public class PurchaseServiceImpl implements PurchaseService {
         List<Product> unprocessable = new ArrayList<>();
 
         //get products with insufficient inventory
-        List<Product> backorderedProducts = findInsufficientlyStockedProducts(lineItemSet);
+        Map<Long, Product> lockedProducts = getProductMap(lineItemSet);
 
         // Loop through each lineItem for purchase to get product info
         lineItemSet.forEach(lineItem -> {
 
             // retrieve full product information from the database
-            Product product = productService.getProductById(lineItem.getProduct().getId());
+            Product product = lockedProducts.get(lineItem.getProduct().getId());
 
             // if product status is not active add the product to list of items unable to be processed
-            if (product.getActive() == null || !product.getActive()) {
+            if (product.getActive() == null || !product.getActive() || lineItem.getQuantity() > product.getQuantity()) {
                 unprocessable.add(product);
             }
         });
 
         // If unprocessable list has items throw Unprocessable Content error with list of products
         if (unprocessable.size() > 0) {
-            throw new UnprocessableContent(StringConstants.PRODUCT_INACTIVE,
-                Stream.concat(unprocessable.stream(),
-                    backorderedProducts.stream())
-                    .collect(
-                Collectors.toList()));
+            throw new UnprocessableContent(StringConstants.PRODUCT_INACTIVE, unprocessable);
         }
+        //If nothing is unprocessable, update database inventory
+      lineItemSet.forEach(lineItem -> {
+        Product product = lockedProducts.get(lineItem.getProduct().getId());
+        product.setQuantity(product.getQuantity() - lineItem.getQuantity());
+        productService.saveProduct(product);
+      });
     }
 
     /**
@@ -275,21 +279,12 @@ public class PurchaseServiceImpl implements PurchaseService {
         }
     }
 
-    public List<Product> findInsufficientlyStockedProducts(Set<LineItem> lineItems){
+    public Map<Long, Product> getProductMap(Set<LineItem> lineItems){
       List<Long> ids = lineItems.stream()
           .map(p -> p.getProduct().getId())
           .collect(Collectors.toList());
-      List<Product> currentProducts = productService.getProductsByIds(ids);
-      Map<Long, Integer> inventoryMap = currentProducts
-          .stream()
-          .collect(
-          Collectors.toMap(
-              Product::getId,
-              Product::getQuantity));
-      return lineItems.stream()
-              .filter(l -> inventoryMap.get(l.getProduct().getId()) < l.getQuantity())
-              .map(l -> l.getProduct())
-              .collect(Collectors.toList());
+      return productService.getProductsByIds(ids).stream().collect(Collectors
+          .toMap(Product::getId, Function.identity()));
     }
 
 }
