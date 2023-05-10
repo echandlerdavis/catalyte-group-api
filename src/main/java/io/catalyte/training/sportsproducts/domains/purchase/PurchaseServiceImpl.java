@@ -146,6 +146,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         // Set list of products that are not able to be processed
         List<Product> unprocessable = new ArrayList<>();
+        List<Product> insufficientStock = new ArrayList<>();
 
         //get products with insufficient inventory
         Map<Long, Product> lockedProducts = getProductMap(lineItemSet);
@@ -157,9 +158,13 @@ public class PurchaseServiceImpl implements PurchaseService {
             Product product = lockedProducts.get(lineItem.getProduct().getId());
 
             // if product status is not active add the product to list of items unable to be processed
-            if (product.getActive() == null || !product.getActive() || lineItem.getQuantity() > product.getQuantity()) {
+            if (product.getActive() == null || !product.getActive()) {
                 unprocessable.add(product);
             }
+            if (lockedProducts.get(product.getId()).getQuantity() < lineItem.getQuantity()) {
+              insufficientStock.add(product);
+            }
+
         });
 
         // If unprocessable list has items throw Unprocessable Content error with list of products
