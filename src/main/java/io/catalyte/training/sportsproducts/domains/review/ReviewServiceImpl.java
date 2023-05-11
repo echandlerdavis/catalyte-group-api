@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class provides the implementation for the ReviewService interface.
+ */
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
@@ -20,6 +23,11 @@ public class ReviewServiceImpl implements ReviewService {
     this.reviewRepository = reviewRepository;
   }
 
+  /**
+   * Retrieves all reviews from the database attributed to a specific product id.
+   * @param productId - the id of the product the review belongs to
+   * @return - a list of reviews belonging to a product with the given product id.
+   */
   public List<Review> getAllReviewsByProductId(Long productId) {
     try {
       return reviewRepository.findByProductId(productId);

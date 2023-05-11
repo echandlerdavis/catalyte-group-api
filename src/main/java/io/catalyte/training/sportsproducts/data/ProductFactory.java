@@ -263,18 +263,38 @@ public class ProductFactory {
     return randomGenerator.nextBoolean();
   }
 
+  /**
+   * Generates random review content.
+   *
+   * @return - a string of review content.
+   */
   public static String getReviewContent(){
     return reviews[randomGenerator.nextInt(reviews.length)];
   }
 
+  /**
+   * Generates a random userName for a review.
+   *
+   * @return - a string user name
+   */
   public static String getReviewUserName(){
     return reviewUserNames[randomGenerator.nextInt(reviewUserNames.length)];
   }
 
+  /**
+   * Generates random rating between 1 and 5.
+   *
+   * @return - an integer between 1 and 5.
+   */
   public static int getReviewRating(){
     return randomGenerator.nextInt(4) + 1;
   }
 
+  /**
+   * Generates a list of random review objects, length of list between 0 and 10.
+   * @param product - the product the list of reviews will belong to.
+   * @return an array list of review objects.
+   */
   public List<Review> generateRandomReviews(Product product){
 
     List<Review> reviewList = new ArrayList<>();
@@ -287,6 +307,12 @@ public class ProductFactory {
     return reviewList;
   }
 
+  /**
+   * Generates a single Review object.
+   * @param product - the product the review belongs to
+   * @param number - a number to add to the title.
+   * @return a single Review object.
+   */
   public static Review createRandomReview(Product product, int number){
     Review review = new Review();
     review.setTitle("Review #" + number);
