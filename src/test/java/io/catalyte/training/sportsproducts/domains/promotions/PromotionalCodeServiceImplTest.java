@@ -1,6 +1,5 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
-import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import org.junit.Before;
@@ -8,18 +7,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import org.springframework.security.core.parameters.P;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -124,7 +124,13 @@ public class PromotionalCodeServiceImplTest {
     public void isValidCodeReturnsEmptyStringForExistingCodeTest() {
         PromotionalCode testCode = new PromotionalCode("title", "description", PromotionalCodeType.FLAT, BigDecimal.valueOf(5));
     when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(testCode);
-
+        Calendar cal = Calendar.getInstance();
+        Date startDate = new Date();
+        cal.setTime(startDate);
+        testCode.setStartDate(startDate);
+        cal.add(Calendar.DATE, 1);
+        Date endDate = cal.getTime();
+        testCode.setEndDate(endDate);
     PromotionalCode expected = testCode;
     PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("valid title");
 
