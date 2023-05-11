@@ -24,6 +24,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Test class for {@link PromotionalCodeController}.
  */
@@ -53,6 +56,13 @@ public class PromotionsAPITest {
         type = PromotionalCodeType.FLAT;
         rate = BigDecimal.valueOf(10.00);
         testCode = new PromotionalCode(title, description, type, rate);
+        Calendar cal = Calendar.getInstance();
+        Date startDate = new Date();
+        cal.setTime(startDate);
+        testCode.setStartDate(startDate);
+        cal.add(Calendar.DATE, 1);
+        Date endDate = cal.getTime();
+        testCode.setEndDate(endDate);
         mapper = new ObjectMapper();
     }
     @After
@@ -79,6 +89,9 @@ public class PromotionsAPITest {
 
     @Test
     public void getByTitleReturns200StatusTest() throws Exception {
+        System.out.println("testCode = " + testCode.getEndDate());
+
+        savePromotionalCode(testCode);
         mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
             .andExpect(MockMvcResultMatchers.status().isOk());
     }

@@ -4,6 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * A DTO (Data Transfer Object) representing the input data for creating a promotional code.
@@ -22,6 +23,9 @@ public class PromotionalCodeDTO {
     @NotNull
     @Positive
     private BigDecimal rate;
+
+    private Date startDate;
+    private Date endDate;
 
     /**
      * Constructs a new PromotionalCodeDTO instance.
@@ -112,5 +116,21 @@ public class PromotionalCodeDTO {
      */
     public void setRate(BigDecimal rate) {
         this.rate = rate;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }
