@@ -168,6 +168,9 @@ public class PurchaseServiceImpl implements PurchaseService {
             }
 
         });
+        if (inactiveProducts.size() > 0 || insufficientStock.size() > 0) {
+          logger.error(StringConstants.UNPROCESSABLE_ITEMS);
+        }
         if (inactiveProducts.size() > 0 && insufficientStock.size() > 0){
           Map<String, List<Product>> unprocessableMap = new HashMap();
           unprocessableMap.put(StringConstants.PRODUCT_INACTIVE, inactiveProducts);
