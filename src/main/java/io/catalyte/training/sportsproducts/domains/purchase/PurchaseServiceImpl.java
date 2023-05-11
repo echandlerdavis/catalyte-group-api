@@ -115,7 +115,7 @@ public class PurchaseServiceImpl implements PurchaseService {
             itemsList.forEach(lineItem -> {
 
                 // retrieve full product information from the database
-                Product product = productService.getProductById(lineItem.getId());
+                Product product = productService.getProductById(lineItem.getProduct().getId());
 
                 // set the product info into the lineitem
                 if (product != null) {
