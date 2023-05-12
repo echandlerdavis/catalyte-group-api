@@ -123,7 +123,7 @@ public class PromotionalCodeServiceImplTest {
     @Test
     public void isValidCodeReturnsEmptyStringForExistingCodeTest() {
         PromotionalCode testCode = new PromotionalCode("title", "description", PromotionalCodeType.FLAT, BigDecimal.valueOf(5));
-    when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(testCode);
+        testCode.setId(1L);
         Calendar cal = Calendar.getInstance();
         Date startDate = new Date();
         cal.setTime(startDate);
@@ -131,10 +131,17 @@ public class PromotionalCodeServiceImplTest {
         cal.add(Calendar.DATE, 1);
         Date endDate = cal.getTime();
         testCode.setEndDate(endDate);
-    PromotionalCode expected = testCode;
-    PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("valid title");
+        when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(testCode);
+        PromotionalCode expected = testCode;
+        System.out.println(expected);
+        System.out.println(expected.getStartDate().toString());
+        System.out.println(expected.getEndDate().toString());
+        PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("valid title");
+        System.out.println(actual);
+        System.out.println(actual.getStartDate().toString());
+        System.out.println(actual.getEndDate().toString());
 
-    assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
     @Test(expected = ResourceNotFound.class)
     public void getPromotionalCodeByTitleThrowsResourceNotFoundForNonExistingTitleTest() {
