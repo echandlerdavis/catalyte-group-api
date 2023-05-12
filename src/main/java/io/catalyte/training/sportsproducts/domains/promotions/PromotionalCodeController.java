@@ -79,6 +79,6 @@ public class PromotionalCodeController {
         return new ResponseEntity<>(promotionalCodeService.getPromotionalCodeByTitle(title), HttpStatus.OK);
     }
 
-    public static class DuplicatePromoCodeException extends Exception {
-    }
+//    public static class DuplicatePromoCodeException extends Exception {
+//    }
 }

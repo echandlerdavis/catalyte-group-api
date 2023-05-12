@@ -48,6 +48,8 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
         promotionalCode.setDescription(promotionalCodeDTO.getDescription());
         promotionalCode.setType(promotionalCodeDTO.getType());
         promotionalCode.setRate(promotionalCodeDTO.getRate());
+        promotionalCode.setStartDate(promotionalCodeDTO.getStartDate());
+        promotionalCode.setEndDate(promotionalCodeDTO.getEndDate());
 
         //check for that title is available
         PromotionalCode existingTitle = promotionalCodeRepository.findByTitle(promotionalCode.getTitle());
@@ -131,7 +133,7 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
      * @return The promotional code with the given Title, or null if no such promotional code exist.
      */
     @Override
-    public PromotionalCode getPromotionalCodeByTitle(String title) {
+    public PromotionalCode getPromotionalCodeByTitle(String title)  throws ResourceNotFound {
        try {
            PromotionalCode code = promotionalCodeRepository.findByTitle(title);
            if (code != null) {
@@ -227,6 +229,9 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
      * @return boolean
      */
     private boolean activeNow(PromotionalCode code) {
+        if (code.getStartDate() == null || code.getEndDate() == null) {
+            return false;
+        }
         Date today = new Date();
         return today.compareTo(code.getStartDate()) > 0 && today.compareTo(code.getEndDate()) < 0;
     }

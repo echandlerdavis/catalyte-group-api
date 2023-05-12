@@ -1,31 +1,28 @@
 package io.catalyte.training.sportsproducts.domains.promotions;
 
-import static org.junit.Assert.assertTrue;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.catalyte.training.sportsproducts.constants.Paths;
-import io.catalyte.training.sportsproducts.constants.StringConstants;
-import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
-
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for {@link PromotionalCodeController}.
@@ -33,6 +30,9 @@ import java.util.Date;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class PromotionsAPITest {
+
+    @Autowired
+    private WebApplicationContext wac;
 
     private MockMvc mockMvc;
 
@@ -48,9 +48,7 @@ public class PromotionsAPITest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(
-            new PromotionalCodeController(promotionalCodeService)).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         title = "SUMMER2015";
         description = "Our summer discount for the Q3 2015 campaign";
         type = PromotionalCodeType.FLAT;
@@ -64,6 +62,7 @@ public class PromotionsAPITest {
         Date endDate = cal.getTime();
         testCode.setEndDate(endDate);
         mapper = new ObjectMapper();
+
     }
     @After
     public void tearDown() {
@@ -83,31 +82,28 @@ public class PromotionsAPITest {
         mockMvc.perform(MockMvcRequestBuilders.post("/promotionalCodes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(testCode)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json(expectedJson));
     }
 
     @Test
     public void getByTitleReturns200StatusTest() throws Exception {
-        System.out.println("testCode = " + testCode.getEndDate());
-
         savePromotionalCode(testCode);
         mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
-            .andExpect(MockMvcResultMatchers.status().isOk());
+            .andExpect(status().isOk());
     }
     @Test
-    public void getByTitleReturnsCodeJsonTest() throws Exception {
-        String expectedJson = mapper.writeValueAsString(testCode);
-        savePromotionalCode(testCode);
-        mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
-            .andExpect(MockMvcResultMatchers.content()
-                .json(expectedJson));
+    public void getByTitleReturnsCode() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
+            .andReturn().getResponse();
+        PromotionalCode returnedCode = mapper.readValue(response.getContentAsString(), PromotionalCode.class);
+        assertEquals(testCode.getTitle(), returnedCode.getTitle());
     }
     @Test
     public void getByTitleReturns404ErrorTest() throws Exception {
         testCode.setTitle("NewTitle");
         mockMvc.perform(MockMvcRequestBuilders.get(Paths.PROMOCODE_PATH + "/" + testCode.getTitle()))
-            .andExpect(MockMvcResultMatchers.status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 }
 

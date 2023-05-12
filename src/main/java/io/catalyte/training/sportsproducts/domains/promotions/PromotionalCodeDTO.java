@@ -42,6 +42,15 @@ public class PromotionalCodeDTO {
         this.rate = rate;
     }
 
+    public PromotionalCodeDTO(String title, String description, PromotionalCodeType type, BigDecimal rate, Date startDate, Date endDate) {
+        this.title = title;
+        this.description = description;
+        this.type = type;
+        this.rate = rate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public PromotionalCodeDTO() {
 
     }
