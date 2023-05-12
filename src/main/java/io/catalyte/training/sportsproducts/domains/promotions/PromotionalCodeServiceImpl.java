@@ -136,8 +136,6 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
     public PromotionalCode getPromotionalCodeByTitle(String title)  throws ResourceNotFound {
        try {
            PromotionalCode code = promotionalCodeRepository.findByTitle(title);
-           System.out.println("Code received from repo:");
-           System.out.println(code);
            if (code != null) {
                //if code is not active today throw error
                if (!activeNow(code)) {

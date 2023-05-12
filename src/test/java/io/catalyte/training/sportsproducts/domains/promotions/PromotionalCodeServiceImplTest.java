@@ -124,22 +124,21 @@ public class PromotionalCodeServiceImplTest {
     public void isValidCodeReturnsEmptyStringForExistingCodeTest() {
         PromotionalCode testCode = new PromotionalCode("title", "description", PromotionalCodeType.FLAT, BigDecimal.valueOf(5));
         testCode.setId(1L);
+        //set dates
         Calendar cal = Calendar.getInstance();
         Date startDate = new Date();
         cal.setTime(startDate);
-        testCode.setStartDate(startDate);
-        cal.add(Calendar.DATE, 1);
+        cal.add(Calendar.DATE, -5);
+        startDate = cal.getTime();
+        cal.add(Calendar.DATE, 10);
         Date endDate = cal.getTime();
+
+        testCode.setStartDate(startDate);
         testCode.setEndDate(endDate);
+
         when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(testCode);
         PromotionalCode expected = testCode;
-        System.out.println(expected);
-        System.out.println(expected.getStartDate().toString());
-        System.out.println(expected.getEndDate().toString());
         PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("valid title");
-        System.out.println(actual);
-        System.out.println(actual.getStartDate().toString());
-        System.out.println(actual.getEndDate().toString());
 
         assertEquals(expected, actual);
     }
