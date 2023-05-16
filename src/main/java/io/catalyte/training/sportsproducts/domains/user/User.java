@@ -1,10 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
-import io.catalyte.training.sportsproducts.domains.review.Review;
-import java.util.Set;
+import java.util.Date;
 import javax.persistence.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * User entity in database
@@ -15,30 +12,41 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
-  String email;
-  String role;
-  String firstName;
-  String lastName;
-  @OneToMany(mappedBy = "user")
-  @OnDelete(action = OnDeleteAction.CASCADE)
-  Set<Review> reviewsWritten;
+  private Long id;
+  private String email;
+  private String role;
+  private String firstName;
+  private String lastName;
+  @Embedded
+  private BillingAddress billingAddress;
+  private Date lastActive;
 
-  public User() {}
+  public User() {
+    // Empty Constructor
+  }
 
-  public User(Long id, String email, String role, String firstName, String lastName) {
+  public User(String email, String firstName, String lastName, BillingAddress billingAddress) {
+    this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.billingAddress = billingAddress;
+  }
+
+  public User(Long id, String email, String role, String firstName, String lastName, BillingAddress billingAddress) {
     this.id = id;
     this.email = email;
     this.role = role;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.billingAddress = billingAddress;
   }
 
-  public User(String email, String role, String firstName, String lastName) {
+  public User(String email, String role, String firstName, String lastName, BillingAddress billingAddress) {
     this.email = email;
     this.role = role;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.billingAddress = billingAddress;
   }
 
   public Long getId() {
@@ -79,6 +87,22 @@ public class User {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public Date getLastActive() {
+    return lastActive;
+  }
+
+  public void setLastActive(Date lastActive) {
+    this.lastActive = lastActive;
+  }
+
+  public BillingAddress getBillingAddress() {
+    return billingAddress;
+  }
+
+  public void setBillingAddress(BillingAddress billingAddress) {
+    this.billingAddress = billingAddress;
   }
 
   @Override

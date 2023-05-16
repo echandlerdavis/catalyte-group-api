@@ -1,13 +1,14 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
-import io.catalyte.training.sportsproducts.domains.user.User;
-import java.time.Instant;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+/**
+ * A DTO (Data Transfer Object) representing the input data for creating a review.
+ */
 public class ReviewDTO {
   @NotBlank
   private String title;
@@ -17,18 +18,17 @@ public class ReviewDTO {
   private int rating;
   @NotBlank
   private String review;
-  private Instant createdAt;
-  private User user;
+  private String createdAt;
+  private String userName;
   private Product product;
-//  private Long id;
   public ReviewDTO(){};
 
-  public ReviewDTO(String title, int rating, String review, Instant createdAt, User user, Product product) {
+  public ReviewDTO(String title, int rating, String review, String createdAt, String userName, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
-    this.user = user;
+    this.userName = userName;
     this.product = product;
   }
 
@@ -56,20 +56,20 @@ public class ReviewDTO {
     this.review = review;
   }
 
-  public Instant getCreatedAt() {
+  public String getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(Instant createdAt) {
+  public void setCreatedAt(String createdAt) {
     this.createdAt = createdAt;
   }
 
-  public User getUser() {
-    return user;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
   public Product getProduct() {
@@ -79,11 +79,4 @@ public class ReviewDTO {
   public void setProduct(Product product) {
     this.product = product;
   }
-  //  public Long getId() {
-//    return id;
-//  }
-//
-//  public void setId(Long id) {
-//    this.id = id;
-//  }
 }

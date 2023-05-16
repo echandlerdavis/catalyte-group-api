@@ -2,13 +2,11 @@ package io.catalyte.training.sportsproducts.domains.product;
 
 import io.catalyte.training.sportsproducts.domains.review.Review;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -56,7 +54,7 @@ public class Product {
 
   @OneToMany(mappedBy = "product")
   @OnDelete(action = OnDeleteAction.CASCADE)
-  private Set<Review> reviews;
+  private List<Review> reviews;
 
   public Product() {
   }
@@ -66,7 +64,7 @@ public class Product {
       String type, String releaseDate,
       String brand,String imageSrc, String material,
       Integer quantity, Double price, Boolean active, String globalProductCode,
-      String styleNumber, String secondaryColorCode, String primaryColorCode, Set<Review> reviews) {
+      String styleNumber, String secondaryColorCode, String primaryColorCode, List<Review> reviews) {
     this.name = name;
     this.description = description;
     this.demographic = demographic;
@@ -218,11 +216,11 @@ public class Product {
     this.price = price;
   }
 
-  public Set<Review> getReviews() {
+  public List<Review> getReviews() {
     return reviews;
   }
 
-  public void setReviews(Set<Review> reviews) {
+  public void setReviews(List<Review> reviews) {
     this.reviews = reviews;
   }
 
