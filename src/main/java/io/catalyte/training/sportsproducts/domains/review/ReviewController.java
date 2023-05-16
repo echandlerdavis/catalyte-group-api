@@ -43,7 +43,7 @@ public class ReviewController {
   @ResponseStatus(value = HttpStatus.OK)
   public ResponseEntity<Review> postReview(@PathVariable Long productId, @Valid @RequestBody ReviewDTO reviewDTO){
     logger.info("Request received for postReview");
-    return new ResponseEntity<>(reviewService.postReview(productId, reviewDTO), HttpStatus.OK);
+    return new ResponseEntity<>(reviewService.postReview(productId, reviewDTO), HttpStatus.CREATED);
   }
 
 }

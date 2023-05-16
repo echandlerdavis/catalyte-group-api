@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
   List<Review> findByProductId(Long productId);
 
-  List<Review> findByUserId(Long userId);
+  List<Review> findByUserEmail(String userEmail);
 
 }

@@ -20,16 +20,18 @@ public class Review {
   private String review;
   private String createdAt;
   private String userName;
+  private String userEmail;
   @ManyToOne
   @JsonIgnore
   private Product product;
   public Review(){}
-  public Review(String title, int rating, String review, String createdAt, String userName, Product product) {
+  public Review(String title, int rating, String review, String createdAt, String userName, String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
     this.userName = userName;
+    this.userEmail = userEmail;
     this.product = product;
   }
 
@@ -63,6 +65,14 @@ public class Review {
 
   public void setUserName(String userName) {
     this.userName = userName;
+  }
+
+  public String getUserEmail() {
+    return userEmail;
+  }
+
+  public void setUserEmail(String userEmail) {
+    this.userEmail = userEmail;
   }
 
   public int getRating() {

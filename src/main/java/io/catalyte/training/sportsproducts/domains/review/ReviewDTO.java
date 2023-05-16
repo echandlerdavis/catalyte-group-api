@@ -20,15 +20,17 @@ public class ReviewDTO {
   private String review;
   private String createdAt;
   private String userName;
+  private String userEmail;
   private Product product;
   public ReviewDTO(){};
 
-  public ReviewDTO(String title, int rating, String review, String createdAt, String userName, Product product) {
+  public ReviewDTO(String title, int rating, String review, String createdAt, String userName, String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
     this.userName = userName;
+    this.userEmail = userEmail;
     this.product = product;
   }
 
@@ -70,6 +72,14 @@ public class ReviewDTO {
 
   public void setUserName(String userName) {
     this.userName = userName;
+  }
+
+  public String getUserEmail() {
+    return userEmail;
+  }
+
+  public void setUserEmail(String userEmail) {
+    this.userEmail = userEmail;
   }
 
   public Product getProduct() {
