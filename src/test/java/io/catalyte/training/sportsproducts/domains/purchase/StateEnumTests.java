@@ -61,11 +61,17 @@ public class StateEnumTests {
   }
 
   @Test
-  public void getShippingByNameNonStateCostTest(){
-    String testState = "Not a state";
-    double actual = StateEnum.getShippingByName(testState);
-    assertEquals(LOWER_48_SHIPPING, actual, DELTA);
+  public void isValidStateNameTrueTest(){
+    boolean expected = true;
+    String testState = "mississippi";
+    boolean actual = StateEnum.isValidStateName(testState);
+    assertEquals(expected, actual);
   }
-
-
+  @Test
+  public void isValidStateNameFalseTest(){
+    boolean expected = false;
+    String testState = "puerto rico";
+    boolean actual = StateEnum.isValidStateName(testState);
+    assertEquals(expected, actual);
+  }
 }

@@ -93,6 +93,11 @@ public enum StateEnum {
     return BY_FULLNAME.get(testName).shippingCost;
   }
 
+  public static boolean isValidStateName(String stateName){
+    StateEnum state = BY_FULLNAME.get(formatStateName(stateName));
+    return state != null;
+  }
+
   protected static String formatStateName(String string){
     String[] strArray = string.split(" ");
     String cleanedString = "";
