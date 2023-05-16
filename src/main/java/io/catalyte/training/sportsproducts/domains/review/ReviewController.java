@@ -40,7 +40,7 @@ public class ReviewController {
   }
 
   @PostMapping(value = "products/{productId}/reviews")
-  @ResponseStatus(value = HttpStatus.OK)
+  @ResponseStatus(value = HttpStatus.CREATED)
   public ResponseEntity<Review> postReview(@PathVariable Long productId, @Valid @RequestBody ReviewDTO reviewDTO){
     logger.info("Request received for postReview");
     return new ResponseEntity<>(reviewService.postReview(productId, reviewDTO), HttpStatus.CREATED);

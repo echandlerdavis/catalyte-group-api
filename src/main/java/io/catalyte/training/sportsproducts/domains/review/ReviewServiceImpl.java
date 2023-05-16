@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.review;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.catalyte.training.sportsproducts.constants.StringConstants;
+import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
 import io.catalyte.training.sportsproducts.domains.product.ProductService;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
@@ -30,8 +31,9 @@ public class ReviewServiceImpl implements ReviewService {
   ProductService productService;
 
   @Autowired
-  public ReviewServiceImpl(ReviewRepository reviewRepository) {
+  public ReviewServiceImpl(ReviewRepository reviewRepository, ProductService productService) {
     this.reviewRepository = reviewRepository;
+    this.productService = productService;
   }
 
   /**
@@ -49,8 +51,12 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   public Review postReview(Long productId, ReviewDTO reviewDTO){
-//    TODO: add validation to this.
-//    TODO: figure out if you need to set the id, user and createdAt or if that's automatic.
+    List<String> reviewErrors = getReviewErrors(reviewDTO);
+
+    if(!reviewErrors.isEmpty()){
+      throw new BadRequest(String.join("\n", reviewErrors));
+    }
+
     Review review = new Review();
     review.setTitle(reviewDTO.getTitle());
     review.setReview(reviewDTO.getReview());
@@ -82,7 +88,6 @@ public class ReviewServiceImpl implements ReviewService {
       errors.add(StringConstants.REVIEW_FIELDS_EMPTY(emptyFields));
     }
 
-
     return errors;
   }
 
@@ -93,7 +98,12 @@ public class ReviewServiceImpl implements ReviewService {
     List<String> emptyFields = new ArrayList<>();
     List<String> nullFields = new ArrayList<>();
 
-    reviewFields.forEach(field -> reviewFieldNames.add(field.getName()));
+    reviewFields.forEach(field -> {
+      String name = field.getName();
+      if(name != "product") {
+        reviewFieldNames.add(name);
+      }
+    });
 
     ObjectMapper mapper = new ObjectMapper();
     Map reviewMap = mapper.convertValue(reviewDTO, HashMap.class);
