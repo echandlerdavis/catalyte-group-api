@@ -1,7 +1,8 @@
 package io.catalyte.training.sportsproducts.data;
 
 import io.catalyte.training.sportsproducts.data.ProductFactory;
-import io.catalyte.training.sportsproducts.domains.user.BillingAddress;
+import io.catalyte.training.sportsproducts.domains.user.UserBillingAddress;
+import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.StateEnum;
 import io.catalyte.training.sportsproducts.domains.user.User;
 import java.util.ArrayList;
@@ -68,8 +69,8 @@ public class PurchaseFactory {
     return userName + "@" + domain + ".com";
   }
 
-  public static BillingAddress generateRandomUserBillingAddress(){
-    final BillingAddress address = new BillingAddress();
+  public static UserBillingAddress generateRandomUserBillingAddress(){
+    final UserBillingAddress address = new UserBillingAddress();
     StateEnum state = getRandomState();
     String street1 = generateRandomString(random.nextInt(MAX_STREET_DIGITS)) + "St.";
     String city = generateRandomString(random.nextInt(MAX_NAME_LENGTH));
