@@ -9,12 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class StateEnumTests {
   private double LOWER_48_SHIPPING;
-  private double OTHER_SHIPPING;
+  private double ELEVATED_SHIPPING;
+  private double DELTA;
 
   @Before
   public void setUp(){
-    LOWER_48_SHIPPING = 10;
-    OTHER_SHIPPING = 5;
+    LOWER_48_SHIPPING = 5;
+    ELEVATED_SHIPPING = 10;
+    DELTA = .001;
   }
 
   @Test
@@ -31,6 +33,38 @@ public class StateEnumTests {
     String expected = "New Mexico";
     String actual = StateEnum.formatStateName(testString);
     assertEquals(expected, actual);
+  }
+
+  @Test
+  public void getShippingByAbbreviationNormalCostTest() {
+    String testState = "ca";
+    double actual = StateEnum.getShippingByAbbreviation(testState);
+    assertEquals(LOWER_48_SHIPPING, actual, DELTA);
+  }
+  @Test
+  public void getShippingByAbbreviationElevatedCostTest() {
+    String testState = "ak";
+    double actual = StateEnum.getShippingByAbbreviation(testState);
+    assertEquals(ELEVATED_SHIPPING, actual, DELTA);
+  }
+  @Test
+  public void getShippingByNameNormalCostTest(){
+    String testState = "new mexico";
+    double actual = StateEnum.getShippingByName(testState);
+    assertEquals(actual, LOWER_48_SHIPPING, DELTA);
+  }
+  @Test
+  public void getShippingByNameElevatedCostTest(){
+    String testState = "hawaii";
+    double actual = StateEnum.getShippingByName(testState);
+  assertEquals(actual, ELEVATED_SHIPPING, DELTA);
+  }
+
+  @Test
+  public void getShippingByNameNonStateCostTest(){
+    String testState = "Not a state";
+    double actual = StateEnum.getShippingByName(testState);
+    assertEquals(LOWER_48_SHIPPING, actual, DELTA);
   }
 
 
