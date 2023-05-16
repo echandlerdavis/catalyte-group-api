@@ -88,6 +88,10 @@ public class ReviewServiceImpl implements ReviewService {
       errors.add(StringConstants.REVIEW_FIELDS_EMPTY(emptyFields));
     }
 
+    if(!ratingIsValid(reviewDTO)){
+      errors.add(StringConstants.REVIEW_RATING_INVALID);
+    }
+
     return errors;
   }
 
@@ -119,6 +123,20 @@ public class ReviewServiceImpl implements ReviewService {
     results.put("emptyFields", emptyFields);
     return results;
   }
+
+  public Boolean ratingIsValid(ReviewDTO reviewDTO) {
+    Double rating = Double.valueOf(reviewDTO.getRating());
+    if(rating != null){
+      if(rating >= 0.5 && rating <= 5){
+        String[] ratingString = String.valueOf(rating).split("\\.");
+        Boolean ratingInCorrectIncrement = ratingString[1].equals("0") || ratingString[1].equals("5");
+        return ratingInCorrectIncrement;
+        }
+    }
+    return false;
+
+  }
+
 }
 
 

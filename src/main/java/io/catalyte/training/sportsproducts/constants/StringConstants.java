@@ -64,4 +64,6 @@ public class StringConstants {
     return "The following fields cannot be null: " + fieldsToString;
   }
 
+  public static final String REVIEW_RATING_INVALID = "Rating must be between 0.5 and 5 and be in increments of 0.5";
+
 }

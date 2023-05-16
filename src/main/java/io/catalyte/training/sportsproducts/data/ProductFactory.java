@@ -286,8 +286,8 @@ public class ProductFactory {
    *
    * @return - an integer between 1 and 5.
    */
-  public static int getReviewRating(){
-    return randomGenerator.nextInt(4) + 1;
+  public static Double getReviewRating(){
+    return Double.valueOf(randomGenerator.nextInt(4) + 1);
   }
 
   /**

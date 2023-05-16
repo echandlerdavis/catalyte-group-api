@@ -13,9 +13,7 @@ public class ReviewDTO {
   @NotBlank
   private String title;
   @NotNull
-  @Min(1)
-  @Max(5)
-  private int rating;
+  private Double rating;
   @NotBlank
   private String review;
   private String createdAt;
@@ -24,7 +22,7 @@ public class ReviewDTO {
   private Product product;
   public ReviewDTO(){};
 
-  public ReviewDTO(String title, int rating, String review, String createdAt, String userName, String userEmail, Product product) {
+  public ReviewDTO(String title, Double rating, String review, String createdAt, String userName, String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
@@ -42,11 +40,11 @@ public class ReviewDTO {
     this.title = title;
   }
 
-  public int getRating() {
+  public Double getRating() {
     return rating;
   }
 
-  public void setRating(int rating) {
+  public void setRating(Double rating) {
     this.rating = rating;
   }
 
