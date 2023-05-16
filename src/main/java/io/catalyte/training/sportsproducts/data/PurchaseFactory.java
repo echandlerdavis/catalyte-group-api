@@ -1,7 +1,6 @@
 package io.catalyte.training.sportsproducts.data;
 
 public class PurchaseFactory {
-  static final
   //TODO: generate BillingAddress
   //TODO: generate DeliveryAddress
   //TODO: add date to purchase

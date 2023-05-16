@@ -1,5 +1,9 @@
 package io.catalyte.training.sportsproducts.domains.purchase;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public enum StateEnum {
   AL("Alabama", shippingCosts.DEFAULT.cost),
   AK("Alaska", shippingCosts.HIGHER.cost),
@@ -51,6 +55,16 @@ public enum StateEnum {
   WI("Wisconsin", shippingCosts.DEFAULT.cost),
   WY("Wyoming", shippingCosts.DEFAULT.cost);
 
+  private static final Map<String, StateEnum> BY_FULLNAME = new HashMap<>();
+  private static final Map<String, StateEnum> BY_ABBREVIATION = new HashMap<>();
+
+  static {
+    Arrays.stream(values()).forEach(state -> {
+      BY_FULLNAME.put(state.fullName, state);
+      BY_ABBREVIATION.put(state.name(), state);
+    });
+  }
+
   private enum shippingCosts {
 
     DEFAULT(5),
@@ -69,8 +83,24 @@ public enum StateEnum {
     this.shippingCost = shippingCost;
   }
 
-  public static StateEnum getEnumByAbbreviation(String abbreviation){
+  public static double getShippingByAbbreviation(String abbreviation){
+    return BY_ABBREVIATION.get(abbreviation.toUpperCase()).shippingCost;
+  }
 
+  public static double getShippingByName(String stateName) {
+    String[] nameArray = stateName.split(" ");
+    String testName = formatStateName(stateName);
+    return BY_FULLNAME.get(testName).shippingCost;
+  }
+
+  protected static String formatStateName(String string){
+    String[] strArray = string.split(" ");
+    String cleanedString = "";
+    for(String str: strArray){
+      cleanedString = cleanedString + " " + str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    };
+
+    return cleanedString.trim();
   }
 
 }
