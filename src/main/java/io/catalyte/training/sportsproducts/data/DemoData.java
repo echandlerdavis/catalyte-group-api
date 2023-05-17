@@ -59,6 +59,7 @@ public class DemoData implements CommandLineRunner {
 
   public static final int DEFAULT_NUMBER_OF_PRODUCTS = 500;
   public static final int MAX_PURCHASES_PER_USER = 20;
+  public static final int MIN_PURCHASES_PER_USER = 5;
 
   @Override
   public void run(String... strings) {
@@ -165,6 +166,7 @@ public class DemoData implements CommandLineRunner {
     //generate purchases for actual users
     for(User u: userFactory.ACTUAL_USERS){
       int numberPurchases = new Random().nextInt(MAX_PURCHASES_PER_USER);
+      numberPurchases = numberPurchases > MIN_PURCHASES_PER_USER ? numberPurchases: MIN_PURCHASES_PER_USER;
       int count = 0;
       while(count++ < numberPurchases){
         Purchase newPurchase = purchaseFactory.generateRandomPurchase(u);
