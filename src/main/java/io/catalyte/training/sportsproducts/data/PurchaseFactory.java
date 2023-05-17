@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.data;
 
 import io.catalyte.training.sportsproducts.data.ProductFactory;
+import io.catalyte.training.sportsproducts.domains.purchase.CreditCard;
 import io.catalyte.training.sportsproducts.domains.user.UserBillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.StateEnum;
@@ -8,13 +9,13 @@ import io.catalyte.training.sportsproducts.domains.user.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 public class PurchaseFactory {
   private static final Random random = new Random();
   private static final int MAX_NAME_LENGTH = 10;
   private static final int MAX_STREET_DIGITS = 4;
   public static final List<User> ACTUAL_USERS = new ArrayList();
-  //TODO: generate BillingAddress
   //TODO: generate DeliveryAddress
   //TODO: add date to purchase
   //TODO: add shipping cost to purchase
@@ -89,6 +90,43 @@ public class PurchaseFactory {
     return address;
   }
 
+  public static BillingAddress generateRandomPurchaseBillingAddress(){
+    UserBillingAddress billingAddress = generateRandomUserBillingAddress();
+    return new BillingAddress(
+        billingAddress.getBillingStreet(),
+        billingAddress.getBillingStreet2(),
+        billingAddress.getBillingCity(),
+        billingAddress.getBillingState(),
+        billingAddress.getBillingZip(),
+        generateRandomEmailAddress(),
+        billingAddress.getPhone()
+      );
+  }
+
+  public static CreditCard generateRandomCreditCard(){
+    String creditCardNumber = Integer.toString(getRandomInt(5))
+        + Integer.toString(getRandomInt(5))
+        + Integer.toString(getRandomInt(5))
+        + Integer.toString(getRandomInt(1));
+    while(creditCardNumber.length() < 16){
+      creditCardNumber += "0";
+    }
+    String name = generateRandomString(MAX_NAME_LENGTH) + " " + generateRandomString(MAX_NAME_LENGTH);
+    String cvv = Integer.toString(getRandomInt(3));
+    while (cvv.length() < 3) {
+      cvv += "0";
+    }
+    String month = Integer.toString(random.nextInt(12));
+    if (month.length() < 2){
+      month = "0" + month;
+    }
+    int yearMax = 29;
+    int yearMin = 24;
+    String year = Integer.toString(random.nextInt(yearMax - yearMin) + yearMin);
+
+    return new CreditCard(creditCardNumber, cvv, month + "/" + year, name);
+  }
+
   private static void setActualUsers(){
     String domain = "@catalyte.io";
     String[] firstNames = {
@@ -123,6 +161,9 @@ public class PurchaseFactory {
 
   static {
     setActualUsers();
+    for (int i = 0; i < 5; i++){
+      System.out.println(generateRandomCreditCard().getExpiration());
+    }
   }
   public static void main(String[] args){};
 }
