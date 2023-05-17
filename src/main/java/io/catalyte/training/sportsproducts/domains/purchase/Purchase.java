@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.purchase;
 
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -21,12 +22,15 @@ public class Purchase {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  private Date date;
 
   @OneToMany(mappedBy = "purchase")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Set<LineItem> products;
 
   private DeliveryAddress deliveryAddress;
+
+  private double shippingCharge;
 
   private BillingAddress billingAddress;
 
@@ -89,6 +93,21 @@ public class Purchase {
       PromotionalCode promoCode) {
     this.promoCode = promoCode;
   }
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date){
+    this.date = date;
+  }
+
+  public double getShippingCharge() {
+    return shippingCharge;
+  }
+  public void setShippingCharge(double shippingCharge) {
+    this.shippingCharge = shippingCharge;
+  }
+
 
   @Override
   public String toString() {
