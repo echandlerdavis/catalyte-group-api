@@ -1,29 +1,20 @@
 package io.catalyte.training.sportsproducts.data;
 
-import io.catalyte.training.sportsproducts.data.ProductFactory;
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
-import io.catalyte.training.sportsproducts.domains.purchase.CreditCard;
 import io.catalyte.training.sportsproducts.domains.purchase.DeliveryAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.LineItem;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
-import io.catalyte.training.sportsproducts.domains.user.UserBillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.StateEnum;
 import io.catalyte.training.sportsproducts.domains.user.User;
-import io.catalyte.training.sportsproducts.domains.user.UserRepository;
-import io.catalyte.training.sportsproducts.exceptions.ServerError;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
-import javax.persistence.criteria.CriteriaBuilder.In;
-import org.springframework.dao.DataAccessException;
 
 public class PurchaseFactory {
   private static final Random random = new Random();
@@ -36,6 +27,10 @@ public class PurchaseFactory {
   /*most recent date that will appear on a purchase */
   private Date maxDate;
   private static final UserFactory userFactory = new UserFactory();
+
+  /**
+   * Constructor that sets minDate and maxDate
+   */
   PurchaseFactory(){
     //set minDate and maxDate
     Date today = new Date();
@@ -46,41 +41,71 @@ public class PurchaseFactory {
     this.maxDate = today;
   }
 
+  /**
+   * Set promotional codes that be randomly selected
+   * @param codes List of PromotionalCode
+   */
   public void setAvailablePromoCodes(List<PromotionalCode> codes){
     this.availablePromoCodes = codes;
   }
 
+  /**
+   * Gets a random product from list availableProducts
+   * @return Product
+   */
   public Product getRandomProduct(){
     return availableProducts.get(random.nextInt(availableProducts.size()));
   }
+
+  /**
+   * Gets a random PromtionalCode from availablePromoCodes
+   * @return PromotionalCode
+   */
   public PromotionalCode getRandomPromoCode(){
     return availablePromoCodes.get(random.nextInt(availablePromoCodes.size()));
   }
 
+  /**
+   * Generate a LineItem with the given product
+   * @param p Product
+   * @return LineItem
+   */
   public LineItem generateLineItem(Product p){
     LineItem line = new LineItem();
     line.setProduct(p);
     line.setQuantity(random.nextInt(MAX_QUANTITY));
     return line;
   }
+
+  /**
+   * Generate a LineItem with a random product from the availableProducts
+   * @return LineItem
+   */
   public LineItem generateLineItem(){
     LineItem line = generateLineItem(getRandomProduct());
     return line;
   };
+
+  /**
+   * Generate a LineItem with a random product from the availableProducts
+   * and attach it to the given Purchase
+   * @param purchase Purchase
+   * @return LineItem
+   */
   public LineItem generateLineItem(Purchase purchase){
     LineItem line = generateLineItem();
     line.setPurchase(purchase);
     return line;
   }
+
+  /**
+   * Set the availableProducts
+   * @param availableProducts List of Products to be used for LineItem generation
+   */
   public void setAvailableProducts(
       List<Product> availableProducts) {
     this.availableProducts = availableProducts;
   }
-
-  public List<Product> getAvailableProducts() {
-    return availableProducts;
-  }
-
   /**
    * Get a Purchase BillingAddress from the given user
    * @param user User
@@ -114,6 +139,10 @@ public class PurchaseFactory {
       );
   }
 
+  /**
+   * Get a random date between minDate and maxDate
+   * @return Date
+   */
   public Date getRandomHistoricalDate(){
       long startMilliseconds = this.minDate.getTime();
       long endMilliseconds = this.maxDate.getTime();
@@ -123,6 +152,12 @@ public class PurchaseFactory {
       return new Date(randomMilliseconds);
   }
 
+  /**
+   * Generate a Purchase with information from user and with promocode attached.
+   * @param user User
+   * @param promoCode PromotionalCode
+   * @return Purchase
+   */
   public Purchase generateRandomPurchase(User user, PromotionalCode promoCode){
       //the new purchase
       Purchase purchase = new Purchase();
@@ -166,6 +201,11 @@ public class PurchaseFactory {
       }
       return purchase;
   }
+
+  /**
+   * Generate a Purchase with a random user, possibly with a PromotionalCode attached
+   * @return Purchase
+   */
   public Purchase generateRandomPurchase(){
       User user = userFactory.generateRandomUser();
       PromotionalCode promoCode = null;
@@ -175,6 +215,12 @@ public class PurchaseFactory {
       return generateRandomPurchase(user, promoCode);
   }
 
+  /**
+   * Generate a Purchase with the information from User, possibly with a
+   * PromotionalCode attached
+   * @param user User
+   * @return Purchase
+   */
   public Purchase generateRandomPurchase(User user){
     PromotionalCode promoCode = null;
     if (random.nextBoolean()){

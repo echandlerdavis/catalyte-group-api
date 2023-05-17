@@ -17,6 +17,9 @@ public class UserFactory {
   private static final Random random = new Random();
   private static final int MAX_NAME_LENGTH = 10;
   private static final int MAX_STREET_DIGITS = 4;
+  /**
+   * List of actual users
+   */
   public static final List<User> ACTUAL_USERS = new ArrayList();
   private static boolean USERS_PERSISTED = false;
 
@@ -224,6 +227,10 @@ public class UserFactory {
     ;
   }
 
+  /**
+   * Generate a user with all random information
+   * @return User
+   */
   public static User generateRandomUser() {
     User user = new User();
     user.setFirstName(generateRandomName(random.nextInt(MAX_NAME_LENGTH)));
@@ -234,6 +241,12 @@ public class UserFactory {
     return user;
   }
 
+  /**
+   * Save a given User to the given UserRepository
+   * @param user User to save
+   * @param repo UserRepository to save User in
+   * @return User
+   */
   public static User persistUser(User user, UserRepository repo) {
     User savedUser = null;
     try {
@@ -261,6 +274,9 @@ public class UserFactory {
     }
   }
 
+  /**
+   * Sets ActualUser on instantiation
+   */
   static {
     setActualUsers();
   }
