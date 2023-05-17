@@ -108,12 +108,20 @@ public class Purchase {
     this.shippingCharge = shippingCharge;
   }
 
+  /**
+   * Get the total cost of all the line items
+   * @return double
+   */
   public double calcLineItemTotal(){
     return products.stream()
         .map(line -> line.getProduct().getPrice() * line.getQuantity())
         .reduce(0.0, (runningTotal, lineTotal) -> runningTotal + lineTotal);
   }
 
+  /**
+   * Return if shipping charges should apply to this purchase
+   * @return boolean
+   */
   public boolean applyShippingCharge(){
     return calcLineItemTotal() >= 50.00;
 
