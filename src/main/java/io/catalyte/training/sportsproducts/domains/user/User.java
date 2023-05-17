@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
 import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
+import io.catalyte.training.sportsproducts.domains.purchase.DeliveryAddress;
 import java.util.Date;
 import javax.persistence.*;
 import java.util.Arrays;
@@ -109,6 +110,10 @@ public class User {
     this.billingAddress = billingAddress;
   }
 
+  /**
+   * Get a purchase package BillingAddress for the user
+   * @return BillingAddress
+   */
   public BillingAddress getPurchaseBillingAddress(){
     return new BillingAddress(
         this.billingAddress.getBillingStreet(),
@@ -119,6 +124,22 @@ public class User {
         this.getEmail(),
         this.billingAddress.getPhone()
     );
+  }
+
+  /**
+   * Get a purchase package DeliveryAddress for the user
+   * @return DeliveryAddress
+   */
+  public DeliveryAddress getPurchaseDeliveryAddress(){
+    return new DeliveryAddress(
+      this.getFirstName(),
+      this.getLastName(),
+      this.billingAddress.getBillingStreet(),
+      this.billingAddress.getBillingStreet2(),
+      this.billingAddress.getBillingCity(),
+      this.billingAddress.getBillingState(),
+      this.billingAddress.getBillingZip()
+  );
   }
 
   @Override
