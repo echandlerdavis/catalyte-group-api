@@ -64,26 +64,29 @@ public class ReviewServiceImplTest {
     testProduct2 = new Product();
     testReview1 = new Review(
         "Test Review 1",
-        4,
+        4.0,
         "This is an example of a review for test product 1",
         "2005-11-01",
         "testUserNameOne",
+        "tetuserone@test.com",
         testProduct1
     );
     testReview2 = new Review(
         "Test Review 2",
-        2,
+        2.5,
         "This is a second example of a review for test product 1",
         "2007-25-03",
         "testUserNameTwo",
+        "testusertwo@test.com",
         testProduct1
     );
     testReview3 = new Review(
         "Test Review 3",
-        5,
+        5.0,
         "This is an example of a review for test product 2",
         "2010-13-01",
         "testUserNameThree",
+        "testuserthree@test.com",
         testProduct2
     );
     testReviewsForProduct1List.add(testReview1);
