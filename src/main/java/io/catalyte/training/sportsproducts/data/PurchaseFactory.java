@@ -145,9 +145,7 @@ public class PurchaseFactory {
         if (!products.contains(randomProduct)) {
           products.add(randomProduct);
           //make a new line item
-          LineItem line = new LineItem();
-          line.setProduct(randomProduct);
-          line.setQuantity(random.nextInt(MAX_QUANTITY));
+          LineItem line = generateLineItem(randomProduct);
           //add line item
           lineItems.add(line);
         }
@@ -168,6 +166,14 @@ public class PurchaseFactory {
         promoCode = getRandomPromoCode();
       }
       return generateRandomPurchase(user, promoCode);
+  }
+
+  public Purchase generateRandomPurchase(User user){
+    PromotionalCode promoCode = null;
+    if (random.nextBoolean()){
+      promoCode = getRandomPromoCode();
+    }
+    return generateRandomPurchase(user, promoCode);
   }
 
   public static void main(String[] args){

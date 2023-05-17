@@ -52,7 +52,8 @@ public class DemoData implements CommandLineRunner {
   @Autowired
   private Environment env;
 
-  ProductFactory productFactory = new ProductFactory();
+  private final ProductFactory productFactory = new ProductFactory();
+  private final PurchaseFactory purchaseFactory = new PurchaseFactory();
 
   public static final int DEFAULT_NUMBER_OF_PRODUCTS = 500;
 
