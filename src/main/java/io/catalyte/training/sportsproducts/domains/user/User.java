@@ -110,38 +110,6 @@ public class User {
     this.billingAddress = billingAddress;
   }
 
-  /**
-   * Get a purchase package BillingAddress for the user
-   * @return BillingAddress
-   */
-  public BillingAddress getPurchaseBillingAddress(){
-    return new BillingAddress(
-        this.billingAddress.getBillingStreet(),
-        this.billingAddress.getBillingStreet2(),
-        this.billingAddress.getBillingCity(),
-        this.billingAddress.getBillingState(),
-        this.billingAddress.getBillingZip(),
-        this.getEmail(),
-        this.billingAddress.getPhone()
-    );
-  }
-
-  /**
-   * Get a purchase package DeliveryAddress for the user
-   * @return DeliveryAddress
-   */
-  public DeliveryAddress getPurchaseDeliveryAddress(){
-    return new DeliveryAddress(
-      this.getFirstName(),
-      this.getLastName(),
-      this.billingAddress.getBillingStreet(),
-      this.billingAddress.getBillingStreet2(),
-      this.billingAddress.getBillingCity(),
-      this.billingAddress.getBillingState(),
-      this.billingAddress.getBillingZip()
-  );
-  }
-
   @Override
   public String toString() {
     return "User{" +
