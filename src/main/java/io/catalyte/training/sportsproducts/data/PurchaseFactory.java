@@ -46,6 +46,10 @@ public class PurchaseFactory {
     this.maxDate = today;
   }
 
+  public void setAvailablePromoCodes(List<PromotionalCode> codes){
+    this.availablePromoCodes = codes;
+  }
+
   public Product getRandomProduct(){
     return availableProducts.get(random.nextInt(availableProducts.size()));
   }
@@ -138,6 +142,9 @@ public class PurchaseFactory {
       purchase.setPromoCode(promoCode);
       //generate lineItems
       int numberOfProducts = random.nextInt(MAX_QUANTITY);
+      if (numberOfProducts == 0){
+        numberOfProducts = 1;
+      }
       Set<LineItem> lineItems = new HashSet<>();
       Set<Product> products = new HashSet<>();
       while (lineItems.size() < numberOfProducts){
@@ -174,12 +181,6 @@ public class PurchaseFactory {
       promoCode = getRandomPromoCode();
     }
     return generateRandomPurchase(user, promoCode);
-  }
-
-  public static void main(String[] args){
-      PurchaseFactory factory = new PurchaseFactory();
-      for(int i = 0; i < 10; i++){
-        System.out.println(factory.getRandomHistoricalDate());}
   }
 }
 

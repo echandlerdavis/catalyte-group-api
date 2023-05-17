@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +55,10 @@ public class DemoData implements CommandLineRunner {
 
   private final ProductFactory productFactory = new ProductFactory();
   private final PurchaseFactory purchaseFactory = new PurchaseFactory();
+  private final UserFactory userFactory = new UserFactory();
 
   public static final int DEFAULT_NUMBER_OF_PRODUCTS = 500;
+  public static final int MAX_PURCHASES_PER_USER = 20;
 
   @Override
   public void run(String... strings) {
@@ -88,9 +91,12 @@ public class DemoData implements CommandLineRunner {
     // Generate products
     List<Product> productList = productFactory.generateRandomProducts(numberOfProducts);
 
-    // Persist them to the database
+    // Persist them to the database and save list to purchaseFactory
     logger.info("Loading " + numberOfProducts + " products...");
-    productRepository.saveAll(productList);
+    purchaseFactory.setAvailableProducts(productRepository.saveAll(productList));
+    //save actual users if that hasn't happened
+    userFactory.persistActualUsers(userRepository);
+
 
     //Generate reviews for each product and persist them to the database.
     for (Product product : productList) {
@@ -100,50 +106,10 @@ public class DemoData implements CommandLineRunner {
     }
     logger.info("Data load completed. You can make requests now.");
 
-    Purchase purchase1 = new Purchase();
-    BillingAddress billingAddress = new BillingAddress();
-    billingAddress.setEmail("bob@ross.com");
-    purchase1.setBillingAddress(billingAddress);
-    purchaseRepository.save(purchase1);
-
-    Purchase purchase2 = new Purchase();
-    purchase2.setBillingAddress(billingAddress);
-    purchaseRepository.save(purchase2);
-
-    Purchase purchase3 = new Purchase();
-    purchase3.setBillingAddress(billingAddress);
-    purchaseRepository.save(purchase3);
-
-    Purchase purchase4 = new Purchase();
-    billingAddress.setEmail("blah");
-
     User user = new User("amir@amir.com", "Customer", "Amir", "Sharapov",
             new UserBillingAddress("123 Main St", "", "Seattle", "WA",98101));
     userRepository.save(user);
 
-    User user1 = new User("cgandy@catalyte.io", "Casey", "Gandy",
-            new UserBillingAddress("123 Main St", "", "Seattle", "WA", 98101));
-    userRepository.save(user1);
-
-    User user2 = new User("cdavis@catalyte.io","Chandler", "Davis",
-            new UserBillingAddress("123 Main St", "", "Seattle", "WA", 98101));
-    userRepository.save(user2);
-
-    User user3 = new User("dduval@catalyte.io","Devin", "Duval",
-            new UserBillingAddress("123 Main St", "", "Seattle", "WA", 98101));
-    userRepository.save(user3);
-
-    User user4 = new User("bmiller@catalyte.io","Blake", "Miller",
-            new UserBillingAddress("123 Main St", "", "Seattle", "WA", 98101));
-    userRepository.save(user4);
-
-    User user5 = new User("kfreeman@catalyte.io", "Kaschae", "Freeman",
-            new UserBillingAddress("123 Main St", "", "Seattle", "WA", 98101));
-    userRepository.save(user5);
-
-    purchase4.setBillingAddress(billingAddress);
-
-    purchaseRepository.save(purchase4);
 
     Calendar cal = Calendar.getInstance();
     Date today = new Date();
@@ -192,6 +158,19 @@ public class DemoData implements CommandLineRunner {
             cal.getTime()
         )
     );
+
+    //set promotional code list in purchaseFactory
+    purchaseFactory.setAvailablePromoCodes(promotionalCodeRepository.findAll());
+
+    //generate purchases for actual users
+    for(User u: userFactory.ACTUAL_USERS){
+      int numberPurchases = new Random().nextInt(MAX_PURCHASES_PER_USER);
+      int count = 0;
+      while(count++ < numberPurchases){
+        Purchase newPurchase = purchaseFactory.generateRandomPurchase(u);
+        purchaseRepository.save(newPurchase);
+      }
+    }
 
   }
 
