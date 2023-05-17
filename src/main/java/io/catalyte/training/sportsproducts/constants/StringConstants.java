@@ -65,5 +65,6 @@ public class StringConstants {
   }
 
   public static final String REVIEW_RATING_INVALID = "Rating must be between 0.5 and 5 and be in increments of 0.5";
-  public static final String REVIEW_USER_INVALID = "User needs to have purchased the product in order to leave a review";
+  public static final String REVIEW_USER_PURCHASE_INVALID = "User needs to have purchased the product in order to leave a review";
+  public static final String REVIEW_USER_HAS_ALREADY_REVIEWED = "User cannot leave more than one review for a product";
 }

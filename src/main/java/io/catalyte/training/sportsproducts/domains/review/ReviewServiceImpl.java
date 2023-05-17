@@ -102,7 +102,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     if(!userHasPurchasedProduct(reviewDTO, productId)){
-      errors.add(StringConstants.REVIEW_USER_INVALID);
+      errors.add(StringConstants.REVIEW_USER_PURCHASE_INVALID);
+    }
+
+    if(!userHasNotLeftReview(reviewDTO, productId)){
+      errors.add(StringConstants.REVIEW_USER_HAS_ALREADY_REVIEWED);
     }
 
     return errors;
@@ -166,6 +170,20 @@ public class ReviewServiceImpl implements ReviewService {
       }
     }
     return false;
+  }
+
+  public Boolean userHasNotLeftReview(ReviewDTO reviewDTO, Long productId){
+    List<Review> reviewList = reviewRepository.findByUserEmail(reviewDTO.getUserEmail());
+    if(reviewList.isEmpty()){
+      return true;
+    }
+    for(Review review : reviewList){
+      if(review.getProduct().getId() == productId){
+          return false;
+        }
+      }
+    return true;
+
   }
 }
 
