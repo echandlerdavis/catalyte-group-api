@@ -19,8 +19,10 @@ public class UserFactory {
   private static final int MAX_STREET_DIGITS = 4;
   public static final List<User> ACTUAL_USERS = new ArrayList();
   private static boolean USERS_PERSISTED = false;
+
   /**
    * Gets a random state from StateEnum
+   *
    * @return StateEnum
    */
   public static StateEnum getRandomState() {
@@ -30,30 +32,33 @@ public class UserFactory {
 
   /**
    * Generates a random lower case string consisting of only letters
+   *
    * @param length size of the desired string
    * @return string
    */
-  public static String generateRandomString(int length){
+  public static String generateRandomString(int length) {
     int leftLimit = 97;
     int rightLimit = 122;
     return random.ints(leftLimit, rightLimit + 1)
-        .limit(length > 0 ? length: 1)
+        .limit(length > 0 ? length : 1)
         .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
         .toString();
   }
 
   /**
    * Get a random string with the first letter capitalized
+   *
    * @param length name length
    * @return String
    */
-  public static String generateRandomName(int length){
+  public static String generateRandomName(int length) {
     String randomString = generateRandomString(length);
-    return randomString.substring(0,1).toUpperCase() + randomString.substring(1);
+    return randomString.substring(0, 1).toUpperCase() + randomString.substring(1);
   }
 
   /**
    * Generates a random integers with maxDigits digits
+   *
    * @param maxDigits the number of digits desired for the integer
    * @return int
    */
@@ -68,22 +73,23 @@ public class UserFactory {
 
   /**
    * Generates a random phone number
+   *
    * @return String
    */
-  public static String generateRandomPhoneNumber(){
+  public static String generateRandomPhoneNumber() {
     String areaCode = Integer.toString(getRandomInt(3));
     String prefix = Integer.toString(getRandomInt(3));
     String lineNumber = Integer.toString(getRandomInt(4));
 
-    while(areaCode.length() < 3){
+    while (areaCode.length() < 3) {
       areaCode += "0";
     }
 
-    while(prefix.length() < 3){
+    while (prefix.length() < 3) {
       prefix += "0";
     }
 
-    while(lineNumber.length() < 4) {
+    while (lineNumber.length() < 4) {
       lineNumber += "0";
     }
     return areaCode + "-" + prefix + "-" + lineNumber;
@@ -91,9 +97,10 @@ public class UserFactory {
 
   /**
    * Generates a random email address with the domain @[random].com
+   *
    * @return String
    */
-  public static String generateRandomEmailAddress(){
+  public static String generateRandomEmailAddress() {
     String userName = generateRandomString(random.nextInt(12));
     String domain = generateRandomString(random.nextInt(12));
     return userName + "@" + domain + ".com";
@@ -101,19 +108,21 @@ public class UserFactory {
 
   /**
    * Generates a random UserBillingAddress object
+   *
    * @return UserBillingAddress
    */
-  public static UserBillingAddress generateRandomUserBillingAddress(){
+  public static UserBillingAddress generateRandomUserBillingAddress() {
     final UserBillingAddress address = new UserBillingAddress();
     StateEnum state = getRandomState();
     String street1 = generateRandomString(random.nextInt(MAX_STREET_DIGITS)) + " St.";
     String city = generateRandomString(random.nextInt(MAX_NAME_LENGTH));
     String zip = Integer.toString(getRandomInt(5));
-    while(zip.length() < 5){
+    while (zip.length() < 5) {
       zip += "0";
-    };
+    }
+    ;
     address.setBillingStreet(street1);
-    if (random.nextBoolean()){
+    if (random.nextBoolean()) {
       address.setBillingStreet2("#" + Integer.toString(getRandomInt(3)));
     }
     address.setBillingCity(city);
@@ -125,11 +134,14 @@ public class UserFactory {
   }
 
   /**
-   * Generates a random BillingAddress object. If given null as the email, a random email address will be generated.
-   * @param email The email to be attached to the BillingAddress. If null, a random email address will be generated.
+   * Generates a random BillingAddress object. If given null as the email, a random email address
+   * will be generated.
+   *
+   * @param email The email to be attached to the BillingAddress. If null, a random email address
+   *              will be generated.
    * @return BillingAddress
    */
-  public static BillingAddress generateRandomPurchaseBillingAddress(String email){
+  public static BillingAddress generateRandomPurchaseBillingAddress(String email) {
     if (email == null) {
       email = generateRandomEmailAddress();
     }
@@ -147,37 +159,39 @@ public class UserFactory {
 
   /**
    * Generates a random CreditCard. If no owner is provided, a random name will be generated.
+   *
    * @param owner The card holder. If null, a random name will be generated.
    * @return CreditCard
    */
-  public static CreditCard generateRandomCreditCard(String owner){
+  public static CreditCard generateRandomCreditCard(String owner) {
     String creditCardNumber = Integer.toString(getRandomInt(5))
         + Integer.toString(getRandomInt(5))
         + Integer.toString(getRandomInt(5))
         + Integer.toString(getRandomInt(1));
-    while(creditCardNumber.length() < 16){
+    while (creditCardNumber.length() < 16) {
       creditCardNumber += "0";
     }
-    String name = generateRandomString(MAX_NAME_LENGTH) + " " + generateRandomString(MAX_NAME_LENGTH);
+    String name =
+        generateRandomString(MAX_NAME_LENGTH) + " " + generateRandomString(MAX_NAME_LENGTH);
     String cvv = Integer.toString(getRandomInt(3));
     while (cvv.length() < 3) {
       cvv += "0";
     }
     String month = Integer.toString(random.nextInt(12));
-    if (month.length() < 2){
+    if (month.length() < 2) {
       month = "0" + month;
     }
     int yearMax = 29;
     int yearMin = 24;
     String year = Integer.toString(random.nextInt(yearMax - yearMin) + yearMin);
 
-    return new CreditCard(creditCardNumber, cvv, month + "/" + year, owner == null? name: owner);
+    return new CreditCard(creditCardNumber, cvv, month + "/" + year, owner == null ? name : owner);
   }
 
   /**
    * Set the information for actual users that will be persisted in the database.
    */
-  private static void setActualUsers(){
+  private static void setActualUsers() {
     String domain = "@catalyte.io";
     String[] firstNames = {
         "Devin",
@@ -200,15 +214,17 @@ public class UserFactory {
         "cdavis" + domain,
         "kfreeman" + domain
     };
-    for (int i = 0; i < firstNames.length; i++){
+    for (int i = 0; i < firstNames.length; i++) {
       ACTUAL_USERS.add(
           new User(emails[i],
               firstNames[i],
               lastNames[i],
               generateRandomUserBillingAddress()));
-    };
+    }
+    ;
   }
-  public static User generateRandomUser(){
+
+  public static User generateRandomUser() {
     User user = new User();
     user.setFirstName(generateRandomName(random.nextInt(MAX_NAME_LENGTH)));
     user.setLastName(generateRandomName(random.nextInt(MAX_NAME_LENGTH)));
@@ -218,9 +234,9 @@ public class UserFactory {
     return user;
   }
 
-  public static User persistUser(User user, UserRepository repo){
+  public static User persistUser(User user, UserRepository repo) {
     User savedUser = null;
-    try{
+    try {
       savedUser = repo.save(user);
     } catch (DataAccessException dae) {
       throw new ServerError(dae.getMessage());
@@ -231,10 +247,11 @@ public class UserFactory {
 
   /**
    * Persist ACTUAL_USERS into the given repository
+   *
    * @param repo UserRepository
    */
-  public static void persistActualUsers(UserRepository repo){
-    if(ACTUAL_USERS.size() > 0 && !USERS_PERSISTED){
+  public static void persistActualUsers(UserRepository repo) {
+    if (ACTUAL_USERS.size() > 0 && !USERS_PERSISTED) {
       try {
         repo.saveAll(ACTUAL_USERS);
         USERS_PERSISTED = true;
@@ -246,9 +263,5 @@ public class UserFactory {
 
   static {
     setActualUsers();
-    for (int i = 0; i < 5; i++){
-      System.out.println(generateRandomUser());
-    }
   }
-  public static void main(String[] args){};
 }
