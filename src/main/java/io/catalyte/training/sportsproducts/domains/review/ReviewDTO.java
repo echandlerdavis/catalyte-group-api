@@ -10,11 +10,8 @@ import javax.validation.constraints.NotNull;
  * A DTO (Data Transfer Object) representing the input data for creating a review.
  */
 public class ReviewDTO {
-  @NotBlank
   private String title;
-  @NotNull
   private Double rating;
-  @NotBlank
   private String review;
   private String createdAt;
   private String userName;

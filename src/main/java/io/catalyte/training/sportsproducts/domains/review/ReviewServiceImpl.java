@@ -60,7 +60,7 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   public Review postReview(Long productId, ReviewDTO reviewDTO) {
-    List<String> reviewErrors = getReviewErrors(reviewDTO);
+    List<String> reviewErrors = getReviewErrors(reviewDTO, productId);
 
     if (!reviewErrors.isEmpty()) {
       throw new BadRequest(String.join("\n", reviewErrors));
@@ -83,7 +83,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
   }
 
-  public List<String> getReviewErrors(ReviewDTO reviewDTO) {
+  public List<String> getReviewErrors(ReviewDTO reviewDTO, Long productId) {
     List<String> errors = new ArrayList<>();
 
     List<String> nullFields = getEmptyOrNullFields(reviewDTO).get("nullFields");
@@ -99,6 +99,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     if (!ratingIsValid(reviewDTO)) {
       errors.add(StringConstants.REVIEW_RATING_INVALID);
+    }
+
+    if(!userHasPurchasedProduct(reviewDTO, productId)){
+      errors.add(StringConstants.REVIEW_USER_INVALID);
     }
 
     return errors;
