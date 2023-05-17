@@ -1,6 +1,8 @@
 package io.catalyte.training.sportsproducts.data;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
+import io.catalyte.training.sportsproducts.domains.purchase.LineItem;
+import io.catalyte.training.sportsproducts.domains.purchase.LineItemRepository;
 import io.catalyte.training.sportsproducts.domains.review.Review;
 import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
@@ -40,6 +42,8 @@ public class DemoData implements CommandLineRunner {
 
   @Autowired
   private ProductRepository productRepository;
+  @Autowired
+  private LineItemRepository lineItemRepository;
 
   @Autowired
   private PurchaseRepository purchaseRepository;
@@ -170,7 +174,11 @@ public class DemoData implements CommandLineRunner {
       int count = 0;
       while(count++ < numberPurchases){
         Purchase newPurchase = purchaseFactory.generateRandomPurchase(u);
-        purchaseRepository.save(newPurchase);
+        Purchase savedPurchase = purchaseRepository.save(newPurchase);
+        for(LineItem line: savedPurchase.getProducts()){
+          line.setPurchase(savedPurchase);
+        }
+        lineItemRepository.saveAll(savedPurchase.getProducts());
       }
     }
 

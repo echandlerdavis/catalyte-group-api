@@ -88,9 +88,12 @@ public enum StateEnum {
   }
 
   public static double getShippingByName(String stateName) {
-    String[] nameArray = stateName.split(" ");
     String testName = formatStateName(stateName);
-    return BY_FULLNAME.get(testName).shippingCost;
+    StateEnum state = BY_FULLNAME.get(testName);
+    if (state == null) {
+      throw new IllegalArgumentException(String.format("%s is not an implemented state.", testName));
+    }
+    return state.shippingCost;
   }
 
   public static boolean isValidStateName(String stateName){
