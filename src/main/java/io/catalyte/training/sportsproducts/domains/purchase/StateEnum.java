@@ -75,7 +75,13 @@ public enum StateEnum {
     }
   }
 
+  /**
+   * The fullname of the enum
+   */
   public final String fullName;
+  /**
+   * The shipping cost of shipping to the state
+   */
   public final double shippingCost;
 
   private StateEnum(String fullName, double shippingCost){
@@ -83,10 +89,21 @@ public enum StateEnum {
     this.shippingCost = shippingCost;
   }
 
+  /**
+   * Returns the shipping cost for the state represented by abbreviation
+   * @param abbreviation Two letter String
+   * @return double
+   */
+
   public static double getShippingByAbbreviation(String abbreviation){
     return BY_ABBREVIATION.get(abbreviation.toUpperCase()).shippingCost;
   }
 
+  /**
+   * Returns the shipping cost for state stateName
+   * @param stateName String
+   * @return double
+   */
   public static double getShippingByName(String stateName) {
     String testName = formatStateName(stateName);
     StateEnum state = BY_FULLNAME.get(testName);
@@ -96,11 +113,21 @@ public enum StateEnum {
     return state.shippingCost;
   }
 
+  /**
+   * Returns a boolean for if the given stateName is implemented
+   * @param stateName String
+   * @return boolean
+   */
   public static boolean isValidStateName(String stateName){
     StateEnum state = BY_FULLNAME.get(formatStateName(stateName));
     return state != null;
   }
 
+  /**
+   * Formats the given string to match the StateEnum.fullName values
+   * @param string String
+   * @return String with the first letter of each word capitalized
+   */
   protected static String formatStateName(String string){
     String[] strArray = string.split(" ");
     String cleanedString = "";
