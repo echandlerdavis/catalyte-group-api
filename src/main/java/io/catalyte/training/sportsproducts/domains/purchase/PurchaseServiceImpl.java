@@ -13,6 +13,7 @@ import io.catalyte.training.sportsproducts.exceptions.UnprocessableContent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
@@ -76,7 +77,12 @@ public class PurchaseServiceImpl implements PurchaseService {
         }
     }
 
-    /**
+  @Override
+  public List<Map<String, Double>> getStateOptions() {
+    return StateEnum.getPriceMaps();
+  }
+
+  /**
      * Persists a purchase to the database
      *
      * @param newPurchase - the purchase to persist

@@ -2,7 +2,10 @@ package io.catalyte.training.sportsproducts.domains.purchase;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum StateEnum {
   AL("Alabama", shippingCosts.DEFAULT.cost),
@@ -136,6 +139,15 @@ public enum StateEnum {
     };
 
     return cleanedString.trim();
+  }
+
+  public static List<Map<String, Double>> getPriceMaps(){
+    return Arrays.stream(values())
+        .map(state ->
+            Stream.of(state)
+                .collect(Collectors.toMap(s -> s.fullName, s -> Double.valueOf(s.shippingCost)))
+                )
+        .collect(Collectors.toList());
   }
 
 }

@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.purchase;
 
 import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH;
 
+import org.apache.coyote.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +52,11 @@ public class PurchaseController {
   @GetMapping
   public ResponseEntity findAllPurchases() {
     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  }
 
-
+  @GetMapping(value = "/StateOptions")
+  public ResponseEntity getStateOptions(){
+    return new ResponseEntity(purchaseService.getStateOptions(), HttpStatus.OK);
   }
 
   /**

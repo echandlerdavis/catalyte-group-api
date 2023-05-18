@@ -35,6 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class PurchaseApiTest {
+    //TODO: test for getting state shipping cost info
     @Autowired
     private WebApplicationContext wac;
 
