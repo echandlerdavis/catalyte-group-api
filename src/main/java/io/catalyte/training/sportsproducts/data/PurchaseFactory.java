@@ -166,6 +166,10 @@ public class PurchaseFactory {
       purchase.setDate(dt);
       //get address objects from the user
       DeliveryAddress deliver = getDeliveryAddressFromUser(user);
+      //randomly reset delivery address
+      if(random.nextBoolean()){
+        deliver = getDeliveryAddressFromUser(userFactory.generateRandomUser());
+      }
       BillingAddress billing = getBillingAddressFromUser(user);
       purchase.setDeliveryAddress(deliver);
       purchase.setBillingAddress(billing);

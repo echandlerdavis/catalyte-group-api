@@ -159,7 +159,7 @@ public class DemoData implements CommandLineRunner {
     //set promotional code list in purchaseFactory
     purchaseFactory.setAvailablePromoCodes(promotionalCodeRepository.findAll());
     //anonymous user
-    User user = new User("amir@amir.com", "Customer", "Amir", "Sharapov",
+    User amir = new User("amir@amir.com", "Customer", "Amir", "Sharapov",
         new UserBillingAddress("123 Main St", "", "Seattle", "Washington",98101));
 
     //generate purchases for actual users
@@ -177,13 +177,9 @@ public class DemoData implements CommandLineRunner {
       }
       Purchase anonymousPurchase = null;
       if (new Random().nextBoolean()){
-        anonymousPurchase = purchaseFactory.generateRandomPurchase(user);
+        anonymousPurchase = purchaseFactory.generateRandomPurchase(amir);
       } else {
         anonymousPurchase = purchaseFactory.generateRandomPurchase();
-      }
-      if (new Random().nextBoolean()){
-        anonymousPurchase.setDeliveryAddress(
-            purchaseFactory.getDeliveryAddressFromUser(userFactory.generateRandomUser()));
       }
       purchaseRepository.save(anonymousPurchase);
     }
