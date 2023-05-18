@@ -8,7 +8,6 @@ import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeRepository;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeType;
-import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import io.catalyte.training.sportsproducts.domains.purchase.PurchaseRepository;
 import io.catalyte.training.sportsproducts.domains.review.ReviewRepository;
@@ -23,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 /**
@@ -109,12 +107,6 @@ public class DemoData implements CommandLineRunner {
       product.setReviews(reviewList);
       reviewRepository.saveAll(reviewList);
     }
-    logger.info("Data load completed. You can make requests now.");
-
-    User user = new User("amir@amir.com", "Customer", "Amir", "Sharapov",
-            new UserBillingAddress("123 Main St", "", "Seattle", "WA",98101));
-    userRepository.save(user);
-
 
     Calendar cal = Calendar.getInstance();
     Date today = new Date();
@@ -166,6 +158,9 @@ public class DemoData implements CommandLineRunner {
 
     //set promotional code list in purchaseFactory
     purchaseFactory.setAvailablePromoCodes(promotionalCodeRepository.findAll());
+    //anonymous user
+    User user = new User("amir@amir.com", "Customer", "Amir", "Sharapov",
+        new UserBillingAddress("123 Main St", "", "Seattle", "Washington",98101));
 
     //generate purchases for actual users
     for(User u: userFactory.ACTUAL_USERS){
@@ -180,7 +175,21 @@ public class DemoData implements CommandLineRunner {
         }
         lineItemRepository.saveAll(savedPurchase.getProducts());
       }
+      Purchase anonymousPurchase = null;
+      if (new Random().nextBoolean()){
+        anonymousPurchase = purchaseFactory.generateRandomPurchase(user);
+      } else {
+        anonymousPurchase = purchaseFactory.generateRandomPurchase();
+      }
+      if (new Random().nextBoolean()){
+        anonymousPurchase.setDeliveryAddress(
+            purchaseFactory.getDeliveryAddressFromUser(userFactory.generateRandomUser()));
+      }
+      purchaseRepository.save(anonymousPurchase);
     }
+    logger.info("Data load completed. You can make requests now.");
+
+
 
   }
 

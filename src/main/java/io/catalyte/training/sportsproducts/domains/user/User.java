@@ -1,11 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
-import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
-import io.catalyte.training.sportsproducts.domains.purchase.DeliveryAddress;
 import java.util.Date;
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * User entity in database

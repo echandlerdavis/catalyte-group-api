@@ -13,7 +13,7 @@ public enum StateEnum {
   CO("Colorado", shippingCosts.DEFAULT.cost),
   CT("Connecticut", shippingCosts.DEFAULT.cost),
   DE("Delaware", shippingCosts.DEFAULT.cost),
-  DC("District of Columbia", shippingCosts.DEFAULT.cost),
+  DC("District Of Columbia", shippingCosts.DEFAULT.cost),
   FL("Florida", shippingCosts.DEFAULT.cost),
   GA("Georgia", shippingCosts.DEFAULT.cost),
   HI("Hawaii", shippingCosts.HIGHER.cost),
