@@ -106,8 +106,10 @@ public class PurchaseServiceImpl implements PurchaseService {
         //this means the promocode is either not active or not found
         newPurchase.setPromoCode(null);
       }
-
     }
+    //add date of today
+    newPurchase.setDate(new Date());
+
     //Handle ID received from UI and create savedPurchase
     newPurchase.setId(null);
     Purchase savedPurchase;
@@ -124,6 +126,15 @@ public class PurchaseServiceImpl implements PurchaseService {
     // after the purchase is persisted and has an id, we need to handle its lineitems and persist them as well
     handleLineItems(newPurchase);
     savedPurchase.setProducts(lineItemRepository.findByPurchase(newPurchase));
+    if (savedPurchase.applyShippingCharge()) {
+      savedPurchase.setShippingCharge(
+          StateEnum.getShippingByName(savedPurchase.getDeliveryAddress().getDeliveryState()));
+      try {
+        purchaseRepository.save(savedPurchase);
+      } catch (DataAccessException e) {
+        logger.error(e.getMessage());
+      }
+    }
 
     return savedPurchase;
   }
