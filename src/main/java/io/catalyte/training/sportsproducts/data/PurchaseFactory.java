@@ -168,7 +168,10 @@ public class PurchaseFactory {
       DeliveryAddress deliver = getDeliveryAddressFromUser(user);
       //randomly reset delivery address
       if(random.nextBoolean()){
-        deliver = getDeliveryAddressFromUser(userFactory.generateRandomUser());
+        final User newUser = userFactory.generateRandomUser();
+        deliver = getDeliveryAddressFromUser(newUser);
+        deliver.setFirstName(user.getFirstName());
+        deliver.setLastName(user.getLastName());
       }
       BillingAddress billing = getBillingAddressFromUser(user);
       purchase.setDeliveryAddress(deliver);

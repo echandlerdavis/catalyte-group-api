@@ -7,6 +7,7 @@ import io.catalyte.training.sportsproducts.domains.user.User;
 import io.catalyte.training.sportsproducts.domains.user.UserBillingAddress;
 import io.catalyte.training.sportsproducts.domains.user.UserRepository;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,13 +25,22 @@ public class UserFactory {
   private static boolean USERS_PERSISTED = false;
 
   /**
+   * Sets ActualUser on instantiation
+   */
+  static {
+    setActualUsers();
+  }
+
+  /**
    * Gets a random state from StateEnum
    *
    * @return StateEnum
    */
   public static StateEnum getRandomState() {
     int size = StateEnum.values().length;
-    return StateEnum.values()[random.nextInt(size)];
+    StateEnum state = StateEnum.values()[random.nextInt(size)];
+    ;
+    return state;
   }
 
   /**
@@ -42,10 +52,12 @@ public class UserFactory {
   public static String generateRandomString(int length) {
     int leftLimit = 97;
     int rightLimit = 122;
-    return random.ints(leftLimit, rightLimit + 1)
+    String randomString = random.ints(leftLimit, rightLimit + 1)
         .limit(length > 0 ? length : 1)
         .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
         .toString();
+    ;
+    return randomString;
   }
 
   /**
@@ -56,6 +68,7 @@ public class UserFactory {
    */
   public static String generateRandomName(int length) {
     String randomString = generateRandomString(length);
+    ;
     return randomString.substring(0, 1).toUpperCase() + randomString.substring(1);
   }
 
@@ -71,6 +84,7 @@ public class UserFactory {
     while (digitCount++ < maxDigits) {
       numberString = numberString + Integer.toString(random.nextInt(9));
     }
+    ;
     return Integer.parseInt(numberString);
   }
 
@@ -95,6 +109,7 @@ public class UserFactory {
     while (lineNumber.length() < 4) {
       lineNumber += "0";
     }
+    ;
     return areaCode + "-" + prefix + "-" + lineNumber;
   }
 
@@ -106,6 +121,7 @@ public class UserFactory {
   public static String generateRandomEmailAddress() {
     String userName = generateRandomString(random.nextInt(12));
     String domain = generateRandomString(random.nextInt(12));
+    ;
     return userName + "@" + domain + ".com";
   }
 
@@ -184,8 +200,8 @@ public class UserFactory {
     if (month.length() < 2) {
       month = "0" + month;
     }
-    int yearMax = 29;
-    int yearMin = 24;
+    int yearMin = Year.now().getValue() + 1;
+    int yearMax = yearMin + 4;
     String year = Integer.toString(random.nextInt(yearMax - yearMin) + yearMin);
 
     return new CreditCard(creditCardNumber, cvv, month + "/" + year, owner == null ? name : owner);
@@ -274,10 +290,4 @@ public class UserFactory {
     }
   }
 
-  /**
-   * Sets ActualUser on instantiation
-   */
-  static {
-    setActualUsers();
-  }
 }
