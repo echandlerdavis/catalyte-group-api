@@ -18,21 +18,22 @@ public class User {
   private String firstName;
   private String lastName;
   @Embedded
-  private BillingAddress billingAddress;
+  private UserBillingAddress billingAddress;
+
   private Date lastActive;
 
   public User() {
     // Empty Constructor
   }
 
-  public User(String email, String firstName, String lastName, BillingAddress billingAddress) {
+  public User(String email, String firstName, String lastName, UserBillingAddress billingAddress) {
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;
     this.billingAddress = billingAddress;
   }
 
-  public User(Long id, String email, String role, String firstName, String lastName, BillingAddress billingAddress) {
+  public User(Long id, String email, String role, String firstName, String lastName, UserBillingAddress billingAddress) {
     this.id = id;
     this.email = email;
     this.role = role;
@@ -41,7 +42,7 @@ public class User {
     this.billingAddress = billingAddress;
   }
 
-  public User(String email, String role, String firstName, String lastName, BillingAddress billingAddress) {
+  public User(String email, String role, String firstName, String lastName, UserBillingAddress billingAddress) {
     this.email = email;
     this.role = role;
     this.firstName = firstName;
@@ -97,11 +98,11 @@ public class User {
     this.lastActive = lastActive;
   }
 
-  public BillingAddress getBillingAddress() {
+  public UserBillingAddress getBillingAddress() {
     return billingAddress;
   }
 
-  public void setBillingAddress(BillingAddress billingAddress) {
+  public void setBillingAddress(UserBillingAddress billingAddress) {
     this.billingAddress = billingAddress;
   }
 
