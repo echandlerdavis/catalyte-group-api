@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public enum StateEnum {
   AL("Alabama", shippingCosts.DEFAULT.cost),
@@ -70,16 +69,6 @@ public enum StateEnum {
     });
   }
 
-  private enum shippingCosts {
-
-    DEFAULT(5),
-    HIGHER(10);
-    public final double cost;
-    private shippingCosts (double value) {
-      this.cost = value;
-    }
-  }
-
   /**
    * The fullname of the enum
    */
@@ -89,23 +78,25 @@ public enum StateEnum {
    */
   public final double shippingCost;
 
-  private StateEnum(String fullName, double shippingCost){
+  private StateEnum(String fullName, double shippingCost) {
     this.fullName = fullName;
     this.shippingCost = shippingCost;
   }
 
   /**
    * Returns the shipping cost for the state represented by abbreviation
+   *
    * @param abbreviation Two letter String
    * @return double
    */
 
-  public static double getShippingByAbbreviation(String abbreviation){
+  public static double getShippingByAbbreviation(String abbreviation) {
     return BY_ABBREVIATION.get(abbreviation.toUpperCase()).shippingCost;
   }
 
   /**
    * Returns the shipping cost for state stateName
+   *
    * @param stateName String
    * @return double
    */
@@ -113,48 +104,55 @@ public enum StateEnum {
     String testName = formatStateName(stateName);
     StateEnum state = BY_FULLNAME.get(testName);
     if (state == null) {
-      throw new IllegalArgumentException(String.format("%s is not an implemented state.", testName));
+      throw new IllegalArgumentException(
+          String.format("%s is not an implemented state.", testName));
     }
     return state.shippingCost;
   }
 
   /**
    * Returns a boolean for if the given stateName is implemented
+   *
    * @param stateName String
    * @return boolean
    */
-  public static boolean isValidStateName(String stateName){
+  public static boolean isValidStateName(String stateName) {
     StateEnum state = BY_FULLNAME.get(formatStateName(stateName));
     return state != null;
   }
 
   /**
    * Formats the given string to match the StateEnum.fullName values
+   *
    * @param string String
    * @return String with the first letter of each word capitalized
    */
-  protected static String formatStateName(String string){
+  protected static String formatStateName(String string) {
     String[] strArray = string.split(" ");
     String cleanedString = "";
-    for(String str: strArray){
-      cleanedString = cleanedString + " " + str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
-    };
+    for (String str : strArray) {
+      cleanedString =
+          cleanedString + " " + str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
+    ;
 
     return cleanedString.trim();
   }
 
-  public static List<stateJson> getStatesJsonList(){
+  public static List<StateEnumDTO> getStatesJsonList() {
     return Arrays.stream(values())
-        .map(state -> new stateJson(state))
+        .map(state -> new StateEnumDTO(state))
         .collect(Collectors.toList());
   }
-  public static class stateJson{
-    public final Double shippingCost;
-    public final String fullName;
-    public stateJson(StateEnum state){
-      this.shippingCost = state.shippingCost;
-      this.fullName = state.fullName;
+
+  private enum shippingCosts {
+
+    DEFAULT(5),
+    HIGHER(10);
+    public final double cost;
+
+    private shippingCosts(double value) {
+      this.cost = value;
     }
   }
-
 }
