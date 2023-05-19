@@ -74,4 +74,11 @@ public class StateEnumTests {
     boolean actual = StateEnum.isValidStateName(testState);
     assertEquals(expected, actual);
   }
+
+  @Test
+  public void getDistrictOfColumbiaShippingTest(){
+    double expected = 5.0;
+    double actual = StateEnum.getShippingByName("District Of Columbia");
+    assertEquals(expected, actual, .001);
+  }
 }
