@@ -5,6 +5,7 @@ import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductService;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeService;
+import io.catalyte.training.sportsproducts.domains.purchase.StateEnum.stateJson;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.MultipleUnprocessableContent;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
@@ -78,8 +79,8 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
   @Override
-  public List<Map<String, Double>> getStateOptions() {
-    return StateEnum.getPriceMaps();
+  public List<stateJson> getStateOptions() {
+    return StateEnum.getStatesJsonList();
   }
 
   /**

@@ -141,13 +141,18 @@ public enum StateEnum {
     return cleanedString.trim();
   }
 
-  public static List<Map<String, Double>> getPriceMaps(){
+  public static List<stateJson> getStatesJsonList(){
     return Arrays.stream(values())
-        .map(state ->
-            Stream.of(state)
-                .collect(Collectors.toMap(s -> s.fullName, s -> Double.valueOf(s.shippingCost)))
-                )
+        .map(state -> new stateJson(state))
         .collect(Collectors.toList());
+  }
+  public static class stateJson{
+    public final Double shippingCost;
+    public final String fullName;
+    public stateJson(StateEnum state){
+      this.shippingCost = state.shippingCost;
+      this.fullName = state.fullName;
+    }
   }
 
 }
