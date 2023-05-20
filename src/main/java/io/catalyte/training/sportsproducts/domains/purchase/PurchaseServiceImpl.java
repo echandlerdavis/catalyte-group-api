@@ -109,6 +109,13 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
     //add date of today
     newPurchase.setDate(new Date());
+    //calculate the shipping charge and apply if appropriate
+    boolean shippingApplies = newPurchase.applyShippingCharge();
+    double shippingCharge = StateEnum.getShippingByName(
+        newPurchase.getDeliveryAddress().getDeliveryState());
+    if (shippingApplies) {
+      newPurchase.setShippingCharge(shippingCharge);
+    }
 
     //Handle ID received from UI and create savedPurchase
     newPurchase.setId(null);
@@ -126,13 +133,26 @@ public class PurchaseServiceImpl implements PurchaseService {
     // after the purchase is persisted and has an id, we need to handle its lineitems and persist them as well
     handleLineItems(newPurchase);
     savedPurchase.setProducts(lineItemRepository.findByPurchase(newPurchase));
-    if (savedPurchase.applyShippingCharge()) {
-      savedPurchase.setShippingCharge(
-          StateEnum.getShippingByName(savedPurchase.getDeliveryAddress().getDeliveryState()));
-      try {
-        purchaseRepository.save(savedPurchase);
-      } catch (DataAccessException e) {
-        logger.error(e.getMessage());
+    //check to see if anything changed after referring to the database products
+    //check if something changed
+    if (savedPurchase.applyShippingCharge() != shippingApplies) {
+      //if charge applies and current charge is 0, apply charge
+      boolean changed = false;
+      if (savedPurchase.applyShippingCharge() && savedPurchase.getShippingCharge() == 0.00) {
+        savedPurchase.setShippingCharge(shippingCharge);
+        changed = true;
+        //if charge doesn't apply and current charge is above 0.00, erase charge
+      } else if (!savedPurchase.applyShippingCharge() && savedPurchase.getShippingCharge() > 0.00) {
+        savedPurchase.setShippingCharge(0.00);
+        changed = true;
+      }
+      if (changed) {
+        //if shipping changed, resave purchase
+        try {
+          purchaseRepository.save(savedPurchase);
+        } catch (DataAccessException e) {
+          logger.error(e.getMessage());
+        }
       }
     }
 
