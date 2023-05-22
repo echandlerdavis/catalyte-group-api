@@ -1,6 +1,8 @@
 package io.catalyte.training.sportsproducts.domains.purchase;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,10 +15,15 @@ import io.catalyte.training.sportsproducts.data.ProductFactory;
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
 import io.catalyte.training.sportsproducts.domains.product.ProductService;
+import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
+import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeService;
+import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeType;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import io.catalyte.training.sportsproducts.exceptions.UnprocessableContent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,9 +43,11 @@ public class PurchaseServiceImplTest {
 
   private final int INVENTORY_QUANTITY = 100;
   private final int PURCHASE_QUANTITY = 1;
+  private final long TEST_CODE_RATE = 25;
   CreditCard testCreditCard = new CreditCard("1234567890123456", "111", "04/30", "Visa");
   Purchase testPurchase = new Purchase();
   String testEmail = "test@validEmail.com";
+  PromotionalCode promoCode;
   ArrayList<Purchase> testPurchases = new ArrayList<>();
   @InjectMocks
   private PurchaseServiceImpl purchaseServiceImpl;
@@ -50,6 +59,8 @@ public class PurchaseServiceImplTest {
   private LineItemRepository lineItemRepository;
   @Mock
   private ProductRepository productRepository;
+  @Mock
+  private PromotionalCodeService promotionalCodeService;
   private ProductFactory productFactory = new ProductFactory();
   private List<Product> testProducts;
 
@@ -62,6 +73,17 @@ public class PurchaseServiceImplTest {
     // Generate list of test products to add to a purchase
     productFactory = new ProductFactory();
     testProducts = productFactory.generateRandomProducts(3);
+
+    //set the valid promocode
+    Long dateMilliseconds = new Date().getTime();
+    promoCode = new PromotionalCode(
+        "Test",
+        "description",
+        PromotionalCodeType.FLAT,
+        BigDecimal.valueOf(TEST_CODE_RATE),
+        new Date(dateMilliseconds),
+        new Date(dateMilliseconds * 1000 * 60 * 60 * 24)
+    );
 
     // Initialize a test purchase instance and list of purchases
     setTestPurchase();
@@ -86,9 +108,15 @@ public class PurchaseServiceImplTest {
       copyPurchase.setCreditCard(passedPurchase.getCreditCard());
       copyPurchase.setBillingAddress(passedPurchase.getBillingAddress());
       copyPurchase.setDeliveryAddress(passedPurchase.getDeliveryAddress());
+      copyPurchase.setDate(passedPurchase.getDate());
+      copyPurchase.setPromoCode(passedPurchase.getPromoCode());
+      copyPurchase.setShippingCharge(passedPurchase.getShippingCharge());
 
       return copyPurchase;
     });
+
+    //Set promotional code repo to return a valid promocode by default
+    when(promotionalCodeService.getPromotionalCodeByTitle(anyString())).thenReturn(promoCode);
 
     //Set lineItemRepository.save to add product to testPurchased
     when(lineItemRepository.findByPurchase(any(Purchase.class))).thenAnswer((l) -> {
@@ -139,6 +167,7 @@ public class PurchaseServiceImplTest {
     testPurchase.setBillingAddress(testBillingAddress);
     testPurchase.setDeliveryAddress(testDeliveryAddress);
     testPurchase.setCreditCard(testCreditCard);
+    testPurchase.setPromoCode(promoCode);
   }
 
   @Test
@@ -148,6 +177,29 @@ public class PurchaseServiceImplTest {
 
     Purchase actual = purchaseServiceImpl.savePurchase(testPurchase);
     assertEquals(expected, actual);
+  }
+
+  @Test
+  public void savePurchaseIgnoresInvalidPromoCodeAndSaves() {
+    //simulate promocode attached to purchase is not a valid title
+    when(promotionalCodeService.getPromotionalCodeByTitle(anyString())).thenReturn(null);
+    assertNotNull(testPurchase.getPromoCode());
+    purchaseServiceImpl.savePurchase(testPurchase);
+    assertNull(testPurchase.getPromoCode());
+  }
+
+  @Test
+  public void savePurchaseSavesValidPromoCodeFromDataBase() {
+    PromotionalCode fakePromo = new PromotionalCode();
+    fakePromo.setTitle(promoCode.getTitle());
+    fakePromo.setRate(BigDecimal.valueOf(30));
+    fakePromo.setStartDate(promoCode.getStartDate());
+    fakePromo.setEndDate(promoCode.getEndDate());
+    fakePromo.setType(promoCode.getType());
+    testPurchase.setPromoCode(fakePromo);
+    Purchase actualPurchase = purchaseServiceImpl.savePurchase(testPurchase);
+
+    assertEquals(BigDecimal.valueOf(TEST_CODE_RATE), actualPurchase.getPromoCode().getRate());
   }
 
   @Test
