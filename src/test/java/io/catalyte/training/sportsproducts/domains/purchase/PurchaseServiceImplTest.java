@@ -3,6 +3,7 @@ package io.catalyte.training.sportsproducts.domains.purchase;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,12 +20,14 @@ import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeService;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCodeType;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
+import io.catalyte.training.sportsproducts.exceptions.MultipleUnprocessableContent;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import io.catalyte.training.sportsproducts.exceptions.UnprocessableContent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
@@ -93,10 +96,13 @@ public class PurchaseServiceImplTest {
     when(purchaseRepository.findByBillingAddressEmail(anyString())).thenReturn(testPurchases);
 
     // Set consecutive mock calls for product service since Purchase service consecutively calls this for each item in a purchase
-    when(productService.getProductById(any()))
+    /*when(productService.getProductById(any()))
         .thenReturn(testProducts.get(0))
         .thenReturn(testProducts.get(1))
-        .thenReturn(testProducts.get(2));
+        .thenReturn(testProducts.get(2));*/
+    //set mock for productService.getProductsByIds
+    when(productService.getProductsByIds(any()))
+        .thenReturn(testProducts);
 
     when(productService.getProductsByIds(any())).thenReturn(testProducts);
 
@@ -447,6 +453,33 @@ public class PurchaseServiceImplTest {
     assertEquals(PRICE * QUANTITY * lineItems.size(), purchase.calcLineItemTotal(), .001);
     assertEquals(true, purchase.applyShippingCharge());
 
+  }
+
+  @Test(expected = UnprocessableContent.class)
+  public void savePurchaseThrowsUnprocessableContentForNotEnoughInventory() {
+    int purchaseQuantity = INVENTORY_QUANTITY + PURCHASE_QUANTITY;
+    testPurchase.getProducts().iterator().next().setQuantity(purchaseQuantity);
+    purchaseServiceImpl.savePurchase(testPurchase);
+    assertTrue(false);//shouldn't run
+  }
+
+  @Test(expected = MultipleUnprocessableContent.class)
+  public void savePurchaseThrowsMultipleUnprocessableContentForNotEnoughInventoryAndInactiveProduct() {
+    int purchaseQuantity = INVENTORY_QUANTITY + PURCHASE_QUANTITY;
+    testProducts.get(1).setActive(false);
+    Iterator<LineItem> lines = testPurchase.getProducts().iterator();
+    for (int count = 0; count < testPurchase.getProducts().size(); count++) {
+      LineItem line = lines.next();
+      switch (count++) {
+        case 0:
+          line.setQuantity(purchaseQuantity);
+          break;
+        default:
+          break;
+      }
+    }
+    purchaseServiceImpl.savePurchase(testPurchase);
+    assertTrue(false);//shouldn't run
   }
 
 }
