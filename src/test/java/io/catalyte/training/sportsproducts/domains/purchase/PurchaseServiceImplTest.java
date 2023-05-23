@@ -3,7 +3,6 @@ package io.catalyte.training.sportsproducts.domains.purchase;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -451,7 +451,7 @@ public class PurchaseServiceImplTest {
     purchase.setProducts(lineItems);
 
     assertEquals(PRICE * QUANTITY * lineItems.size(), purchase.calcLineItemTotal(), .001);
-    assertEquals(true, purchase.applyShippingCharge());
+    Assertions.assertTrue(purchase.applyShippingCharge());
 
   }
 
@@ -460,7 +460,7 @@ public class PurchaseServiceImplTest {
     int purchaseQuantity = INVENTORY_QUANTITY + PURCHASE_QUANTITY;
     testPurchase.getProducts().iterator().next().setQuantity(purchaseQuantity);
     purchaseServiceImpl.savePurchase(testPurchase);
-    assertTrue(false);//shouldn't run
+    fail();//shouldn't run
   }
 
   @Test(expected = MultipleUnprocessableContent.class)
@@ -470,16 +470,12 @@ public class PurchaseServiceImplTest {
     Iterator<LineItem> lines = testPurchase.getProducts().iterator();
     for (int count = 0; count < testPurchase.getProducts().size(); count++) {
       LineItem line = lines.next();
-      switch (count++) {
-        case 0:
-          line.setQuantity(purchaseQuantity);
-          break;
-        default:
-          break;
+      if (count++ == 0) {
+        line.setQuantity(purchaseQuantity);
       }
     }
     purchaseServiceImpl.savePurchase(testPurchase);
-    assertTrue(false);//shouldn't run
+    fail();//shouldn't run
   }
 
 }

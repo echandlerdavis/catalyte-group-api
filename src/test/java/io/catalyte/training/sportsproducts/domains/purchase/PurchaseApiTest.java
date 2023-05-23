@@ -38,20 +38,22 @@ public class PurchaseApiTest {
 
   private final int INVENTORY_QUANTITY = 100;
   private final int PURCHASE_QUANTITY = 1;
+  private final Purchase testPurchase = new Purchase();
+  private final CreditCard testCreditCard = new CreditCard("1234567890123456", "111", "04/30",
+      "Visa");
+  private final String[] emails = {"email@address.com", "email@address.net", "email@address.edu"};
+  private final ProductFactory productFactory = new ProductFactory();
   @Autowired
   public PurchaseRepository purchaseRepository;
+
   @Autowired
   public ProductRepository productRepository;
   //TODO: test for getting state shipping cost info
   @Autowired
   private WebApplicationContext wac;
   private MockMvc mockMvc;
-  private Purchase testPurchase = new Purchase();
-  private CreditCard testCreditCard = new CreditCard("1234567890123456", "111", "04/30", "Visa");
   private List<BillingAddress> testAddresses;
-  private String[] emails = {"email@address.com", "email@address.net", "email@address.edu"};
   private Map<String, Integer> purchaseCounts;
-  private ProductFactory productFactory = new ProductFactory();
   private List<Product> testProducts;
 
   @Before
@@ -105,6 +107,7 @@ public class PurchaseApiTest {
     testPurchase.setBillingAddress(testBillingAddress);
     testPurchase.setDeliveryAddress(testDeliveryAddress);
     testPurchase.setCreditCard(testCreditCard);
+    testPurchase.setPromoCode(null);
 
     testAddresses = new ArrayList<>();
     purchaseCounts = new HashMap<>();
@@ -129,12 +132,17 @@ public class PurchaseApiTest {
    */
   @After
   public void tearDown() {
-
+    //delete purchases
     for (String email : emails) {
       List<Purchase> purchases = purchaseRepository.findByBillingAddressEmail(email);
       for (Purchase p : purchases) {
         purchaseRepository.delete(p);
       }
+    }
+    //reset inventory quantities
+    for (Product p : testProducts) {
+      p.setQuantity(INVENTORY_QUANTITY);
+      productRepository.save(p);
     }
 
   }
@@ -373,7 +381,6 @@ public class PurchaseApiTest {
   @Test
   public void findPurchasesByEmailReturnsEmailList() throws Exception {
 
-    System.out.println("purchaseRepository.findAll() = " + purchaseRepository.findAll());
     ObjectMapper mapper = new ObjectMapper();
 
     for (String email : emails) {
@@ -382,7 +389,7 @@ public class PurchaseApiTest {
       List<Purchase> purchases = mapper.readValue(response.getContentAsString(),
           new TypeReference<List<Purchase>>() {
           });
-      assertEquals(Integer.valueOf(purchaseCounts.get(email)), Integer.valueOf(purchases.size()));
+      assertEquals(purchaseCounts.get(email), Integer.valueOf(purchases.size()));
     }
 
     String purchasesJson =
@@ -540,5 +547,24 @@ public class PurchaseApiTest {
       return false;
     }
     return p1.getCreditCard().equals(p2.getCreditCard());
+  }
+
+  @Test
+  public void updateInventoryTest() throws Exception {
+    int expectedEndingInventory = INVENTORY_QUANTITY - PURCHASE_QUANTITY;
+    ObjectMapper mapper = new ObjectMapper();
+    MockHttpServletResponse response =
+        mockMvc.perform(
+                post(PURCHASES_PATH)
+                    .contentType("application/json")
+                    .content(mapper.writeValueAsString(testPurchase)))
+            .andReturn().getResponse();
+
+    Purchase returnedPurchase = mapper.readValue(response.getContentAsString(), Purchase.class);
+    for (Product p : testProducts) {
+      Product updatedProduct = productRepository.findById(p.getId()).get();
+      assertEquals(Long.valueOf(expectedEndingInventory),
+          Long.valueOf(updatedProduct.getQuantity()));
+    }
   }
 }
