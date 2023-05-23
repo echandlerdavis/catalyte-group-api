@@ -78,7 +78,7 @@ public enum StateEnum {
    */
   public final double shippingCost;
 
-  private StateEnum(String fullName, double shippingCost) {
+  StateEnum(String fullName, double shippingCost) {
     this.fullName = fullName;
     this.shippingCost = shippingCost;
   }
@@ -127,14 +127,13 @@ public enum StateEnum {
    * @param string String
    * @return String with the first letter of each word capitalized
    */
-  protected static String formatStateName(String string) {
+  static String formatStateName(String string) {
     String[] strArray = string.split(" ");
     String cleanedString = "";
     for (String str : strArray) {
       cleanedString =
           cleanedString + " " + str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
-    ;
 
     return cleanedString.trim();
   }
@@ -151,7 +150,7 @@ public enum StateEnum {
     HIGHER(10);
     public final double cost;
 
-    private shippingCosts(double value) {
+    shippingCosts(double value) {
       this.cost = value;
     }
   }

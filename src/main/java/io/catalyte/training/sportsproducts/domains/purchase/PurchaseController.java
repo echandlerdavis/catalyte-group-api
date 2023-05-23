@@ -2,7 +2,6 @@ package io.catalyte.training.sportsproducts.domains.purchase;
 
 import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH;
 
-import org.apache.coyote.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = PURCHASES_PATH)
 public class PurchaseController {
 
+  private final PurchaseService purchaseService;
   Logger logger = LogManager.getLogger(PurchaseController.class);
-
-  private PurchaseService purchaseService;
 
   @Autowired
   public PurchaseController(PurchaseService purchaseService) {
@@ -33,7 +31,8 @@ public class PurchaseController {
   }
 
   /**
-   * Handles a POST request to /purchases. This creates a new purchase that gets saved to the database.
+   * Handles a POST request to /purchases. This creates a new purchase that gets saved to the
+   * database.
    *
    * @param purchase purchase to be created
    * @return valid purchase that was saved
@@ -55,7 +54,7 @@ public class PurchaseController {
   }
 
   @GetMapping(value = "/StateOptions")
-  public ResponseEntity getStateOptions(){
+  public ResponseEntity getStateOptions() {
     return new ResponseEntity(purchaseService.getStateOptions(), HttpStatus.OK);
   }
 
@@ -63,11 +62,11 @@ public class PurchaseController {
    * Handles a GET request with an email parameter
    *
    * @param email String email of user whose purchase history should be returned
-   * @return ResponseEntity with a list of purchase objects and HttpStatus Ok. If no purchases
-   * are found, returns an empty list.
+   * @return ResponseEntity with a list of purchase objects and HttpStatus Ok. If no purchases are
+   * found, returns an empty list.
    */
   @RequestMapping(value = "/{email}", method = RequestMethod.GET)
-  public ResponseEntity findAllPurchasesByEmail(@PathVariable String email){
+  public ResponseEntity findAllPurchasesByEmail(@PathVariable String email) {
     return new ResponseEntity(purchaseService.findByBillingAddressEmail(email), HttpStatus.OK);
   }
 }

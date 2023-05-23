@@ -8,8 +8,6 @@ public class StateEnumDTO {
   public StateEnumDTO() {
   }
 
-  ;
-
   public StateEnumDTO(StateEnum state) {
     this.shippingCost = state.shippingCost;
     this.fullName = state.fullName;
