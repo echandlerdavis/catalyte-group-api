@@ -13,12 +13,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,11 +27,6 @@ public class PromotionalCodeServiceImplTest {
 
   @InjectMocks
   private PromotionalCodeServiceImpl promotionalCodeServiceImpl;
-
-  @Before
-  public void setUp() {
-    MockitoAnnotations.initMocks(this);
-  }
 
   @Test(expected = BadRequest.class)
   public void testCreatePromotionalCodeWithInvalidTypeAndRate() {
@@ -141,8 +134,9 @@ public class PromotionalCodeServiceImplTest {
     testCode.setEndDate(endDate);
 
     when(promotionalCodeRepository.findByTitle(anyString())).thenReturn(testCode);
+
     PromotionalCode expected = testCode;
-    PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("valid title");
+    PromotionalCode actual = promotionalCodeServiceImpl.getPromotionalCodeByTitle("title");
 
     assertEquals(expected, actual);
   }

@@ -553,14 +553,12 @@ public class PurchaseApiTest {
   public void updateInventoryTest() throws Exception {
     int expectedEndingInventory = INVENTORY_QUANTITY - PURCHASE_QUANTITY;
     ObjectMapper mapper = new ObjectMapper();
-    MockHttpServletResponse response =
-        mockMvc.perform(
-                post(PURCHASES_PATH)
-                    .contentType("application/json")
-                    .content(mapper.writeValueAsString(testPurchase)))
-            .andReturn().getResponse();
+    mockMvc.perform(
+            post(PURCHASES_PATH)
+                .contentType("application/json")
+                .content(mapper.writeValueAsString(testPurchase)))
+        .andReturn().getResponse();
 
-    Purchase returnedPurchase = mapper.readValue(response.getContentAsString(), Purchase.class);
     for (Product p : testProducts) {
       Product updatedProduct = productRepository.findById(p.getId()).get();
       assertEquals(Long.valueOf(expectedEndingInventory),
