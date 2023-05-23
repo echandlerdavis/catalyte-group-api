@@ -363,7 +363,7 @@ public class PurchaseServiceImpl implements PurchaseService {
       try {
         productService.saveProduct(product);
       } catch (DataAccessException dae) {
-        logger.error("Failed to update inventory for product " + Long.toString(product.getId()));
+        logger.error("Failed to update inventory for product " + product.getId());
         throw new ServerError(dae.getMessage());
       }
     });
