@@ -151,6 +151,14 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     if (itemsList != null) {
       itemsList.forEach(lineItem -> {
+
+        // retrieve full product information from the database
+        Product product = productService.getProductById(lineItem.getProduct().getId());
+
+        // set the product info into the lineitem
+        if (product != null) {
+          lineItem.setProduct(product);
+        }
         //get rid of the id
         lineItem.setId(null);
 
@@ -167,7 +175,6 @@ public class PurchaseServiceImpl implements PurchaseService {
       });
     }
   }
-
 
   private void validateProducts(Purchase purchase) {
     // Get products from each line item

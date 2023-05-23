@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ReviewApiTest {
@@ -29,8 +28,8 @@ public class ReviewApiTest {
   ProductRepository productRepository;
   ProductFactory productFactory = new ProductFactory();
   Product testProduct = productFactory.createRandomProduct();
-  Review testReview1 = ProductFactory.createRandomReview(testProduct, 1);
-  Review testReview2 = ProductFactory.createRandomReview(testProduct, 2);
+  Review testReview1 = productFactory.createRandomReview(testProduct, 1);
+  Review testReview2 = productFactory.createRandomReview(testProduct, 2);
   @Autowired
   private WebApplicationContext wac;
   private MockMvc mockMvc;

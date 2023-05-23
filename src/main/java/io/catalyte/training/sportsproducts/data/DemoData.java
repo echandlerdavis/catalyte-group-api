@@ -100,6 +100,7 @@ public class DemoData implements CommandLineRunner {
       product.setReviews(reviewList);
       reviewRepository.saveAll(reviewList);
     }
+    logger.info("Data load completed. You can make requests now.");
 
     Calendar cal = Calendar.getInstance();
     Date today = new Date();

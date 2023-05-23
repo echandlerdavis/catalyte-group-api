@@ -176,7 +176,8 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
    */
   public BigDecimal applyPromotionalCode(String title, BigDecimal price) {
     try {
-      PromotionalCode promotionalCode = promotionalCodeRepository.findByTitle(title);
+      PromotionalCode promotionalCode = promotionalCodeRepository.findByTitle(
+          title);
       if (promotionalCode == null || promotionalCode.getType() == null
           || promotionalCode.getRate() == null) {
         return price.setScale(1, RoundingMode.HALF_UP);

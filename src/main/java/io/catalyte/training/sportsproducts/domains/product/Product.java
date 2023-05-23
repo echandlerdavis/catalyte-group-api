@@ -292,7 +292,6 @@ public class Product {
     return Objects.equals(active, product.active);
   }
 
-
   @Override
   public int hashCode() {
     int result = name != null ? name.hashCode() : 0;

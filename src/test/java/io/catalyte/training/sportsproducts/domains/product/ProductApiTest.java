@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,7 +18,6 @@ import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.data.ProductFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import org.hamcrest.core.Every;
@@ -67,7 +65,6 @@ public class ProductApiTest {
     productRepository.saveAll(Arrays.asList(testProduct1, testProduct2));
     getMinMaxPrice();
   }
-
 
   /**
    * Test Helper method used to compare values of the test products prices Assigns min and max value
@@ -125,7 +122,6 @@ public class ProductApiTest {
     mockMvc.perform(get(PRODUCTS_PATH + "/categories"))
         .andExpect(status().isOk());
   }
-
 
   @Test
   public void getDistinctPrimaryColorsReturnsWith200() throws Exception {
@@ -231,7 +227,6 @@ public class ProductApiTest {
         .andExpect(jsonPath("$", hasItem("#000000")))
         .andExpect(jsonPath("$", hasItem("#3079ab")));
   }
-
 
   @Test
   public void getProductsByFilterQueryParamsWithOnlyBrandReturnsProductListWith200()
@@ -464,6 +459,7 @@ public class ProductApiTest {
 
   @Test
   public void saveProductReturns201WithProductObject() throws Exception {
+    //This test fails when run with coverage
     ObjectMapper mapper = new ObjectMapper();
     MockHttpServletResponse response = mockMvc.perform(post(PRODUCTS_PATH)
             .contentType("application/json")
@@ -479,6 +475,7 @@ public class ProductApiTest {
 
   @Test
   public void SaveProductReturns400IfPriceIsNegativeNumber() throws Exception {
+    //This test fails when run with coverage
     Product newProduct = productFactory.createRandomProduct();
     newProduct.setPrice(-1.00);
     ObjectMapper mapper = new ObjectMapper();
@@ -488,11 +485,12 @@ public class ProductApiTest {
         .andExpect(status().isBadRequest())
         .andReturn().getResponse();
     HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
-    assertEquals(StringConstants.PRODUCT_PRICE_INVALID, responseMap.get("errorMessage"));
+    assertTrue(responseMap.get("errorMessage").equals(StringConstants.PRODUCT_PRICE_INVALID));
   }
 
   @Test
   public void SaveProductReturns400IQuantityIsNegativeNumber() throws Exception {
+    //This test fails when run with coverage
     Product newProduct = productFactory.createRandomProduct();
     newProduct.setQuantity(-1);
     ObjectMapper mapper = new ObjectMapper();
@@ -502,11 +500,12 @@ public class ProductApiTest {
         .andExpect(status().isBadRequest())
         .andReturn().getResponse();
     HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
-    assertEquals(StringConstants.PRODUCT_QUANTITY_INVALID, responseMap.get("errorMessage"));
+    assertTrue(responseMap.get("errorMessage").equals(StringConstants.PRODUCT_QUANTITY_INVALID));
   }
 
   @Test
   public void SaveProductReturns400IfFieldsAreNull() throws Exception {
+    //This test fails when run with coverage
     Product newProduct = productFactory.createRandomProduct();
     newProduct.setActive(null);
     newProduct.setBrand(null);
@@ -517,12 +516,13 @@ public class ProductApiTest {
         .andExpect(status().isBadRequest())
         .andReturn().getResponse();
     HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
-    assertEquals(responseMap.get("errorMessage"),
-        StringConstants.PRODUCT_FIELDS_NULL(Arrays.asList("brand", "active")));
+    assertTrue(responseMap.get("errorMessage")
+        .equals(StringConstants.PRODUCT_FIELDS_NULL(Arrays.asList("brand", "active"))));
   }
 
   @Test
   public void SaveProductReturns400IfFieldsAreEmpty() throws Exception {
+    //This test fails when run with coverage
     Product newProduct = productFactory.createRandomProduct();
     newProduct.setCategory("");
     newProduct.setBrand("");
@@ -533,12 +533,13 @@ public class ProductApiTest {
         .andExpect(status().isBadRequest())
         .andReturn().getResponse();
     HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
-    assertEquals(responseMap.get("errorMessage"),
-        StringConstants.PRODUCT_FIELDS_EMPTY(Arrays.asList("brand", "category")));
+    assertTrue(responseMap.get("errorMessage")
+        .equals(StringConstants.PRODUCT_FIELDS_EMPTY(Arrays.asList("brand", "category"))));
   }
 
   @Test
   public void SaveProductReturns400WithListOfAllErrors() throws Exception {
+    //This test fails when run with coverage
     Product newProduct = productFactory.createRandomProduct();
     newProduct.setActive(null);
     newProduct.setBrand("");
@@ -551,14 +552,13 @@ public class ProductApiTest {
                 .content(mapper.writeValueAsString(newProduct)))
         .andExpect(status().isBadRequest())
         .andReturn().getResponse();
-    System.out.println("response = " + response);
     HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
     String[] responseErrors = responseMap.get("errorMessage").toString().split("\n");
     List<String> errorsList = Arrays.asList(responseErrors);
     assertTrue(errorsList.containsAll(Arrays.asList(
         StringConstants.PRODUCT_PRICE_INVALID,
         StringConstants.PRODUCT_QUANTITY_INVALID,
-        StringConstants.PRODUCT_FIELDS_NULL(Collections.singletonList("active")),
-        StringConstants.PRODUCT_FIELDS_EMPTY(Collections.singletonList("brand")))));
+        StringConstants.PRODUCT_FIELDS_NULL(Arrays.asList("active")),
+        StringConstants.PRODUCT_FIELDS_EMPTY(Arrays.asList("brand")))));
   }
 }

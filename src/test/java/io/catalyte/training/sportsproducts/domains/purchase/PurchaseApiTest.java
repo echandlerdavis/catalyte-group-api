@@ -253,7 +253,6 @@ public class PurchaseApiTest {
         .andExpect(status().isBadRequest());
   }
 
-
   @Test
   public void savePurchasesWithCCNumberGreaterThan16DigitsReturns400() throws Exception {
     // object mapper for creating a json string
@@ -369,14 +368,12 @@ public class PurchaseApiTest {
         .andExpect(status().isBadRequest());
   }
 
-
   @Test
   public void dataBaseFixtureTest() throws Exception {
     saveTestPurchasesToRepositoryWithDifferentEmails();
     List<Purchase> testPurchases = purchaseRepository.findAll();
     assertTrue(testPurchases.size() > 0);
   }
-
 
   @Test
   public void findPurchasesByEmailReturnsEmailList() throws Exception {
@@ -519,6 +516,7 @@ public class PurchaseApiTest {
 
   @Test
   public void postPurchasesReturnsPurchaseObject() throws Exception {
+    //This test fails when run with coverage
     ObjectMapper mapper = new ObjectMapper();
     MockHttpServletResponse response =
         mockMvc.perform(
@@ -551,6 +549,7 @@ public class PurchaseApiTest {
 
   @Test
   public void updateInventoryTest() throws Exception {
+    //This test fails when run with coverage
     int expectedEndingInventory = INVENTORY_QUANTITY - PURCHASE_QUANTITY;
     ObjectMapper mapper = new ObjectMapper();
     mockMvc.perform(

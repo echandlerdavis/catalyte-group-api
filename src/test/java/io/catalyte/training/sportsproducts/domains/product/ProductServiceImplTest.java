@@ -252,7 +252,6 @@ public class ProductServiceImplTest {
             priceMax));
   }
 
-
   @Test
   public void getProductByOnePrimaryColorReturnsListOfProducts() {
 
@@ -379,6 +378,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void saveProductThrowsServerError() {
+    //This test fails when run with coverage
     doThrow(new DataAccessException("TEST EXCEPTION") {
     }).when(productRepository).save(any());
     assertThrows(ServerError.class, () -> productServiceImpl.saveProduct(testProduct2));
@@ -478,6 +478,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void GetEmptyOrNullFieldsReturnsNullFieldsIfProductHasNullFields() {
+    //This test fails when run with coverage
     testProduct1.setBrand(null);
     testProduct1.setCategory(null);
     List<String> expected = new ArrayList<>();
@@ -488,6 +489,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void GetEmptyOrNullFieldsReturnsEmptyAndNullFieldsIfProductHasNullAndEmptyFields() {
+    //This test fails when run with coverage
     testProduct1.setBrand(null);
     testProduct1.setCategory(null);
     testProduct1.setDemographic("");
@@ -501,6 +503,7 @@ public class ProductServiceImplTest {
 
   @Test
   public void GetProductErrorsReturnsAllProductErrorsInAString() {
+    //This test fails when run with coverage
     testProduct1.setPrice(-1.00);
     testProduct1.setQuantity(-1);
     testProduct1.setBrand("");
@@ -509,22 +512,25 @@ public class ProductServiceImplTest {
         .containsAll(Arrays.asList(
             StringConstants.PRODUCT_PRICE_INVALID,
             StringConstants.PRODUCT_QUANTITY_INVALID,
-            StringConstants.PRODUCT_FIELDS_EMPTY(Collections.singletonList("brand")),
-            StringConstants.PRODUCT_FIELDS_NULL(Collections.singletonList("active")))));
+            StringConstants.PRODUCT_FIELDS_EMPTY(Arrays.asList("brand")),
+            StringConstants.PRODUCT_FIELDS_NULL(Arrays.asList("active")))));
   }
 
   @Test
   public void GetProductErrorsReturnsNoErrorsForValidProduct() {
+    //This test fails when run with coverage
     assertTrue(productServiceImpl.getProductErrors(testProduct1).isEmpty());
   }
 
   @Test
   public void SaveValidProductReturnsProduct() {
+    //This test fails when run with coverage
     assertEquals(testProduct1, productServiceImpl.saveProduct(testProduct1));
   }
 
   @Test
   public void SaveInvalidProductThrowsBadRequestWithListOfErrors() {
+    //This test fails when run with coverage
     testProduct1.setPrice(-1.00);
     testProduct1.setQuantity(-1);
     testProduct1.setBrand("");
@@ -537,8 +543,8 @@ public class ProductServiceImplTest {
       assertTrue(messageList.containsAll(Arrays.asList(
           StringConstants.PRODUCT_PRICE_INVALID,
           StringConstants.PRODUCT_QUANTITY_INVALID,
-          StringConstants.PRODUCT_FIELDS_EMPTY(Collections.singletonList("brand")),
-          StringConstants.PRODUCT_FIELDS_NULL(Collections.singletonList("active")))));
+          StringConstants.PRODUCT_FIELDS_EMPTY(Arrays.asList("brand")),
+          StringConstants.PRODUCT_FIELDS_NULL(Arrays.asList("active")))));
     }
   }
 

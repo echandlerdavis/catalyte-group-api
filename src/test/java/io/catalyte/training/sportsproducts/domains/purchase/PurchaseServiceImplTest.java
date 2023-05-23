@@ -96,10 +96,6 @@ public class PurchaseServiceImplTest {
     when(purchaseRepository.findByBillingAddressEmail(anyString())).thenReturn(testPurchases);
 
     // Set consecutive mock calls for product service since Purchase service consecutively calls this for each item in a purchase
-    /*when(productService.getProductById(any()))
-        .thenReturn(testProducts.get(0))
-        .thenReturn(testProducts.get(1))
-        .thenReturn(testProducts.get(2));*/
     //set mock for productService.getProductsByIds
     when(productService.getProductsByIds(any()))
         .thenReturn(testProducts);
@@ -365,7 +361,6 @@ public class PurchaseServiceImplTest {
     // act & assert
     assertThrows(UnprocessableContent.class, () -> purchaseServiceImpl.savePurchase(testPurchase));
   }
-
 
   @Test
   public void savePurchaseThrowsErrorIfOneProductIsInactive() {
