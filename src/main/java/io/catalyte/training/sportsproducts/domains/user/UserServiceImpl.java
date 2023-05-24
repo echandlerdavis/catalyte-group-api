@@ -101,6 +101,12 @@ public class UserServiceImpl implements UserService {
     return updateUser(bearerToken, id, user);
   }
 
+  /**
+   * Returns boolean representing the User of the given email is Admin
+   *
+   * @param email String email to find user
+   * @return Boolean
+   */
   @Override
   public Boolean isAdmin(String email) {
     User user = userRepository.findByEmail(email);
