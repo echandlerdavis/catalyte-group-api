@@ -78,6 +78,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
   }
 
+  /**
+   * Handles a soft delete of a review
+   *
+   * @param reviewId        Long id of review to be deleted
+   * @param requestingEmail Email of user who is requesting delete
+   * @return Boolean whether or not action was performed
+   */
   @Override
   public Boolean deactivateReview(Long reviewId, String requestingEmail) {
     //get review

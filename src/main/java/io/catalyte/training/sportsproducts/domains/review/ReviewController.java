@@ -52,10 +52,14 @@ public class ReviewController {
   }
 
   @DeleteMapping(value = "review/{reviewId}")
-  @ResponseStatus(value = HttpStatus.NO_CONTENT)
-  public void deleteReview(@PathVariable Long reviewId, @RequestBody String requestingEmail) {
+  public HttpStatus deleteReview(@PathVariable Long reviewId, @RequestBody String requestingEmail) {
     logger.info(String.format("Request receieved to delete review %d from %s"), reviewId,
         requestingEmail);
+    if (reviewService.deactivateReview(reviewId, requestingEmail)) {
+      return HttpStatus.NO_CONTENT;
+    }
+    return HttpStatus.FORBIDDEN;
+
   }
 
 }
