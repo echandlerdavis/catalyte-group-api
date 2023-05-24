@@ -59,6 +59,22 @@ public class ReviewServiceImpl implements ReviewService {
     }
   }
 
+  /**
+   * Get all reivews that are active for the given prodcut
+   *
+   * @param productId Long
+   * @return List of reviews
+   */
+  @Override
+  public List<Review> getAllActiveReviewsByProductId(Long productId) {
+    try {
+      return reviewRepository.findAllActiveReviewsByProductId(productId);
+    } catch (DataAccessException e) {
+      logger.error(e.getMessage());
+      throw new ServerError(e.getMessage());
+    }
+  }
+
   public Review postReview(Long productId, ReviewDTO reviewDTO) {
     List<String> reviewErrors = getReviewErrors(reviewDTO, productId);
 
@@ -74,6 +90,7 @@ public class ReviewServiceImpl implements ReviewService {
     review.setCreatedAt(reviewDTO.getCreatedAt());
     review.setUserName(reviewDTO.getUserName());
     review.setUserEmail(reviewDTO.getUserEmail());
+    review.setActive(true);
 
     try {
       return reviewRepository.save(review);
@@ -101,11 +118,11 @@ public class ReviewServiceImpl implements ReviewService {
       errors.add(StringConstants.REVIEW_RATING_INVALID);
     }
 
-    if(!userHasPurchasedProduct(reviewDTO, productId)){
+    if (!userHasPurchasedProduct(reviewDTO, productId)) {
       errors.add(StringConstants.REVIEW_USER_PURCHASE_INVALID);
     }
 
-    if(!userHasNotLeftReview(reviewDTO, productId)){
+    if (!userHasNotLeftReview(reviewDTO, productId)) {
       errors.add(StringConstants.REVIEW_USER_HAS_ALREADY_REVIEWED);
     }
 
@@ -172,16 +189,16 @@ public class ReviewServiceImpl implements ReviewService {
     return false;
   }
 
-  public Boolean userHasNotLeftReview(ReviewDTO reviewDTO, Long productId){
+  public Boolean userHasNotLeftReview(ReviewDTO reviewDTO, Long productId) {
     List<Review> reviewList = reviewRepository.findByUserEmail(reviewDTO.getUserEmail());
-    if(reviewList.isEmpty()){
+    if (reviewList.isEmpty()) {
       return true;
     }
-    for(Review review : reviewList){
-      if(review.getProduct().getId() == productId){
-          return false;
-        }
+    for (Review review : reviewList) {
+      if (review.getProduct().getId() == productId) {
+        return false;
       }
+    }
     return true;
 
   }

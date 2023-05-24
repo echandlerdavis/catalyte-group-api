@@ -1,15 +1,12 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * A DTO (Data Transfer Object) representing the input data for creating a review.
  */
 public class ReviewDTO {
+
   private String title;
   private Double rating;
   private String review;
@@ -17,9 +14,16 @@ public class ReviewDTO {
   private String userName;
   private String userEmail;
   private Product product;
-  public ReviewDTO(){};
 
-  public ReviewDTO(String title, Double rating, String review, String createdAt, String userName, String userEmail, Product product) {
+  private Boolean isActive;
+
+  public ReviewDTO() {
+  }
+
+  ;
+
+  public ReviewDTO(String title, Double rating, String review, String createdAt, String userName,
+      String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
@@ -27,6 +31,7 @@ public class ReviewDTO {
     this.userName = userName;
     this.userEmail = userEmail;
     this.product = product;
+    this.isActive = true;
   }
 
   public String getTitle() {
@@ -83,5 +88,13 @@ public class ReviewDTO {
 
   public void setProduct(Product product) {
     this.product = product;
+  }
+
+  public Boolean getActive() {
+    return isActive;
+  }
+
+  public void setActive(Boolean active) {
+    isActive = active;
   }
 }
