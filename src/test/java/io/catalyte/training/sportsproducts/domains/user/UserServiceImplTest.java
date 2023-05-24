@@ -125,4 +125,13 @@ public class UserServiceImplTest {
     assertFalse(userService.isAdmin("admin@email.com"));
   }
 
+  @Test
+  public void isAdminReturnFalseIfUserRoleIsNull() {
+    User admin = new User();
+    admin.setRole(null);
+    admin.setEmail("admin@email.com");
+    when(userRepository.findByEmail(anyString())).thenReturn(admin);
+    assertFalse(userService.isAdmin("admin@email.com"));
+  }
+
 }

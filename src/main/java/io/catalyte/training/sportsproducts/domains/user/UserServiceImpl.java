@@ -110,6 +110,9 @@ public class UserServiceImpl implements UserService {
   @Override
   public Boolean isAdmin(String email) {
     User user = userRepository.findByEmail(email);
+    if (user == null || user.getRole() == null) {
+      return false;
+    }
     return user.getRole().equals(ADMIN);
   }
 
