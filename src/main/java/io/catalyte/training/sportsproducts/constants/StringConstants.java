@@ -52,4 +52,19 @@ public class StringConstants {
   public static final String INVALID_CODE = "This promotional code is invalid at this time.";
   //Insufficient inventory message
   public static final String INSUFFICIENT_INVENTORY = "There is not enough inventory to cover the order(s) for: ";
+
+  //Error Messages - Reviews
+  public static final String REVIEW_FIELDS_EMPTY(List<String> emptyFields) {
+    String fieldsToString = String.join(", ", emptyFields);
+    return "The following fields cannot be empty: " + fieldsToString;
+  }
+
+  public static final String REVIEW_FIELDS_NULL(List<String> nullFields) {
+    String fieldsToString = String.join(", ", nullFields);
+    return "The following fields cannot be null: " + fieldsToString;
+  }
+
+  public static final String REVIEW_RATING_INVALID = "Rating must be between 0.5 and 5 and be in increments of 0.5";
+  public static final String REVIEW_USER_PURCHASE_INVALID = "User needs to have purchased the product in order to leave a review";
+  public static final String REVIEW_USER_HAS_ALREADY_REVIEWED = "User cannot leave more than one review for a product";
 }
