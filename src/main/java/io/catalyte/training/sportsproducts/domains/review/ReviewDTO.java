@@ -18,7 +18,6 @@ public class ReviewDTO {
   private String userName;
   private String userEmail;
   private Product product;
-  public ReviewDTO(){};
 
   public ReviewDTO(String title, Double rating, String review, String createdAt, String editedAt, String userName, String userEmail, Product product) {
     this.title = title;
