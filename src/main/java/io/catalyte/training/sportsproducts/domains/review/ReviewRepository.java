@@ -12,7 +12,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
   List<Review> findByUserEmail(String userEmail);
 
-  @Query("SELECT r FROM reviews WHERE r.product_id = 1 AND r.is_active = 1")
+  @Query("SELECT r FROM Review r WHERE r.product.id = ?1 AND r.isActive = 1")
   List<Review> findAllActiveReviewsByProductId(Long productId);
 
 }
