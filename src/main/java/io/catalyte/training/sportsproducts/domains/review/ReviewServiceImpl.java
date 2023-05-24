@@ -7,6 +7,7 @@ import io.catalyte.training.sportsproducts.domains.product.ProductService;
 import io.catalyte.training.sportsproducts.domains.purchase.LineItem;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import io.catalyte.training.sportsproducts.domains.purchase.PurchaseService;
+import io.catalyte.training.sportsproducts.domains.user.UserService;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.lang.reflect.Field;
@@ -35,13 +36,15 @@ public class ReviewServiceImpl implements ReviewService {
   ProductService productService;
 
   PurchaseService purchaseService;
+  UserService userService;
 
   @Autowired
   public ReviewServiceImpl(ReviewRepository reviewRepository, ProductService productService,
-      PurchaseService purchaseService) {
+      PurchaseService purchaseService, UserService userService) {
     this.reviewRepository = reviewRepository;
     this.productService = productService;
     this.purchaseService = purchaseService;
+    this.userService = userService;
   }
 
   /**
@@ -73,6 +76,25 @@ public class ReviewServiceImpl implements ReviewService {
       logger.error(e.getMessage());
       throw new ServerError(e.getMessage());
     }
+  }
+
+  @Override
+  public Boolean deactivateReview(Long reviewId, String requestingEmail) {
+    //get review
+    Review review = reviewRepository.findById(reviewId).get();
+    //if no review, return false
+    if (review == null) {
+      return false;
+    }
+    //find out if requesting user is admin
+    Boolean isAdmin = userService.isAdmin(requestingEmail);
+    //if admin or if user who created review, allow for deactivation
+    if (isAdmin || review.getUserEmail().equals(requestingEmail)) {
+      review.setActive(false);
+      return true;
+    }
+    //if user is not admin and did not create review, do nothing and return false
+    return false;
   }
 
   public Review postReview(Long productId, ReviewDTO reviewDTO) {

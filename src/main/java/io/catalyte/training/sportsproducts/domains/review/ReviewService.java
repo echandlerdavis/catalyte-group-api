@@ -13,5 +13,7 @@ public interface ReviewService {
 
   List<Review> getAllActiveReviewsByProductId(Long productId);
 
+  Boolean deactivateReview(Long reviewId, String requestingEmail);
+
 
 }

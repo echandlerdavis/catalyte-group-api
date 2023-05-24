@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,13 @@ public class ReviewController {
       @Valid @RequestBody ReviewDTO reviewDTO) {
     logger.info("Request received for postReview");
     return new ResponseEntity<>(reviewService.postReview(productId, reviewDTO), HttpStatus.CREATED);
+  }
+
+  @DeleteMapping(value = "review/{reviewId}")
+  @ResponseStatus(value = HttpStatus.NO_CONTENT)
+  public void deleteReview(@PathVariable Long reviewId, @RequestBody String requestingEmail) {
+    logger.info(String.format("Request receieved to delete review %d from %s"), reviewId,
+        requestingEmail);
   }
 
 }
