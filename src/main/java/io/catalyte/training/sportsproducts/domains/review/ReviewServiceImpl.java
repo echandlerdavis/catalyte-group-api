@@ -72,6 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
     review.setRating(reviewDTO.getRating());
     review.setProduct(productService.getProductById(productId));
     review.setCreatedAt(reviewDTO.getCreatedAt());
+    review.setEditedAt(review.getEditedAt());
     review.setUserName(reviewDTO.getUserName());
     review.setUserEmail(reviewDTO.getUserEmail());
 
@@ -95,6 +96,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     if (!emptyFields.isEmpty()) {
       errors.add(StringConstants.REVIEW_FIELDS_EMPTY(emptyFields));
+    }
+
+    if(!inputsAreValid(reviewDTO)){
+      errors.add(StringConstants.REVIEW_INPUTS_INVALID);
     }
 
     if (!ratingIsValid(reviewDTO)) {
@@ -129,10 +134,12 @@ public class ReviewServiceImpl implements ReviewService {
     ObjectMapper mapper = new ObjectMapper();
     Map reviewMap = mapper.convertValue(reviewDTO, HashMap.class);
     reviewFieldNames.forEach((fieldName) -> {
-      if (reviewMap.get(fieldName) == null) {
-        nullFields.add(fieldName);
-      } else if (reviewMap.get(fieldName).toString().trim() == "") {
-        emptyFields.add(fieldName);
+      if(fieldName != "title" && fieldName !="review") {
+        if (reviewMap.get(fieldName) == null) {
+          nullFields.add(fieldName);
+        } else if (reviewMap.get(fieldName).toString().trim() == "") {
+          emptyFields.add(fieldName);
+        }
       }
     });
 
@@ -153,6 +160,17 @@ public class ReviewServiceImpl implements ReviewService {
     }
     return false;
   }
+
+  public Boolean inputsAreValid(ReviewDTO reviewDTO) {
+    ObjectMapper mapper = new ObjectMapper();
+    Map reviewMap = mapper.convertValue(reviewDTO, HashMap.class);
+    if (reviewMap.get("title") == null || reviewMap.get("title").toString().trim() == "") {
+      if (reviewMap.get("review") == null || reviewMap.get("review").toString().trim() == "") {
+        return false;
+      }
+    }
+    return true;
+  };
 
   public Boolean userHasPurchasedProduct(ReviewDTO reviewDTO, Long productId) {
     Product product = productService.getProductById(productId);
