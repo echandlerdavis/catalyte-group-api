@@ -1,9 +1,19 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
 import io.catalyte.training.sportsproducts.data.ProductFactory;
+import io.catalyte.training.sportsproducts.data.PurchaseFactory;
+import io.catalyte.training.sportsproducts.data.UserFactory;
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
+import io.catalyte.training.sportsproducts.domains.purchase.LineItem;
+import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
+import io.catalyte.training.sportsproducts.domains.purchase.PurchaseRepository;
+import io.catalyte.training.sportsproducts.domains.user.User;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,24 +43,40 @@ public class ReviewApiTest {
   @Autowired
   ProductRepository productRepository;
 
+  @Autowired
+  PurchaseRepository purchaseRepository;
+
   ProductFactory productFactory = new ProductFactory();
   Product testProduct = productFactory.createRandomProduct();
 
+  UserFactory userFactory = new UserFactory();
+  User testUser = new User("testemail@email.com", "TestFirstName", "TestLastName", userFactory.generateRandomUserBillingAddress());
+  PurchaseFactory purchaseFactory = new PurchaseFactory();
+  Purchase testPurchase = purchaseFactory.generateRandomPurchase(testUser);
   Review testReview1 = productFactory.createRandomReview(testProduct, 1);
   Review testReview2 = productFactory.createRandomReview(testProduct, 2);
 
   @Before
   public void setUp(){
     setTestReviews();
+    setTestPurchase();
     mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
   }
 
   private void setTestReviews(){
     productRepository.save(testProduct);
     testProduct.setReviews(Arrays.asList(testReview1, testReview2));
+    testProduct.setActive(true);
     reviewRepository.saveAll(Arrays.asList(testReview1, testReview2));
   }
 
+  private void setTestPurchase(){
+    Set<LineItem> products = new HashSet<>();
+    purchaseRepository.save(testPurchase);
+    LineItem lineItem = purchaseFactory.generateLineItem(testProduct);
+    products.add(lineItem);
+    testPurchase.setProducts(products);
+  }
   @Test
   public void getReviewsByProductIdReturns200() throws Exception {
     mockMvc.perform(get(PRODUCTS_PATH + "/1/reviews"))
