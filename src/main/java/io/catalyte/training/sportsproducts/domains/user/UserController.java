@@ -108,7 +108,7 @@ public class UserController {
    * @param bearerToken String value in the Authorization property of the header
    * @return User - Updated user
    */
-  @PutMapping("/{email}")
+  @PutMapping("/email/{email}")
   public ResponseEntity<User> updateUser(
           @PathVariable String email,
           @RequestBody User updatedUser,
