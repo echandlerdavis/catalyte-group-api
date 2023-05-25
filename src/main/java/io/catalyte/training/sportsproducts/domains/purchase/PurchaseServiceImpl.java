@@ -99,6 +99,9 @@ public class PurchaseServiceImpl implements PurchaseService {
       newPurchase.setShippingCharge(
           StateEnum.getShippingByName(newPurchase.getDeliveryAddress().getDeliveryState())
       );
+    } else {
+      //else set shipping charge to 0
+      newPurchase.setShippingCharge(0.00);
     }
     //promocode validation
     PromotionalCode appliedCode = newPurchase.getPromoCode();

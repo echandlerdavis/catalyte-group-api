@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.purchase;
 
 import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -569,7 +570,7 @@ public class PurchaseApiTest {
   public void shippingChargeIs0WhenPurchaseAbove50() throws Exception {
     ObjectMapper mapper = new ObjectMapper();
     //Update the prices on the purchase items
-    double price = 100.00;
+    double price = 16.67;
     int purchaseQty = 1;
     for (Product p : testProducts) {
       p.setPrice(price);
@@ -588,10 +589,103 @@ public class PurchaseApiTest {
                 .content(mapper.writeValueAsString(testPurchase)))
         .andReturn().getResponse();
     String json = result.getContentAsString();
-    System.out.println(json);
-    Purchase returnedPurchase = mapper.convertValue(json, Purchase.class);
-    System.out.println(returnedPurchase);
-    assertTrue(false);
+    Purchase returnedPurchase = mapper.readValue(json, Purchase.class);
+    //assertions
+    assertFalse(returnedPurchase.applyShippingCharge());
+    assertEquals(0.00, returnedPurchase.getShippingCharge(), .001);
+
+  }
+
+  @Test
+  public void shippingChargeIs5WhenPurchaseBelow50AndDeliverToLower48() throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+    StateEnum state = StateEnum.AL;
+    //Update the prices on the purchase items
+    double price = 16.66;
+    int purchaseQty = 1;
+    for (Product p : testProducts) {
+      p.setPrice(price);
+      productRepository.save(p);
+    }
+    //update the purchase quantities
+    for (LineItem l : testPurchase.getProducts()) {
+      l.setQuantity(purchaseQty);
+    }
+    //set state
+    testPurchase.getDeliveryAddress().setDeliveryState(state.fullName);
+    //save purchase
+    MockHttpServletResponse result = mockMvc.perform(
+            post(PURCHASES_PATH)
+                .contentType("application/json")
+                .content(mapper.writeValueAsString(testPurchase)))
+        .andReturn().getResponse();
+    String json = result.getContentAsString();
+    Purchase returnedPurchase = mapper.readValue(json, Purchase.class);
+    //assertions
+    assertTrue(returnedPurchase.applyShippingCharge());
+    assertEquals(state.shippingCost, returnedPurchase.getShippingCharge(), .001);
+
+  }
+
+  @Test
+  public void shippingChargeIs10WhenShippingToAlaska() throws Exception {
+    StateEnum state = StateEnum.AK;
+    ObjectMapper mapper = new ObjectMapper();
+    //Update the prices on the purchase items
+    double price = 100.00;
+    int purchaseQty = 1;
+    for (Product p : testProducts) {
+      p.setPrice(price);
+      productRepository.save(p);
+    }
+    //update the purchase quantities
+    for (LineItem l : testPurchase.getProducts()) {
+      l.setQuantity(purchaseQty);
+    }
+    //set state
+    testPurchase.getDeliveryAddress().setDeliveryState(state.fullName);
+    //save purchase
+    MockHttpServletResponse result = mockMvc.perform(
+            post(PURCHASES_PATH)
+                .contentType("application/json")
+                .content(mapper.writeValueAsString(testPurchase)))
+        .andReturn().getResponse();
+    String json = result.getContentAsString();
+    Purchase returnedPurchase = mapper.readValue(json, Purchase.class);
+    //assertions
+    assertTrue(returnedPurchase.applyShippingCharge());
+    assertEquals(state.shippingCost, returnedPurchase.getShippingCharge(), .001);
+
+  }
+
+  @Test
+  public void shippingChargeIs10WhenShippingToHawaii() throws Exception {
+    StateEnum state = StateEnum.HI;
+    ObjectMapper mapper = new ObjectMapper();
+    //Update the prices on the purchase items
+    double price = 100.00;
+    int purchaseQty = 1;
+    for (Product p : testProducts) {
+      p.setPrice(price);
+      productRepository.save(p);
+    }
+    //update the purchase quantities
+    for (LineItem l : testPurchase.getProducts()) {
+      l.setQuantity(purchaseQty);
+    }
+    //set state
+    testPurchase.getDeliveryAddress().setDeliveryState(state.fullName);
+    //save purchase
+    MockHttpServletResponse result = mockMvc.perform(
+            post(PURCHASES_PATH)
+                .contentType("application/json")
+                .content(mapper.writeValueAsString(testPurchase)))
+        .andReturn().getResponse();
+    String json = result.getContentAsString();
+    Purchase returnedPurchase = mapper.readValue(json, Purchase.class);
+    //assertions
+    assertTrue(returnedPurchase.applyShippingCharge());
+    assertEquals(state.shippingCost, returnedPurchase.getShippingCharge(), .001);
 
   }
 }
