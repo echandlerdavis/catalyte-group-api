@@ -135,6 +135,10 @@ public class PurchaseServiceImpl implements PurchaseService {
     //update inventory quantities
     updateInventory(newPurchase);
     savedPurchase.setProducts(lineItemRepository.findByPurchase(newPurchase));
+    //don't need purchase attached to line items
+    for (LineItem line : savedPurchase.getProducts()) {
+      line.setPurchase(null);
+    }
 
     return savedPurchase;
   }

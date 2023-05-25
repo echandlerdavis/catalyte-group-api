@@ -564,4 +564,34 @@ public class PurchaseApiTest {
           Long.valueOf(updatedProduct.getQuantity()));
     }
   }
+
+  @Test
+  public void shippingChargeIs0WhenPurchaseAbove50() throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+    //Update the prices on the purchase items
+    double price = 100.00;
+    int purchaseQty = 1;
+    for (Product p : testProducts) {
+      p.setPrice(price);
+      productRepository.save(p);
+    }
+    //update the purchase quantities
+    for (LineItem l : testPurchase.getProducts()) {
+      l.setQuantity(purchaseQty);
+    }
+    //set state
+    testPurchase.getDeliveryAddress().setDeliveryState(StateEnum.ID.fullName);
+    //save purchase
+    MockHttpServletResponse result = mockMvc.perform(
+            post(PURCHASES_PATH)
+                .contentType("application/json")
+                .content(mapper.writeValueAsString(testPurchase)))
+        .andReturn().getResponse();
+    String json = result.getContentAsString();
+    System.out.println(json);
+    Purchase returnedPurchase = mapper.convertValue(json, Purchase.class);
+    System.out.println(returnedPurchase);
+    assertTrue(false);
+
+  }
 }

@@ -483,9 +483,30 @@ public class PurchaseServiceImplTest {
   @Test
   public void purchaseApplyShippingChargeAlwaysTrueForAlaska() {
     final double PRICE = 1.00;
-    final int QUANTITY = 50;
+    final int QUANTITY = 100;
     DeliveryAddress deliveryAddress = new DeliveryAddress();
     deliveryAddress.setDeliveryState(StateEnum.AK.fullName);
+    Set<LineItem> lineItems = new HashSet<>();
+    Product product1 = new Product();
+    product1.setPrice(PRICE);
+    LineItem line1 = new LineItem();
+    line1.setProduct(product1);
+    line1.setQuantity(QUANTITY);
+    lineItems.add(line1);
+    Purchase purchase = new Purchase();
+    purchase.setProducts(lineItems);
+    purchase.setDeliveryAddress(deliveryAddress);
+
+    assertTrue(purchase.applyShippingCharge());
+
+  }
+
+  @Test
+  public void purchaseApplyShippingChargeAlwaysTrueForHawaii() {
+    final double PRICE = 1.00;
+    final int QUANTITY = 100;
+    DeliveryAddress deliveryAddress = new DeliveryAddress();
+    deliveryAddress.setDeliveryState(StateEnum.HI.fullName);
     Set<LineItem> lineItems = new HashSet<>();
     Product product1 = new Product();
     product1.setPrice(PRICE);
