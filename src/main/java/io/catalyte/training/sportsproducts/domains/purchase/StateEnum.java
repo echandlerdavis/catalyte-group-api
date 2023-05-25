@@ -121,6 +121,10 @@ public enum StateEnum {
     return state != null;
   }
 
+  public static StateEnum getStateByName(String stateName) {
+    return BY_FULLNAME.get(formatStateName(stateName));
+  }
+
   /**
    * Formats the given string to match the StateEnum.fullName values
    *
@@ -142,6 +146,12 @@ public enum StateEnum {
     return Arrays.stream(values())
         .map(state -> new StateEnumDTO(state))
         .collect(Collectors.toList());
+  }
+
+  public static boolean isAlaskaOrHawaii(String stateName) {
+    String name = formatStateName(stateName);
+    StateEnum state = getStateByName(name);
+    return state.equals(AK) || state.equals(HI);
   }
 
   private enum shippingCosts {

@@ -122,12 +122,16 @@ public class Purchase {
   }
 
   /**
-   * Return if shipping charges should apply to this purchase
+   * Return if shipping charges should apply to this purchase. Shipping charges apply if: LineItem
+   * total value is < $50 or the items are being shipped to Alaska or Hawaii
    *
    * @return boolean
    */
   public boolean applyShippingCharge() {
-    return calcLineItemTotal() >= 50.00;
+    if (StateEnum.isAlaskaOrHawaii(deliveryAddress.getDeliveryState())) {
+      return true;
+    }
+    return calcLineItemTotal() <= 50.00;
 
   }
 
