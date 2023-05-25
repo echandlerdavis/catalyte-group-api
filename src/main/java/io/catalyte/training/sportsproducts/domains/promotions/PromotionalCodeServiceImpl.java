@@ -4,15 +4,17 @@ import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 
 /**
  * This service class provides functionality related to promotional codes.
@@ -22,7 +24,7 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
 
   private final Logger logger = LogManager.getLogger(PromotionalCodeServiceImpl.class);
 
-  private PromotionalCodeRepository promotionalCodeRepository;
+  private final PromotionalCodeRepository promotionalCodeRepository;
 
   /**
    * Constructs a PromotionalCodeServiceImpl object with the given PromotionalCodeRepository.
@@ -176,7 +178,7 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
    */
   public BigDecimal applyPromotionalCode(String title, BigDecimal price) {
     try {
-      PromotionalCode promotionalCode = (PromotionalCode) promotionalCodeRepository.findByTitle(
+      PromotionalCode promotionalCode = promotionalCodeRepository.findByTitle(
           title);
       if (promotionalCode == null || promotionalCode.getType() == null
           || promotionalCode.getRate() == null) {
@@ -212,16 +214,6 @@ public class PromotionalCodeServiceImpl implements PromotionalCodeService {
       // Log the error message
       logger.error("Error deleting code: " + e.getMessage());
       // Throw a ServerError exception with the caught exception's message
-      throw new ServerError(e.getMessage());
-    }
-  }
-
-  public PromotionalCode createPromotionalCode(PromotionalCode promotionalCode) {
-
-    try {
-      return promotionalCodeRepository.save(promotionalCode);
-    } catch (DataAccessException e) {
-      logger.error(e.getMessage());
       throw new ServerError(e.getMessage());
     }
   }

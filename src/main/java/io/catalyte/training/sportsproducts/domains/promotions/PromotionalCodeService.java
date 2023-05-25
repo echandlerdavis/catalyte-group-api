@@ -31,6 +31,4 @@ public interface PromotionalCodeService {
   void deletePromotionalCode(PromotionalCode code);
 
   boolean promotionalCodeIsActive(String title);
-
-  PromotionalCode createPromotionalCode(PromotionalCode promotionalCode);
 }

@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
 
 /**
  * The {@code PromotionalCodeController} class is a REST controller that handles HTTP requests
@@ -84,4 +86,6 @@ public class PromotionalCodeController {
         HttpStatus.OK);
   }
 
+//    public static class DuplicatePromoCodeException extends Exception {
+//    }
 }
