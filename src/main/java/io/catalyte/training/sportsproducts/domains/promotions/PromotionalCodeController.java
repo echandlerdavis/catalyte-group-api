@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.math.BigDecimal;
-
 /**
  * The {@code PromotionalCodeController} class is a REST controller that handles HTTP requests
  * related to promotional codes.
@@ -54,7 +51,6 @@ public class PromotionalCodeController {
    * @throws IllegalArgumentException if the promotional code already exists
    */
   @PostMapping
-  @ResponseStatus(value = HttpStatus.OK)
   public ResponseEntity<PromotionalCode> createPromotionalCode(
       @Valid @RequestBody PromotionalCodeDTO dto) {
     if (dto.getType() == null || dto.getRate() == null) {
