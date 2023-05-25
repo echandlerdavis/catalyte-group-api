@@ -121,6 +121,12 @@ public enum StateEnum {
     return state != null;
   }
 
+  /**
+   * Get the StateEnum based on the given state name
+   *
+   * @param stateName String
+   * @return StateEnum
+   */
   public static StateEnum getStateByName(String stateName) {
     return BY_FULLNAME.get(formatStateName(stateName));
   }
@@ -142,12 +148,23 @@ public enum StateEnum {
     return cleanedString.trim();
   }
 
+  /**
+   * Get list of state DTO to send to front ent
+   *
+   * @return List of StateEnumDTO
+   */
   public static List<StateEnumDTO> getStatesJsonList() {
     return Arrays.stream(values())
         .map(state -> new StateEnumDTO(state))
         .collect(Collectors.toList());
   }
 
+  /**
+   * Check if given state is Alaska or Hawaii
+   *
+   * @param stateName String
+   * @return boolean
+   */
   public static boolean isAlaskaOrHawaii(String stateName) {
     String name = formatStateName(stateName);
     StateEnum state = getStateByName(name);
