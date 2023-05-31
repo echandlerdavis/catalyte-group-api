@@ -1,6 +1,10 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
+import static io.catalyte.training.sportsproducts.constants.Roles.ADMIN;
+import static io.catalyte.training.sportsproducts.constants.Roles.CUSTOMER;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -71,6 +75,8 @@ public class UserServiceImplTest {
 
     //userRepo.getById mock
     when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
+    //userRepo.findByEmail
+    when(userRepository.findByEmail(anyString())).thenReturn(testUser);
   }
 
   public void setUserData(User emptyUser, Long id, String firstName, String lastName, String email,
@@ -84,7 +90,9 @@ public class UserServiceImplTest {
   }
 
   @Test
-  public void updateLastActiveSetsNewerTimeTest() {
+  public void updateLastActiveSetsNewerTimeTest() throws InterruptedException {
+    //make test wait after setup to make sure last active is before the updated value
+    Thread.sleep(500);
     User updated = userService.updateLastActive(testUser.getEmail(), id, testUser);
     assertTrue(updated.getLastActive().after(lastActive));
   }
@@ -93,7 +101,7 @@ public class UserServiceImplTest {
   public void updateLastActiveAuthenticationFailureThrowsResponseStatusExceptionTest() {
     when(googleAuthService.authenticateUser(anyString(), any(User.class))).thenReturn(false);
     User updated = userService.updateLastActive(testUser.getEmail(), id, testUser);
-    assertTrue(false); //this shouldn't run
+    fail(); //this shouldn't run
   }
 
   @Test(expected = ServerError.class)
@@ -101,7 +109,34 @@ public class UserServiceImplTest {
     when(userRepository.save(any(User.class))).thenThrow(
         new DataAccessResourceFailureException("Server down"));
     User updated = userService.updateLastActive(testUser.getEmail(), id, testUser);
-    assertTrue(false); //this shouldn't run
+    fail(); //this shouldn't run
+  }
+
+  @Test
+  public void isAdminReturnsTrueIfUserIsAdmin() {
+    User admin = new User();
+    admin.setRole(ADMIN);
+    admin.setEmail("admin@email.com");
+    when(userRepository.findByEmail(anyString())).thenReturn(admin);
+    assertTrue(userService.isAdmin("admin@email.com"));
+  }
+
+  @Test
+  public void isAdminReturnsFalseIfUserIsNotAdmin() {
+    User admin = new User();
+    admin.setRole(CUSTOMER);
+    admin.setEmail("admin@email.com");
+    when(userRepository.findByEmail(anyString())).thenReturn(admin);
+    assertFalse(userService.isAdmin("admin@email.com"));
+  }
+
+  @Test
+  public void isAdminReturnFalseIfUserRoleIsNull() {
+    User admin = new User();
+    admin.setRole(null);
+    admin.setEmail("admin@email.com");
+    when(userRepository.findByEmail(anyString())).thenReturn(admin);
+    assertFalse(userService.isAdmin("admin@email.com"));
   }
 
 }

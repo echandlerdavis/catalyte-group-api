@@ -34,6 +34,7 @@ public class ReviewServiceImplTest {
   Review testReview3;
   Product testProduct1;
   Product testProduct2;
+  String testEmail;
   ProductFactory productFactory;
   List<Review> testReviewsForProduct1List = new ArrayList<>();
   List<Review> testReviewsForProduct2List = new ArrayList<>();
@@ -45,6 +46,7 @@ public class ReviewServiceImplTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
+    this.testEmail = "dduval@catalyte.io";
 
     setTestReviews();
 
@@ -64,17 +66,17 @@ public class ReviewServiceImplTest {
         "2005-11-01",
         "2005-11-01",
         "testUserNameOne",
-        "tetuserone@test.com",
+        testEmail,
         testProduct1
     );
     testReview2 = new Review(
         "Test Review 2",
-        2.5,
+        2.0,
         "This is a second example of a review for test product 1",
         "2007-25-03",
         "2007-25-03",
         "testUserNameTwo",
-        "testusertwo@test.com",
+        testEmail,
         testProduct1
     );
     testReview3 = new Review(
@@ -84,7 +86,7 @@ public class ReviewServiceImplTest {
         "2010-13-01",
         "2010-13-01",
         "testUserNameThree",
-        "testuserthree@test.com",
+        testEmail,
         testProduct2
     );
     testReviewsForProduct1List.add(testReview1);

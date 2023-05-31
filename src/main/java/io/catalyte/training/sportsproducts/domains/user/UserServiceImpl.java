@@ -7,12 +7,14 @@ import static io.catalyte.training.sportsproducts.constants.LoggingConstants.NO_
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.NO_USER_WITH_EMAIL_FORMAT;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.UPDATED_LAST_ACTIVE_FORMAT;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.UPDATED_USER_FORMAT;
+import static io.catalyte.training.sportsproducts.constants.Roles.ADMIN;
 import static io.catalyte.training.sportsproducts.constants.Roles.CUSTOMER;
 
 import io.catalyte.training.sportsproducts.auth.GoogleAuthService;
 import io.catalyte.training.sportsproducts.constants.LoggingConstants;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
+import io.catalyte.training.sportsproducts.constants.LoggingConstants;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,12 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Implements user service interface
  */
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
   private final Logger logger = LogManager.getLogger(UserServiceImpl.class);
@@ -41,10 +45,20 @@ public class UserServiceImpl implements UserService {
   // METHODS
 
   /**
+   * Updates user using Profile Page updates
+   */
+  @Override
+  public User updateUser(User user) {
+    // Save the updated user to the database
+    logger.info(String.format("Updated user %d", user.getId()));
+    return userRepository.save(user);
+  }
+
+  /**
    * Updates user given valid credentials
    *
    * @param bearerToken String value in the Authorization property of the header
-   * @param id          Id of the user to update
+   * @param id          id of the user to update
    * @param updatedUser User to update
    * @return User - Updated user
    */
@@ -61,8 +75,12 @@ public class UserServiceImpl implements UserService {
     }
 
     // UPDATES USER
-    User existingUser;
+    User existingUser = userRepository.findByEmail(updatedUser.getEmail());
 
+    if (existingUser == null) {
+      logger.error(String.format(NO_USER_WITH_EMAIL_FORMAT, updatedUser.getEmail()));
+      throw new ResourceNotFound(String.format(NO_USER_WITH_EMAIL_FORMAT, updatedUser.getEmail()));
+    }
     try {
       existingUser = userRepository.findById(id).orElse(null);
     } catch (DataAccessException dae) {
@@ -98,6 +116,21 @@ public class UserServiceImpl implements UserService {
     logger.info(String.format(UPDATED_LAST_ACTIVE_FORMAT, id));
     user.setLastActive(new Date());
     return updateUser(bearerToken, id, user);
+  }
+
+  /**
+   * Returns boolean representing the User of the given email is Admin
+   *
+   * @param email String email to find user
+   * @return Boolean
+   */
+  @Override
+  public Boolean isAdmin(String email) {
+    User user = userRepository.findByEmail(email);
+    if (user == null || user.getRole() == null) {
+      return false;
+    }
+    return user.getRole().equals(ADMIN);
   }
 
   /**

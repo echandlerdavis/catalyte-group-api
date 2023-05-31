@@ -18,8 +18,13 @@ public class ReviewDTO {
   private String userName;
   private String userEmail;
   private Product product;
+  private Boolean isActive;
 
-  public ReviewDTO(String title, Double rating, String review, String createdAt, String editedAt, String userName, String userEmail, Product product) {
+  public ReviewDTO() {
+  }
+
+  public ReviewDTO(String title, Double rating, String review, String createdAt, String editedAt, String userName,
+      String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
@@ -28,6 +33,7 @@ public class ReviewDTO {
     this.userName = userName;
     this.userEmail = userEmail;
     this.product = product;
+    this.isActive = true;
   }
 
   public String getTitle() {
@@ -92,5 +98,13 @@ public class ReviewDTO {
 
   public void setProduct(Product product) {
     this.product = product;
+  }
+
+  public Boolean getActive() {
+    return isActive;
+  }
+
+  public void setActive(Boolean active) {
+    isActive = active;
   }
 }

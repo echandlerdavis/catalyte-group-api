@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Id;
 
 @Entity
 @Table(name = "reviews")
@@ -23,11 +24,18 @@ public class Review {
   private String editedAt;
   private String userName;
   private String userEmail;
+
+  private Boolean isActive;
   @ManyToOne
   @JsonIgnore
   private Product product;
-  public Review(){}
-  public Review(String title, Double rating, String review, String createdAt, String editedAt, String userName, String userEmail, Product product) {
+
+  public Review() {
+    this.isActive = true;
+  }
+
+  public Review(String title, Double rating, String review, String createdAt, String editedAt, String userName,
+      String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
@@ -36,6 +44,7 @@ public class Review {
     this.userName = userName;
     this.userEmail = userEmail;
     this.product = product;
+    this.isActive = true;
   }
 
   public String getTitle() {
@@ -108,5 +117,13 @@ public class Review {
 
   public void setProduct(Product product) {
     this.product = product;
+  }
+
+  public Boolean getActive() {
+    return isActive;
+  }
+
+  public void setActive(Boolean active) {
+    isActive = active;
   }
 }

@@ -7,6 +7,7 @@ import io.catalyte.training.sportsproducts.domains.product.ProductService;
 import io.catalyte.training.sportsproducts.domains.purchase.LineItem;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import io.catalyte.training.sportsproducts.domains.purchase.PurchaseService;
+import io.catalyte.training.sportsproducts.domains.user.UserService;
 import io.catalyte.training.sportsproducts.exceptions.BadRequest;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
 import java.lang.reflect.Field;
@@ -15,11 +16,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,13 +38,15 @@ public class ReviewServiceImpl implements ReviewService {
   ProductService productService;
 
   PurchaseService purchaseService;
+  UserService userService;
 
   @Autowired
   public ReviewServiceImpl(ReviewRepository reviewRepository, ProductService productService,
-      PurchaseService purchaseService) {
+      PurchaseService purchaseService, UserService userService) {
     this.reviewRepository = reviewRepository;
     this.productService = productService;
     this.purchaseService = purchaseService;
+    this.userService = userService;
   }
 
   /**
@@ -57,6 +62,54 @@ public class ReviewServiceImpl implements ReviewService {
       logger.error(e.getMessage());
       throw new ServerError(e.getMessage());
     }
+  }
+  /**
+   * Get all reivews that are active for the given prodcut
+   *
+   * @param productId Long
+   * @return List of reviews
+   */
+  @Override
+  public List<Review> getAllActiveReviewsByProductId(Long productId) {
+    try {
+      return reviewRepository.findAllActiveReviewsByProductId(productId);
+    } catch (DataAccessException e) {
+      logger.error(e.getMessage());
+      throw new ServerError(e.getMessage());
+    }
+  }
+
+  /**
+   * Handles a soft delete of a review
+   *
+   * @param reviewId        Long id of review to be deleted
+   * @param requestingEmail Email of user who is requesting delete
+   * @return Boolean whether or not action was performed
+   */
+  @Override
+  public HttpStatus deactivateReview(Long reviewId, String requestingEmail) {
+    //get review
+    Optional<Review> schrodingersReview = reviewRepository.findById(reviewId);
+    //if no review, return false
+    if (!schrodingersReview.isPresent()) {
+      return HttpStatus.NOT_FOUND;
+    }
+    Review review = schrodingersReview.get();
+    //if admin or if user who created review, allow for deactivation
+    if (userService.isAdmin(requestingEmail)
+        || (review.getUserEmail() != null
+        && review.getUserEmail().equals(requestingEmail))) {
+      review.setActive(false);
+      try {
+        reviewRepository.save(review);
+      } catch (DataAccessException dae) {
+        logger.error(dae.getMessage());
+        throw new ServerError(dae.getMessage());
+      }
+      return HttpStatus.NO_CONTENT;
+    }
+    //if user is not admin and did not create review, do nothing and return false
+    return HttpStatus.FORBIDDEN;
   }
 
   public Review postReview(Long productId, ReviewDTO reviewDTO) {
@@ -75,6 +128,9 @@ public class ReviewServiceImpl implements ReviewService {
     review.setEditedAt(review.getEditedAt());
     review.setUserName(reviewDTO.getUserName());
     review.setUserEmail(reviewDTO.getUserEmail());
+    review.setUserName(reviewDTO.getUserName());
+    review.setUserEmail(reviewDTO.getUserEmail());
+    review.setActive(true);
 
     try {
       return reviewRepository.save(review);
@@ -102,15 +158,16 @@ public class ReviewServiceImpl implements ReviewService {
       errors.add(StringConstants.REVIEW_INPUTS_INVALID);
     }
 
+
     if (!ratingIsValid(reviewDTO)) {
       errors.add(StringConstants.REVIEW_RATING_INVALID);
     }
 
-    if(!userHasPurchasedProduct(reviewDTO, productId)){
+    if (!userHasPurchasedProduct(reviewDTO, productId)) {
       errors.add(StringConstants.REVIEW_USER_PURCHASE_INVALID);
     }
 
-    if(!userHasNotLeftReview(reviewDTO, productId)){
+    if (!userHasNotLeftReview(reviewDTO, productId)) {
       errors.add(StringConstants.REVIEW_USER_HAS_ALREADY_REVIEWED);
     }
 
@@ -134,12 +191,10 @@ public class ReviewServiceImpl implements ReviewService {
     ObjectMapper mapper = new ObjectMapper();
     Map reviewMap = mapper.convertValue(reviewDTO, HashMap.class);
     reviewFieldNames.forEach((fieldName) -> {
-      if(fieldName != "title" && fieldName !="review") {
-        if (reviewMap.get(fieldName) == null) {
-          nullFields.add(fieldName);
-        } else if (reviewMap.get(fieldName).toString().trim() == "") {
-          emptyFields.add(fieldName);
-        }
+      if (reviewMap.get(fieldName) == null) {
+        nullFields.add(fieldName);
+      } else if (reviewMap.get(fieldName).toString().trim() == "") {
+        emptyFields.add(fieldName);
       }
     });
 
