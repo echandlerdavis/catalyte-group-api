@@ -24,7 +24,6 @@ public class Review {
   private String editedAt;
   private String userName;
   private String userEmail;
-
   private Boolean isActive;
   @ManyToOne
   @JsonIgnore

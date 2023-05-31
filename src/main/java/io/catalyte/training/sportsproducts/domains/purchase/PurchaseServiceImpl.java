@@ -81,6 +81,30 @@ public class PurchaseServiceImpl implements PurchaseService {
     return StateEnum.getStatesJsonList();
   }
 
+  @Override
+  public List<Long> getProductIdsPurchasedByBillingAddressEmail(String email){
+    try{
+      List<Purchase> purchaseList = purchaseRepository.findByBillingAddressEmail(email);
+      List<Long> productIds = new ArrayList<>();
+      if(purchaseList.isEmpty()){
+        return null;
+      }else{
+        purchaseList.stream().forEach(purchase -> {
+          purchase.getProducts().forEach(product -> {
+            Long productId = product.getProduct().getId();
+            if (!productIds.contains(productId)) {
+              productIds.add(product.getProduct().getId());
+            }
+          });
+        });
+      };
+        return productIds;
+    }catch (DataAccessException e){
+      logger.error(e.getMessage());
+      throw new ServerError(e.getMessage());
+    }
+  }
+
   /**
    * Persists a purchase to the database
    *
