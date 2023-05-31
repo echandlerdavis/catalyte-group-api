@@ -125,7 +125,7 @@ public class ReviewServiceImpl implements ReviewService {
     review.setRating(reviewDTO.getRating());
     review.setProduct(productService.getProductById(productId));
     review.setCreatedAt(reviewDTO.getCreatedAt());
-    review.setEditedAt(review.getEditedAt());
+    review.setEditedAt(reviewDTO.getEditedAt());
     review.setUserName(reviewDTO.getUserName());
     review.setUserEmail(reviewDTO.getUserEmail());
     review.setUserName(reviewDTO.getUserName());
@@ -183,7 +183,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     reviewFields.forEach(field -> {
       String name = field.getName();
-      if (name != "product") {
+      if (name != "product" && name != "isActive") {
         reviewFieldNames.add(name);
       }
     });
