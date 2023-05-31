@@ -7,12 +7,14 @@ import static io.catalyte.training.sportsproducts.constants.LoggingConstants.NO_
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.NO_USER_WITH_EMAIL_FORMAT;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.UPDATED_LAST_ACTIVE_FORMAT;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.UPDATED_USER_FORMAT;
+import static io.catalyte.training.sportsproducts.constants.Roles.ADMIN;
 import static io.catalyte.training.sportsproducts.constants.Roles.CUSTOMER;
 
 import io.catalyte.training.sportsproducts.auth.GoogleAuthService;
 import io.catalyte.training.sportsproducts.constants.LoggingConstants;
 import io.catalyte.training.sportsproducts.exceptions.ResourceNotFound;
 import io.catalyte.training.sportsproducts.exceptions.ServerError;
+import io.catalyte.training.sportsproducts.constants.LoggingConstants;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -114,6 +116,21 @@ public class UserServiceImpl implements UserService {
     logger.info(String.format(UPDATED_LAST_ACTIVE_FORMAT, id));
     user.setLastActive(new Date());
     return updateUser(bearerToken, id, user);
+  }
+
+  /**
+   * Returns boolean representing the User of the given email is Admin
+   *
+   * @param email String email to find user
+   * @return Boolean
+   */
+  @Override
+  public Boolean isAdmin(String email) {
+    User user = userRepository.findByEmail(email);
+    if (user == null || user.getRole() == null) {
+      return false;
+    }
+    return user.getRole().equals(ADMIN);
   }
 
   /**
