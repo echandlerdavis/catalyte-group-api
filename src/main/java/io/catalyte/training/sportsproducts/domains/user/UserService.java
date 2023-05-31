@@ -11,7 +11,9 @@ public interface UserService {
 
   User createUser(User user);
 
-  User getUserByEmail(String email);
+  public User getUserByEmail(String email);
 
-  User updateLastActive(String credentials, Long id, User user);
+  public User updateLastActive(String credentials, Long id, User user);
+
+  public Boolean isAdmin(String email);
 }

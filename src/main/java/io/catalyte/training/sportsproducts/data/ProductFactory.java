@@ -158,7 +158,6 @@ public class ProductFactory {
 
   /**
    * Returns a random double between minimum and maximum parameters to two decimal places.
-   *
    * @param min - a double minimum value
    * @param max - a double maximum value
    * @return - a double between minimum and maximum values as the price to two decimal places.
@@ -290,18 +289,17 @@ public class ProductFactory {
    *
    * @return - an integer between 1 and 5.
    */
-  public static int getReviewRating() {
-    return randomGenerator.nextInt(4) + 1;
+  public static double getReviewRating() {
+    return .5 + (5 - .5) * randomGenerator.nextDouble();
   }
 
   /**
    * Generates a single Review object.
-   *
    * @param product - the product the review belongs to
-   * @param number  - a number to add to the title.
+   * @param number - a number to add to the title.
    * @return a single Review object.
    */
-  public static Review createRandomReview(Product product, int number) {
+  public static Review createRandomReview(Product product, int number){
     Review review = new Review();
     review.setTitle("Review #" + number);
     review.setReview(getReviewContent());
