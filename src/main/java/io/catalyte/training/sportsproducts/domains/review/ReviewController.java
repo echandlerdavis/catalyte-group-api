@@ -53,7 +53,7 @@ public class ReviewController {
   @DeleteMapping(value = "reviews/{reviewId}/email/{requestingEmail}")
   public ResponseEntity<HttpStatus> deleteReview(@PathVariable Long reviewId,
       @PathVariable String requestingEmail) {
-    logger.info(String.format("Request receieved to delete review %d from %s", reviewId,
+    logger.info(String.format("Request received to delete review %d from %s", reviewId,
         requestingEmail));
     return new ResponseEntity<>(reviewService.deactivateReview(reviewId, requestingEmail));
   }

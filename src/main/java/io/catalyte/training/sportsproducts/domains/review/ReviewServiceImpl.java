@@ -183,7 +183,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     reviewFields.forEach(field -> {
       String name = field.getName();
-      if (name != "product" && name != "isActive") {
+      if (name != "product" && name != "isActive" && name != "review" && name != "title") {
         reviewFieldNames.add(name);
       }
     });
