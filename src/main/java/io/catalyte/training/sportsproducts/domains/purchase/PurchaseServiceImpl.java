@@ -13,6 +13,7 @@ import io.catalyte.training.sportsproducts.exceptions.UnprocessableContent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -98,7 +99,8 @@ public class PurchaseServiceImpl implements PurchaseService {
           });
         });
       };
-        return productIds;
+      Collections.sort(productIds);
+      return productIds;
     }catch (DataAccessException e){
       logger.error(e.getMessage());
       throw new ServerError(e.getMessage());
