@@ -284,4 +284,18 @@ public class UserFactory {
     }
   }
 
+  /**
+   * If ACTUAL_USERS has been persisted, return a random user. If ACTUAL_USERS has not been
+   * persisted, return null.
+   *
+   * @return User
+   */
+  public static User getRandomActualUser() {
+    if (USERS_PERSISTED) {
+      int size = ACTUAL_USERS.size();
+      User user = ACTUAL_USERS.get(random.nextInt(size));
+      return user;
+    }
+    return null;
+  }
 }

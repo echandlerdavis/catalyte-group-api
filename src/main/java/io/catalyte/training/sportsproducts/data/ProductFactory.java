@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.data;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.review.Review;
+import io.catalyte.training.sportsproducts.domains.user.User;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -158,6 +159,7 @@ public class ProductFactory {
 
   /**
    * Returns a random double between minimum and maximum parameters to two decimal places.
+   *
    * @param min - a double minimum value
    * @param max - a double maximum value
    * @return - a double between minimum and maximum values as the price to two decimal places.
@@ -287,7 +289,7 @@ public class ProductFactory {
   /**
    * Generates random rating between 1 and 5.
    *
-   * @return - an integer between 1 and 5.
+   * @return - a double between .5 and 5.
    */
   public static double getReviewRating() {
     return .5 + (5 - .5) * randomGenerator.nextDouble();
@@ -295,16 +297,22 @@ public class ProductFactory {
 
   /**
    * Generates a single Review object.
+   *
    * @param product - the product the review belongs to
-   * @param number - a number to add to the title.
+   * @param number  - a number to add to the title.
    * @return a single Review object.
    */
-  public static Review createRandomReview(Product product, int number){
+  public static Review createRandomReview(Product product, int number, User user) {
     Review review = new Review();
     review.setTitle("Review #" + number);
     review.setReview(getReviewContent());
     review.setRating(getReviewRating());
-    review.setUserName(getReviewUserName());
+    if (user != null) {
+      review.setUserEmail(user.getEmail());
+      review.setUserName(user.getFirstName());
+    } else {
+      review.setUserName(getReviewUserName());
+    }
     review.setCreatedAt(String.valueOf(
         between(LocalDate.parse(product.getReleaseDate()), LocalDate.now())));
     review.setProduct(product);
@@ -316,15 +324,45 @@ public class ProductFactory {
    * Generates a list of random review objects, length of list between 0 and 10.
    *
    * @param product - the product the list of reviews will belong to.
+   * @param user    - User
    * @return an array list of review objects.
    */
-  public List<Review> generateRandomReviews(Product product) {
+  public List<Review> generateRandomReviews(Product product, User user) {
 
     List<Review> reviewList = new ArrayList<>();
     int numberOfReviews = randomGenerator.nextInt(10);
 
     for (int i = 0; i < numberOfReviews; i++) {
-      reviewList.add(createRandomReview(product, (i + 1)));
+      if (user != null) {
+        reviewList.add(createRandomReview(product, (i + 1), user));
+      } else {
+        reviewList.add(createRandomReview(product, (i + 1), null));
+      }
+    }
+
+    return reviewList;
+  }
+
+  /**
+   * Generates a list of random review objects, length of list between 0 and 10, with a random user
+   * from the given list.
+   *
+   * @param product - the product the list of reviews will belong to.
+   * @param users   - list of User objects to use for reviews
+   * @return an array list of review objects.
+   */
+  public List<Review> generateRandomReviews(Product product, List<User> users) {
+
+    List<Review> reviewList = new ArrayList<>();
+    int numberOfReviews = randomGenerator.nextInt(10);
+
+    for (int i = 0; i < numberOfReviews; i++) {
+      if (users != null) {
+        User user = users.get(randomGenerator.nextInt(users.size()));
+        reviewList.add(createRandomReview(product, (i + 1), user));
+      } else {
+        reviewList.add(createRandomReview(product, (i + 1), null));
+      }
     }
 
     return reviewList;
