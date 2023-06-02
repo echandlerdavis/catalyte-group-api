@@ -64,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
   }
   /**
-   * Get all reivews that are active for the given prodcut
+   * Get all reviews that are active for the given product
    *
    * @param productId Long
    * @return List of reviews
