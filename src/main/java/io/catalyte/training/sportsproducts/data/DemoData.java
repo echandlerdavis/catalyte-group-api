@@ -95,12 +95,21 @@ public class DemoData implements CommandLineRunner {
     UserFactory.persistActualUsers(userRepository);
 
     //Generate reviews for each product and persist them to the database.
+    int userCount = userFactory.ACTUAL_USERS.size();
+    int productsReviewed = 0;
     for (Product product : productList) {
-      List<Review> reviewList = productFactory.generateRandomReviews(product);
-      product.setReviews(reviewList);
-      reviewRepository.saveAll(reviewList);
+      if (productsReviewed < userCount) {
+        User realUser = userFactory.ACTUAL_USERS.get(productsReviewed++);
+        List<Review> reviewList = productFactory.generateRandomReviews(product, realUser);
+        product.setReviews(reviewList);
+        reviewRepository.saveAll(reviewList);
+      } else {
+        List<Review> reviewList = productFactory.generateRandomReviews(product,
+            userFactory.ACTUAL_USERS);
+        product.setReviews(reviewList);
+        reviewRepository.saveAll(reviewList);
+      }
     }
-    logger.info("Data load completed. You can make requests now.");
 
     Calendar cal = Calendar.getInstance();
     Date today = new Date();
