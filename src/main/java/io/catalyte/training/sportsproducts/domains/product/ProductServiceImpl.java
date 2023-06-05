@@ -511,4 +511,21 @@ public class ProductServiceImpl implements ProductService {
 
     return products;
   }
+
+
+  public Product updateProduct(Product product) {
+    // Save the updated user to the database
+    List<String> productErrors = getProductErrors(product);
+
+    if (!productErrors.isEmpty()) {
+      throw new BadRequest(String.join("\n", productErrors));
+    }
+
+    try {
+      return productRepository.save(product);
+    } catch (DataAccessException e) {
+      logger.error(e.getMessage());
+      throw new ServerError(e.getMessage());
+    }
+  }
 }

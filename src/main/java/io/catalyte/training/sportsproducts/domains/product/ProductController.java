@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -172,5 +173,14 @@ public class ProductController {
   public ResponseEntity<List> getProductsByFilters(@RequestParam HashMap<String, String> filters) {
     logger.info("Request received for getProductsByFilters: " + filters.toString());
     return new ResponseEntity<>(productService.getProductsByFilters(filters), HttpStatus.OK);
+  }
+
+  @PutMapping(path = "/{id}")
+  public ResponseEntity<Product> updateProduct(
+      @PathVariable Long id,
+      @RequestBody Product product
+  ) {
+    logger.info("Request received to update product id " + id);
+    return new ResponseEntity<>(productService.updateProduct(product), HttpStatus.OK);
   }
 }
