@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -246,7 +247,10 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   public Boolean userHasNotLeftReview(ReviewDTO reviewDTO, Long productId){
-    List<Review> reviewList = reviewRepository.findByUserEmail(reviewDTO.getUserEmail());
+    List<Review> reviewList = reviewRepository.findByUserEmail(reviewDTO.getUserEmail())
+        .stream()
+        .filter(r -> r.getActive())
+        .collect(Collectors.toList());
     if(reviewList.isEmpty()){
       return true;
     }
