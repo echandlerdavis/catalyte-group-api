@@ -55,8 +55,8 @@ public class ReviewApiTest {
   private UserRepository userRepository;
   private ProductFactory productFactory = new ProductFactory();
   private Product testProduct = productFactory.createRandomProduct();
-  private Review testReview1 = productFactory.createRandomReview(testProduct, 1);
-  private Review testReview2 = productFactory.createRandomReview(testProduct, 2);
+  private Review testReview1 = productFactory.createRandomReview(testProduct, 1, null);
+  private Review testReview2 = productFactory.createRandomReview(testProduct, 2, null);
   private String testEmail;
   private User admin;
   private String adminEmail;
