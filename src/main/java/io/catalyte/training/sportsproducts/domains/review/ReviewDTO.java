@@ -1,6 +1,7 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
+import javax.persistence.Column;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 public class ReviewDTO {
   private String title;
   private Double rating;
+  @Column(name="review", length = 500)
   private String review;
   private String createdAt;
   private String editedAt;

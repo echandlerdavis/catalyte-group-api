@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.review;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.catalyte.training.sportsproducts.domains.product.Product;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,7 @@ public class Review {
   private Long id;
   private String title;
   private Double rating;
+  @Column(name = "review", length = 500)
   private String review;
   private String createdAt;
   private String editedAt;
