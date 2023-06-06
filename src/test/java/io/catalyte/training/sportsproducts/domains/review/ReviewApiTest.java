@@ -19,7 +19,10 @@ import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
 import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
 import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
+import io.catalyte.training.sportsproducts.domains.purchase.CreditCard;
+import io.catalyte.training.sportsproducts.domains.purchase.DeliveryAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.LineItem;
+import io.catalyte.training.sportsproducts.domains.purchase.LineItemRepository;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import io.catalyte.training.sportsproducts.domains.purchase.PurchaseRepository;
 import io.catalyte.training.sportsproducts.domains.user.User;
@@ -61,13 +64,19 @@ public class ReviewApiTest {
   private UserRepository userRepository;
   @Autowired
   private PurchaseRepository purchaseRepository;
+  @Autowired
+  private LineItemRepository lineItemRepository;
   private ProductFactory productFactory = new ProductFactory();
   private PurchaseFactory purchaseFactory = new PurchaseFactory();
   private Product testProduct = productFactory.createRandomProduct();
   private Purchase testPurchase;
+  private LineItem testLineItem;
+  private DeliveryAddress testDelivery;
+  private BillingAddress testBilling;
+  private CreditCard testCreditCard;
   private Review testReview1 = productFactory.createRandomReview(testProduct, 1, null);
   private Review testReview2 = productFactory.createRandomReview(testProduct, 2, null);
-  private PromotionalCode testPromo = new PromotionalCode();
+  private ReviewDTO writeReview;
   private String testEmail;
   private User admin;
   private User user;
@@ -83,8 +92,8 @@ public class ReviewApiTest {
     adminEmail = "admin@admin.com";
     setTestReviews();
     createAdmin();
-    setTestPurchase();
-    createUser();
+//    setTestPurchase();
+    setWriteReview();
   }
 
   @After
@@ -105,7 +114,7 @@ public class ReviewApiTest {
     }
   }
 
-  public User createUser(){
+  public void setWriteReview(){
     User checkUser = userRepository.findByEmail(testEmail);
     if(checkUser == null){
       user = new User();
@@ -114,10 +123,20 @@ public class ReviewApiTest {
       user.setLastName("Duval");
       User savedUser = userRepository.save(user);
       user.setId(savedUser.getId());
-      return savedUser;
     }else{
-      return checkUser;
-    }
+      user = checkUser;
+    };
+    writeReview = new ReviewDTO(
+        "Title",
+        4.5,
+        "An excellent product!",
+        "10/12/2023",
+        "10/12/2023",
+        user.getFirstName(),
+        user.getEmail(),
+        testProduct
+    );
+    setTestPurchase(user);
   }
   public void deleteAdmin() {
     Optional<User> optionalAdmin = userRepository.findById(admin.getId());
@@ -127,11 +146,11 @@ public class ReviewApiTest {
     }
   }
 
-
   private void setTestReviews() {
-    productRepository.save(testProduct);
+    Product savedProduct = productRepository.save(testProduct);
     testProduct.setReviews(Arrays.asList(testReview1, testReview2));
     testProduct.setActive(true);
+    testProduct.setId(savedProduct.getId());
     //set testReview 1
     Review savedReview = reviewRepository.save(testReview1);
     testReview1.setId(savedReview.getId());
@@ -140,23 +159,45 @@ public class ReviewApiTest {
     testReview2.setId(savedReview2.getId());
   }
 
-  //You might need to start from scratch and just set it to what you want instead of randomly generating
-  private void setTestPurchase(){
-    Set<LineItem> products = new HashSet<>();
-    List<Product> availableProducts = new ArrayList<>();
-    List<PromotionalCode> availablePromoCodes = new ArrayList<>();
-    LineItem lineItem = purchaseFactory.generateLineItem(testProduct);
-    products.add(lineItem);
-    availableProducts.add(testProduct);
-    availablePromoCodes.add(testPromo);
-    purchaseFactory.setAvailableProducts(availableProducts);
-    purchaseFactory.setAvailablePromoCodes(availablePromoCodes);
-    testPurchase = purchaseFactory.generateRandomPurchase();
-    purchaseRepository.save(testPurchase);
-    testPurchase.setProducts(products);
-    BillingAddress billingAddress = new BillingAddress();
-    billingAddress.setEmail(testEmail);
-    testPurchase.setBillingAddress(billingAddress);
+  private void setTestPurchase(User user){
+   testPurchase = new Purchase();
+    Purchase savedPurchase = purchaseRepository.save(testPurchase);
+    testDelivery = new DeliveryAddress(
+       user.getFirstName(),
+        user.getLastName(),
+        user.getBillingAddress().getBillingStreet(),
+        null,
+       "City",
+       "State",
+       12345);
+   testBilling = new BillingAddress(
+       "Street 1",
+       null,
+       "City",
+       "State",
+       12345,
+       user.getEmail(),
+       "1234567899");
+   testCreditCard = new CreditCard(
+       "1234567812345678",
+       "123",
+       "03/25",
+       "Test User"
+   );
+   Set<LineItem> products = new HashSet<>();
+   testLineItem = new LineItem();
+   testLineItem.setPurchase(savedPurchase);
+   testLineItem.setProduct(testProduct);
+   testLineItem.setQuantity(1);
+   products.add(testLineItem);
+   testPurchase.setProducts(products);
+   testPurchase.setDeliveryAddress(testDelivery);
+   testPurchase.setShippingCharge(10.00);
+   testPurchase.setBillingAddress(testBilling);
+   testPurchase.setCreditCard(testCreditCard);
+   testPurchase.setPromoCode(null);
+   testPurchase.setId(savedPurchase.getId());
+   lineItemRepository.saveAll(savedPurchase.getProducts());
   }
   @Test
   public void getReviewsByProductIdReturns200() throws Exception {
@@ -260,18 +301,20 @@ public class ReviewApiTest {
         .andExpect(status().isForbidden());
   }
 
-//  @Test
-//  public void saveReviewReturns201WithReviewObject() throws Exception {
-//    ObjectMapper mapper = new ObjectMapper();
-//    MockHttpServletResponse response = mockMvc.perform(
-//        post(String.format("/products/%d/reviews"), testProduct.getId())
-//        .contentType(MediaType.APPLICATION_JSON)
-//        .content(mapper.writeValueAsString(testReview1)))
+  @Test
+  public void saveReviewReturns201WithReviewObject() throws Exception {
+    testReview1.setUserEmail("test1@test.com");
+    testReview2.setUserEmail("test2@test.com");
+    ObjectMapper mapper = new ObjectMapper();
+    MockHttpServletResponse response = mockMvc.perform(
+        post(String.format("/products/%d/reviews", testProduct.getId()))
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(writeReview)))
 //        .andExpect(status().isCreated())
-//        .andReturn().getResponse();
-//
-//    Review returnedReview = mapper.readValue(response.getContentAsString(), Review.class);
-//    assert (returnedReview.equals(testReview1));
-////    assertNotNull(returnedReview.getId());
-//  }
+        .andReturn().getResponse();
+
+    Review returnedReview = mapper.readValue(response.getContentAsString(), Review.class);
+    assert (returnedReview.equals(writeReview));
+//    assertNotNull(returnedReview.getId());
+  }
 }
