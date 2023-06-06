@@ -14,10 +14,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.catalyte.training.sportsproducts.data.ProductFactory;
 import io.catalyte.training.sportsproducts.data.PurchaseFactory;
-import io.catalyte.training.sportsproducts.data.UserFactory;
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
-import io.catalyte.training.sportsproducts.domains.promotions.PromotionalCode;
 import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
 import io.catalyte.training.sportsproducts.domains.purchase.CreditCard;
 import io.catalyte.training.sportsproducts.domains.purchase.DeliveryAddress;
@@ -25,18 +23,14 @@ import io.catalyte.training.sportsproducts.domains.purchase.LineItem;
 import io.catalyte.training.sportsproducts.domains.purchase.LineItemRepository;
 import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
 import io.catalyte.training.sportsproducts.domains.purchase.PurchaseRepository;
-import io.catalyte.training.sportsproducts.domains.user.User;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import io.catalyte.training.sportsproducts.domains.purchase.PurchaseService;
 import io.catalyte.training.sportsproducts.domains.user.User;
 import io.catalyte.training.sportsproducts.domains.user.UserRepository;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,13 +38,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -66,6 +58,10 @@ public class ReviewApiTest {
   private PurchaseRepository purchaseRepository;
   @Autowired
   private LineItemRepository lineItemRepository;
+
+  @Autowired
+  PurchaseService purchaseService;
+
   private ProductFactory productFactory = new ProductFactory();
   private PurchaseFactory purchaseFactory = new PurchaseFactory();
   private Product testProduct = productFactory.createRandomProduct();
@@ -93,7 +89,7 @@ public class ReviewApiTest {
     setTestReviews();
     createAdmin();
     setWriteReview();
-
+    setTestPurchase();
   }
 
   @After
@@ -114,18 +110,19 @@ public class ReviewApiTest {
     }
   }
 
-  public void setWriteReview(){
+  public void setWriteReview() {
     User checkUser = userRepository.findByEmail(testEmail);
-    if(checkUser == null){
+    if (checkUser == null) {
       user = new User();
       user.setEmail(testEmail);
       user.setFirstName("Devin");
       user.setLastName("Duval");
       User savedUser = userRepository.save(user);
       user.setId(savedUser.getId());
-    }else{
+    } else {
       user = checkUser;
-    };
+    }
+    ;
     writeReview = new ReviewDTO(
         "Title",
         4.5,
@@ -137,6 +134,7 @@ public class ReviewApiTest {
         testProduct
     );
   }
+
   public void deleteAdmin() {
     Optional<User> optionalAdmin = userRepository.findById(admin.getId());
     //if admin, remove from database
@@ -158,46 +156,53 @@ public class ReviewApiTest {
     testReview2.setId(savedReview2.getId());
   }
 
-  private void setTestPurchase(){
-   testPurchase = new Purchase();
-    Purchase savedPurchase = purchaseRepository.save(testPurchase);
+  private void setTestPurchase() {
+    testPurchase = new Purchase();
+
     testDelivery = new DeliveryAddress(
         "Test",
         "User",
         "Street 1",
         null,
-       "City",
-       "State",
-       12345);
-   testBilling = new BillingAddress(
-       "Street 1",
-       null,
-       "City",
-       "State",
-       12345,
-       testEmail,
-       "1234567899");
-   testCreditCard = new CreditCard(
-       "1234567812345678",
-       "123",
-       "03/25",
-       "Test User"
-   );
-   Set<LineItem> products = new HashSet<>();
-   testLineItem = new LineItem();
-   testLineItem.setPurchase(savedPurchase);
-   testLineItem.setProduct(testProduct);
-   testLineItem.setQuantity(1);
-   products.add(testLineItem);
-   testPurchase.setProducts(products);
-   testPurchase.setDeliveryAddress(testDelivery);
-   testPurchase.setShippingCharge(10.00);
-   testPurchase.setBillingAddress(testBilling);
-   testPurchase.setCreditCard(testCreditCard);
-   testPurchase.setPromoCode(null);
-   testPurchase.setId(savedPurchase.getId());
-   lineItemRepository.saveAll(savedPurchase.getProducts());
+        "City",
+        "New York",
+        12345);
+    testBilling = new BillingAddress(
+        "Street 1",
+        null,
+        "City",
+        "New York",
+        12345,
+        testEmail,
+        "1234567899");
+    testCreditCard = new CreditCard(
+        "1234567812345678",
+        "123",
+        "03/25",
+        "Test User"
+    );
+
+    Set<LineItem> lineItems = new HashSet<>();
+    testLineItem = new LineItem();
+
+    testLineItem.setProduct(testProduct);
+    testLineItem.setQuantity(1);
+    lineItems.add(testLineItem);
+
+    testPurchase.setProducts(lineItems);
+    testPurchase.setDeliveryAddress(testDelivery);
+    testPurchase.setShippingCharge(10.00);
+    testPurchase.setBillingAddress(testBilling);
+    testPurchase.setCreditCard(testCreditCard);
+    testPurchase.setPromoCode(null);
+    Purchase savedPurchase = purchaseRepository.save(testPurchase);
+
+    testLineItem.setPurchase(savedPurchase);
+
+    testPurchase.setId(savedPurchase.getId());
+    lineItemRepository.saveAll(savedPurchase.getProducts());
   }
+
   @Test
   public void getReviewsByProductIdReturns200() throws Exception {
     mockMvc.perform(get(PRODUCTS_PATH + "/" + Long.toString(testProduct.getId()) + "/reviews"))
@@ -305,15 +310,10 @@ public class ReviewApiTest {
     testReview1.setUserEmail("test1@test.com");
     testReview2.setUserEmail("test2@test.com");
     ObjectMapper mapper = new ObjectMapper();
-    MockHttpServletResponse response = mockMvc.perform(
-        post(String.format("/products/%d/reviews", testProduct.getId()))
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(writeReview)))
-//        .andExpect(status().isCreated())
-        .andReturn().getResponse();
-
-    Review returnedReview = mapper.readValue(response.getContentAsString(), Review.class);
-    assert (returnedReview.equals(writeReview));
-//    assertNotNull(returnedReview.getId());
+    mockMvc.perform(
+            post(String.format("/products/%d/reviews", testProduct.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(writeReview)))
+        .andExpect(status().isCreated());
   }
 }
