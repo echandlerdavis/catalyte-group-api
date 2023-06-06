@@ -92,7 +92,7 @@ public class ReviewApiTest {
     adminEmail = "admin@admin.com";
     setTestReviews();
     createAdmin();
-//    setTestPurchase();
+    setTestPurchase();
     setWriteReview();
   }
 
@@ -136,7 +136,6 @@ public class ReviewApiTest {
         user.getEmail(),
         testProduct
     );
-    setTestPurchase(user);
   }
   public void deleteAdmin() {
     Optional<User> optionalAdmin = userRepository.findById(admin.getId());
@@ -159,13 +158,13 @@ public class ReviewApiTest {
     testReview2.setId(savedReview2.getId());
   }
 
-  private void setTestPurchase(User user){
+  private void setTestPurchase(){
    testPurchase = new Purchase();
     Purchase savedPurchase = purchaseRepository.save(testPurchase);
     testDelivery = new DeliveryAddress(
-       user.getFirstName(),
-        user.getLastName(),
-        user.getBillingAddress().getBillingStreet(),
+        "Test",
+        "User",
+        "Street 1",
         null,
        "City",
        "State",
