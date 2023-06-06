@@ -113,6 +113,12 @@ public class ReviewServiceImpl implements ReviewService {
     return HttpStatus.FORBIDDEN;
   }
 
+  /**
+   * Handles posting a review. If errors, review is not posted
+   * @param productId - product the review will be posted to
+   * @param reviewDTO - payload
+   * @return saved Review
+   */
   public Review postReview(Long productId, ReviewDTO reviewDTO) {
     List<String> reviewErrors = getReviewErrors(reviewDTO, productId);
 
@@ -141,6 +147,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
   }
 
+  /**
+   * Finds and makes a list of all errors: if fields are empty or null,
+   * if user has purchased a product,
+   * if user has already left a review on the product.
+   * @param reviewDTO payload
+   * @param productId the id of the product the review will be saved to
+   * @return list of errors
+   */
   public List<String> getReviewErrors(ReviewDTO reviewDTO, Long productId) {
     List<String> errors = new ArrayList<>();
 
@@ -175,6 +189,12 @@ public class ReviewServiceImpl implements ReviewService {
     return errors;
   }
 
+  /**
+   * Finds fields if they are empty or null with certain exceptions.
+   * Does not allow user info to be empty/null.
+   * @param reviewDTO payload
+   * @return Hashmap of empty and null fields.
+   */
   public HashMap<String, List<String>> getEmptyOrNullFields(ReviewDTO reviewDTO) {
     HashMap<String, List<String>> results = new HashMap<>();
     List<Field> reviewFields = Arrays.asList(ReviewDTO.class.getDeclaredFields());
@@ -204,6 +224,11 @@ public class ReviewServiceImpl implements ReviewService {
     return results;
   }
 
+  /**
+   * Checks that the rating is in between 0 and 5 and is at a precision of 0.5 stars.
+   * @param reviewDTO payload
+   * @return Boolean of whether the rating is valid or not.
+   */
   public Boolean ratingIsValid(ReviewDTO reviewDTO) {
     Double rating = reviewDTO.getRating();
     if (rating != null) {
@@ -217,6 +242,11 @@ public class ReviewServiceImpl implements ReviewService {
     return false;
   }
 
+  /**
+   * Checks that either the title/summary or the review/commentary is filled in (not empty or null)
+   * @param reviewDTO payload
+   * @return Boolean if the inputs are valid or not
+   */
   public Boolean inputsAreValid(ReviewDTO reviewDTO) {
     ObjectMapper mapper = new ObjectMapper();
     Map reviewMap = mapper.convertValue(reviewDTO, HashMap.class);
@@ -228,6 +258,12 @@ public class ReviewServiceImpl implements ReviewService {
     return true;
   };
 
+  /**
+   * Verifies that a user has purchased the product for which they are trying to leave a review.
+   * @param reviewDTO payload
+   * @param productId id for the product the user is trying to save a review to
+   * @return Boolean if the user has purchased the product or not.
+   */
   public Boolean userHasPurchasedProduct(ReviewDTO reviewDTO, Long productId) {
     Product product = productService.getProductById(productId);
     String userEmail = reviewDTO.getUserEmail();
@@ -246,6 +282,12 @@ public class ReviewServiceImpl implements ReviewService {
     return false;
   }
 
+  /**
+   * Checks that a user has no active reviews of the product - they cannot leave more than one.
+   * @param reviewDTO payload
+   * @param productId product the review is for
+   * @return Boolean 
+   */
   public Boolean userHasNotLeftReview(ReviewDTO reviewDTO, Long productId){
     List<Review> reviewList = reviewRepository.findByUserEmail(reviewDTO.getUserEmail())
         .stream()
