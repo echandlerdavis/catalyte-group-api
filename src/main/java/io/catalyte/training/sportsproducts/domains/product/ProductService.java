@@ -33,6 +33,4 @@ public interface ProductService {
   List<Product> getProductsByFilters(HashMap<String, String> filters);
 
   List<Product> getProductsByIds(List<Long> ids);
-
-  Product updateProduct(Product product);
 }

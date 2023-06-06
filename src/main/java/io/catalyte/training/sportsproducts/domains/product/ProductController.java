@@ -181,6 +181,6 @@ public class ProductController {
       @RequestBody Product product
   ) {
     logger.info("Request received to update product id " + id);
-    return new ResponseEntity<>(productService.updateProduct(product), HttpStatus.OK);
+    return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.OK);
   }
 }
