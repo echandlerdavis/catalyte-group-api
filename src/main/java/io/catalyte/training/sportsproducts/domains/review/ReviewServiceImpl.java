@@ -85,7 +85,7 @@ public class ReviewServiceImpl implements ReviewService {
    *
    * @param reviewId        Long id of review to be deleted
    * @param requestingEmail Email of user who is requesting delete
-   * @return Boolean whether or not action was performed
+   * @return Boolean whether action was performed
    */
   @Override
   public HttpStatus deactivateReview(Long reviewId, String requestingEmail) {
@@ -286,7 +286,7 @@ public class ReviewServiceImpl implements ReviewService {
    * Checks that a user has no active reviews of the product - they cannot leave more than one.
    * @param reviewDTO payload
    * @param productId product the review is for
-   * @return Boolean 
+   * @return Boolean
    */
   public Boolean userHasNotLeftReview(ReviewDTO reviewDTO, Long productId){
     List<Review> reviewList = reviewRepository.findByUserEmail(reviewDTO.getUserEmail())
