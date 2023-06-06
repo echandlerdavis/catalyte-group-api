@@ -2,7 +2,6 @@ package io.catalyte.training.sportsproducts.domains.review;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -51,10 +50,8 @@ public class ReviewServiceImplTest {
     this.testEmail = "dduval@catalyte.io";
 
     setTestReviews();
-//    setWriteReview();
 
     when(reviewRepository.findByProductId(anyLong())).thenReturn(testReviewsForProduct1List);
-//    when(reviewRepository.save(any())).thenReturn(writeReview);
   }
 
   private void setTestReviews() {
@@ -103,19 +100,6 @@ public class ReviewServiceImplTest {
 
   }
 
-//  private void setWriteReview(){
-//    writeReview = new ReviewDTO(
-//        "Title",
-//        4.5,
-//        "Review",
-//        "10/12/2023",
-//        "10/12/2023",
-//        "User Name",
-//        "test@test.com",
-//        testProduct1
-//    );
-//  }
-
   @Test
   public void getAllReviewByProductIdReturnsReviews() {
     List<Review> actual = reviewServiceImpl.getAllReviewsByProductId(123L);
@@ -128,11 +112,4 @@ public class ReviewServiceImplTest {
     }).when(reviewRepository).findByProductId(anyLong());
     assertThrows(ServerError.class, () -> reviewServiceImpl.getAllReviewsByProductId(123L));
   }
-
-//  @Test
-//  public void saveReviewThrowsServerError(){
-//    doThrow(new DataAccessException("TEST EXCEPTION") {
-//    }).when(reviewRepository).save(any());
-//    assertThrows(ServerError.class, () -> reviewServiceImpl.postReview(testProduct1.getId(), writeReview));
-//  }
 }
