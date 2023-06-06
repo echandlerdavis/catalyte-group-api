@@ -92,8 +92,8 @@ public class ReviewApiTest {
     adminEmail = "admin@admin.com";
     setTestReviews();
     createAdmin();
-    setTestPurchase();
     setWriteReview();
+
   }
 
   @After
@@ -175,7 +175,7 @@ public class ReviewApiTest {
        "City",
        "State",
        12345,
-       user.getEmail(),
+       testEmail,
        "1234567899");
    testCreditCard = new CreditCard(
        "1234567812345678",
