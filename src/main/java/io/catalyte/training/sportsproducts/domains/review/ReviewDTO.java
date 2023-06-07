@@ -1,37 +1,34 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+
 
 /**
  * A DTO (Data Transfer Object) representing the input data for creating a review.
  */
 public class ReviewDTO {
-
   private String title;
   private Double rating;
+  @Column(name="review", length = 500)
   private String review;
   private String createdAt;
+  private String editedAt;
   private String userName;
   private String userEmail;
   private Product product;
-
   private Boolean isActive;
 
   public ReviewDTO() {
   }
 
-  ;
-
-  public ReviewDTO(String title, Double rating, String review, String createdAt, String userName,
+  public ReviewDTO(String title, Double rating, String review, String createdAt, String editedAt, String userName,
       String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
+    this.editedAt = editedAt;
     this.userName = userName;
     this.userEmail = userEmail;
     this.product = product;
@@ -68,6 +65,14 @@ public class ReviewDTO {
 
   public void setCreatedAt(String createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public String getEditedAt() {
+    return editedAt;
+  }
+
+  public void setEditedAt(String editedAt) {
+    this.editedAt = editedAt;
   }
 
   public String getUserName() {

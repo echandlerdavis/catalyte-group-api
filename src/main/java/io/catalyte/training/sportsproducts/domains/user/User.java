@@ -105,7 +105,6 @@ public class User {
     this.lastActive = lastActive;
   }
 
-
   public UserBillingAddress getBillingAddress() {
     return billingAddress;
   }

@@ -16,5 +16,4 @@ public interface ReviewService {
 
   HttpStatus deactivateReview(Long reviewId, String requestingEmail);
 
-
 }
