@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+  public List<Product> findAllByOrderByIdAsc();
+
   @Query(value = "SELECT DISTINCT p.type FROM product p", nativeQuery = true)
   List<String> findDistinctTypes();
 
