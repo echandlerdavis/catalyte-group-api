@@ -23,5 +23,6 @@ public class LoggingConstants {
   public static final String GET_STATES = "Received request for State options";
   public static final String REJECTED_GET_ALL_PURCHASES = "Rejected request to get all purchases";
   public static final String GET_USER_PURCHASES_FORMAT = "Received request to get all purchases with email %s";
+  public static final String GET_USER_PURCHASE_PRODUCT_IDS = "Received request to get all productIds purchased with email %s";
 
 }

@@ -32,6 +32,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.dao.DataAccessException;
 
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 @WebMvcTest(ProductServiceImpl.class)
 public class ProductServiceImplTest {
@@ -43,6 +51,7 @@ public class ProductServiceImplTest {
   Review testReview1;
   Review testReview2;
   Review testReview3;
+  String testEmail;
   ProductFactory productFactory;
   List<Product> testProductsList = new ArrayList<>();
   List<Review> testReviewsListForProduct1 = new ArrayList<>();
@@ -62,7 +71,7 @@ public class ProductServiceImplTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-
+    this.testEmail = "dduval@catalyte.io";
     setTestProducts();
     getMinMaxPrice();
 
@@ -77,7 +86,8 @@ public class ProductServiceImplTest {
     when(productRepository.findDistinctPrimaryColors()).thenReturn(
         Arrays.asList(testProduct1.getPrimaryColorCode(), testProduct2.getPrimaryColorCode()));
     when(productRepository.findDistinctSecondaryColors()).thenReturn(
-        Arrays.asList(testProduct1.getSecondaryColorCode(), testProduct2.getSecondaryColorCode()));
+        Arrays.asList(testProduct1.getSecondaryColorCode(),
+            testProduct2.getSecondaryColorCode()));
     when(productRepository.findDistinctTypes()).thenReturn(
         Arrays.asList(testProduct1.getType(), testProduct2.getType()));
     when(productRepository.findDistinctMaterials()).thenReturn(
@@ -135,26 +145,32 @@ public class ProductServiceImplTest {
     //Create two random reviews to construct test products.
     testReview1 = new Review(
         "Test Review 1",
-        4,
+        4.0,
         "This is an example of a review for test product 1",
         "2005-11-01",
+        "2005-11-01",
         "testUserNameOne",
+        testEmail,
         testProduct1
     );
     testReview2 = new Review(
         "Test Review 2",
-        2,
+        2.0,
         "This is a second example of a review for test product 1",
         "2007-25-03",
+        "2007-25-03",
         "testUserNameTwo",
+        testEmail,
         testProduct1
     );
     testReview3 = new Review(
         "Test Review 3",
-        5,
+        5.0,
         "This is an example of a review for test product 2",
         "2010-13-01",
+        "2010-13-01",
         "testUserNameThree",
+        testEmail,
         testProduct2
     );
     testReviewsListForProduct1.add(testReview1);
@@ -203,8 +219,8 @@ public class ProductServiceImplTest {
   @Test
   public void getProductByOneCategoryReturnsListOfProducts() {
     categories.add(testProduct2.getCategory());
-    List<Product> actual = productServiceImpl.getProductsByCategories(productRepository.findAll(),
-        testProduct2.getCategory());
+    List<Product> actual = productServiceImpl.getProductsByCategories(
+        productRepository.findAll(), testProduct2.getCategory());
     assertEquals(Collections.singletonList(testProduct2), actual);
   }
 
@@ -213,16 +229,16 @@ public class ProductServiceImplTest {
     categories.add(testProduct1.getCategory());
     categories.add(testProduct2.getCategory());
     String categoryString = String.join("|", categories);
-    List<Product> actual = productServiceImpl.getProductsByCategories(productRepository.findAll(),
-        categoryString);
+    List<Product> actual = productServiceImpl.getProductsByCategories(
+        productRepository.findAll(), categoryString);
     assertEquals(testProductsList, actual);
   }
 
   @Test
   public void getProductByOneDemographicReturnsListOfProducts() {
 
-    List<Product> actual = productServiceImpl.getProductsByDemographics(productRepository.findAll(),
-        testProduct2.getDemographic());
+    List<Product> actual = productServiceImpl.getProductsByDemographics(
+        productRepository.findAll(), testProduct2.getDemographic());
     assertEquals(Collections.singletonList(testProduct2), actual);
   }
 
@@ -231,8 +247,8 @@ public class ProductServiceImplTest {
     demographics.add(testProduct1.getDemographic());
     demographics.add(testProduct2.getDemographic());
     String demographicsString = String.join("|", demographics);
-    List<Product> actual = productServiceImpl.getProductsByDemographics(productRepository.findAll(),
-        demographicsString);
+    List<Product> actual = productServiceImpl.getProductsByDemographics(
+        productRepository.findAll(), demographicsString);
     assertEquals(testProductsList, actual);
   }
 
@@ -251,6 +267,7 @@ public class ProductServiceImplTest {
         () -> productServiceImpl.getProductsByPrice(productRepository.findAll(), priceMin,
             priceMax));
   }
+
 
   @Test
   public void getProductByOnePrimaryColorReturnsListOfProducts() {
@@ -272,8 +289,8 @@ public class ProductServiceImplTest {
 
   @Test
   public void getProductByOneMaterialReturnsListOfProducts() {
-    List<Product> actual = productServiceImpl.getProductsByMaterials(productRepository.findAll(),
-        testProduct2.getMaterial());
+    List<Product> actual = productServiceImpl.getProductsByMaterials(
+        productRepository.findAll(), testProduct2.getMaterial());
     assertEquals(Collections.singletonList(testProduct2), actual);
   }
 
@@ -282,8 +299,8 @@ public class ProductServiceImplTest {
     materials.add(testProduct1.getMaterial());
     materials.add(testProduct2.getMaterial());
     String materialsString = String.join("|", materials);
-    List<Product> actual = productServiceImpl.getProductsByMaterials(productRepository.findAll(),
-        materialsString);
+    List<Product> actual = productServiceImpl.getProductsByMaterials(
+        productRepository.findAll(), materialsString);
     assertEquals(testProductsList, actual);
   }
 

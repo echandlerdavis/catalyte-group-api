@@ -1,5 +1,8 @@
 package io.catalyte.training.sportsproducts.domains.user;
 
+import static io.catalyte.training.sportsproducts.constants.Roles.ADMIN;
+import static io.catalyte.training.sportsproducts.constants.Roles.CUSTOMER;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +50,7 @@ public class UserServiceImplTest {
     lastName = "Belcher";
     email = "Bob@BobsBurgers.com";
     role = "BurgerMeister";
-    id = 1L;
+    id = 1l;
     lastActive = new Date();
     //set testUser
     testUser = new User();
@@ -87,7 +90,9 @@ public class UserServiceImplTest {
   }
 
   @Test
-  public void updateLastActiveSetsNewerTimeTest() {
+  public void updateLastActiveSetsNewerTimeTest() throws InterruptedException {
+    //make test wait after setup to make sure last active is before the updated value
+    Thread.sleep(500);
     User updated = userService.updateLastActive(testUser.getEmail(), id, testUser);
     assertTrue(updated.getLastActive().after(lastActive));
   }
@@ -105,6 +110,33 @@ public class UserServiceImplTest {
         new DataAccessResourceFailureException("Server down"));
     User updated = userService.updateLastActive(testUser.getEmail(), id, testUser);
     fail(); //this shouldn't run
+  }
+
+  @Test
+  public void isAdminReturnsTrueIfUserIsAdmin() {
+    User admin = new User();
+    admin.setRole(ADMIN);
+    admin.setEmail("admin@email.com");
+    when(userRepository.findByEmail(anyString())).thenReturn(admin);
+    assertTrue(userService.isAdmin("admin@email.com"));
+  }
+
+  @Test
+  public void isAdminReturnsFalseIfUserIsNotAdmin() {
+    User admin = new User();
+    admin.setRole(CUSTOMER);
+    admin.setEmail("admin@email.com");
+    when(userRepository.findByEmail(anyString())).thenReturn(admin);
+    assertFalse(userService.isAdmin("admin@email.com"));
+  }
+
+  @Test
+  public void isAdminReturnFalseIfUserRoleIsNull() {
+    User admin = new User();
+    admin.setRole(null);
+    admin.setEmail("admin@email.com");
+    when(userRepository.findByEmail(anyString())).thenReturn(admin);
+    assertFalse(userService.isAdmin("admin@email.com"));
   }
 
 }

@@ -1,39 +1,38 @@
 package io.catalyte.training.sportsproducts.domains.review;
 
 import io.catalyte.training.sportsproducts.domains.product.Product;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+
 
 /**
  * A DTO (Data Transfer Object) representing the input data for creating a review.
  */
 public class ReviewDTO {
-
-  @NotBlank
   private String title;
-  @NotNull
-  @Min(1)
-  @Max(5)
-  private int rating;
-  @NotBlank
+  private Double rating;
+  @Column(name="review", length = 500)
   private String review;
   private String createdAt;
+  private String editedAt;
   private String userName;
+  private String userEmail;
   private Product product;
+  private Boolean isActive;
 
   public ReviewDTO() {
   }
 
-  public ReviewDTO(String title, int rating, String review, String createdAt, String userName,
-      Product product) {
+  public ReviewDTO(String title, Double rating, String review, String createdAt, String editedAt, String userName,
+      String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
+    this.editedAt = editedAt;
     this.userName = userName;
+    this.userEmail = userEmail;
     this.product = product;
+    this.isActive = true;
   }
 
   public String getTitle() {
@@ -44,11 +43,11 @@ public class ReviewDTO {
     this.title = title;
   }
 
-  public int getRating() {
+  public Double getRating() {
     return rating;
   }
 
-  public void setRating(int rating) {
+  public void setRating(Double rating) {
     this.rating = rating;
   }
 
@@ -68,12 +67,28 @@ public class ReviewDTO {
     this.createdAt = createdAt;
   }
 
+  public String getEditedAt() {
+    return editedAt;
+  }
+
+  public void setEditedAt(String editedAt) {
+    this.editedAt = editedAt;
+  }
+
   public String getUserName() {
     return userName;
   }
 
   public void setUserName(String userName) {
     this.userName = userName;
+  }
+
+  public String getUserEmail() {
+    return userEmail;
+  }
+
+  public void setUserEmail(String userEmail) {
+    this.userEmail = userEmail;
   }
 
   public Product getProduct() {
@@ -84,4 +99,11 @@ public class ReviewDTO {
     this.product = product;
   }
 
+  public Boolean getActive() {
+    return isActive;
+  }
+
+  public void setActive(Boolean active) {
+    isActive = active;
+  }
 }

@@ -31,7 +31,7 @@ public class PurchaseFactory {
   /**
    * Constructor that sets minDate and maxDate
    */
-  PurchaseFactory() {
+  public PurchaseFactory(){
     //set minDate and maxDate
     Date today = new Date();
     Calendar cal = Calendar.getInstance();

@@ -13,8 +13,10 @@ import io.catalyte.training.sportsproducts.exceptions.UnprocessableContent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,6 +81,30 @@ public class PurchaseServiceImpl implements PurchaseService {
   @Override
   public List<StateEnumDTO> getStateOptions() {
     return StateEnum.getStatesJsonList();
+  }
+
+  @Override
+  public List<Long> getProductIdsPurchasedByBillingAddressEmail(String email){
+    try{
+      List<Purchase> purchaseList = purchaseRepository.findByBillingAddressEmail(email);
+      Set<Long> productIds = new HashSet<>();
+      if(purchaseList.isEmpty()){
+        return null;
+      }else{
+        purchaseList.stream().forEach(purchase -> {
+          purchase.getProducts().forEach(product -> {
+            Long productId = product.getProduct().getId();
+            productIds.add(productId);
+          });
+        });
+      };
+      List<Long> productIdsAsList = new ArrayList<>(productIds);
+      Collections.sort(productIdsAsList);
+      return productIdsAsList;
+    }catch (DataAccessException e){
+      logger.error(e.getMessage());
+      throw new ServerError(e.getMessage());
+    }
   }
 
   /**

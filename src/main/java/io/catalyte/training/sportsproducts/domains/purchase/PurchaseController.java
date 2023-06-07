@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.purchase;
 
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.GET_STATES;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.GET_USER_PURCHASES_FORMAT;
+import static io.catalyte.training.sportsproducts.constants.LoggingConstants.GET_USER_PURCHASE_PRODUCT_IDS;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.POST_PURCHASE;
 import static io.catalyte.training.sportsproducts.constants.LoggingConstants.REJECTED_GET_ALL_PURCHASES;
 import static io.catalyte.training.sportsproducts.constants.Paths.PURCHASES_PATH;
@@ -76,5 +77,11 @@ public class PurchaseController {
   public ResponseEntity findAllPurchasesByEmail(@PathVariable String email) {
     logger.info(String.format(GET_USER_PURCHASES_FORMAT, email));
     return new ResponseEntity(purchaseService.findByBillingAddressEmail(email), HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/{email}/productIds")
+  public ResponseEntity findPurchasedProductIdsByEmail(@PathVariable String email){
+    logger.info(String.format(GET_USER_PURCHASE_PRODUCT_IDS, email));
+    return new ResponseEntity(purchaseService.getProductIdsPurchasedByBillingAddressEmail(email), HttpStatus.OK);
   }
 }
