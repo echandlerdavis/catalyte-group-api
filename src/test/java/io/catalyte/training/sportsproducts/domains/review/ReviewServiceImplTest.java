@@ -32,6 +32,7 @@ public class ReviewServiceImplTest {
   Review testReview1;
   Review testReview2;
   Review testReview3;
+  ReviewDTO writeReview;
   Product testProduct1;
   Product testProduct2;
   String testEmail;
@@ -51,18 +52,20 @@ public class ReviewServiceImplTest {
     setTestReviews();
 
     when(reviewRepository.findByProductId(anyLong())).thenReturn(testReviewsForProduct1List);
-
   }
 
   private void setTestReviews() {
     //Create three random reviews set to two null products.
     productFactory = new ProductFactory();
-    testProduct1 = new Product();
-    testProduct2 = new Product();
+    testProduct1 = productFactory.createRandomProduct();
+    testProduct1.setActive(null);
+    testProduct2 = productFactory.createRandomProduct();
+    testProduct2.setReviews(null);
     testReview1 = new Review(
         "Test Review 1",
         4.0,
         "This is an example of a review for test product 1",
+        "2005-11-01",
         "2005-11-01",
         "testUserNameOne",
         testEmail,
@@ -73,6 +76,7 @@ public class ReviewServiceImplTest {
         2.0,
         "This is a second example of a review for test product 1",
         "2007-25-03",
+        "2007-25-03",
         "testUserNameTwo",
         testEmail,
         testProduct1
@@ -81,6 +85,7 @@ public class ReviewServiceImplTest {
         "Test Review 3",
         5.0,
         "This is an example of a review for test product 2",
+        "2010-13-01",
         "2010-13-01",
         "testUserNameThree",
         testEmail,
@@ -107,5 +112,4 @@ public class ReviewServiceImplTest {
     }).when(reviewRepository).findByProductId(anyLong());
     assertThrows(ServerError.class, () -> reviewServiceImpl.getAllReviewsByProductId(123L));
   }
-
 }

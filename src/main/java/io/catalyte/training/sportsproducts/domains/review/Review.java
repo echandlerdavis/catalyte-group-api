@@ -2,6 +2,7 @@ package io.catalyte.training.sportsproducts.domains.review;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.catalyte.training.sportsproducts.domains.product.Product;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,11 +20,12 @@ public class Review {
   private Long id;
   private String title;
   private Double rating;
+  @Column(name = "review", length = 500)
   private String review;
   private String createdAt;
+  private String editedAt;
   private String userName;
   private String userEmail;
-
   private Boolean isActive;
   @ManyToOne
   @JsonIgnore
@@ -33,12 +35,13 @@ public class Review {
     this.isActive = true;
   }
 
-  public Review(String title, Double rating, String review, String createdAt, String userName,
+  public Review(String title, Double rating, String review, String createdAt, String editedAt, String userName,
       String userEmail, Product product) {
     this.title = title;
     this.rating = rating;
     this.review = review;
     this.createdAt = createdAt;
+    this.editedAt = editedAt;
     this.userName = userName;
     this.userEmail = userEmail;
     this.product = product;
@@ -67,6 +70,14 @@ public class Review {
 
   public void setCreatedAt(String createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public String getEditedAt() {
+    return editedAt;
+  }
+
+  public void setEditedAt(String editedAt) {
+    this.editedAt = editedAt;
   }
 
   public String getUserName() {

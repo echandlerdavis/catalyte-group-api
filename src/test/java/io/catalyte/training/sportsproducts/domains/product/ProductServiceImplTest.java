@@ -148,6 +148,7 @@ public class ProductServiceImplTest {
         4.0,
         "This is an example of a review for test product 1",
         "2005-11-01",
+        "2005-11-01",
         "testUserNameOne",
         testEmail,
         testProduct1
@@ -157,6 +158,7 @@ public class ProductServiceImplTest {
         2.0,
         "This is a second example of a review for test product 1",
         "2007-25-03",
+        "2007-25-03",
         "testUserNameTwo",
         testEmail,
         testProduct1
@@ -165,6 +167,7 @@ public class ProductServiceImplTest {
         "Test Review 3",
         5.0,
         "This is an example of a review for test product 2",
+        "2010-13-01",
         "2010-13-01",
         "testUserNameThree",
         testEmail,

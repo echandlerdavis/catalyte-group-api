@@ -291,6 +291,7 @@ public class ProductFactory {
    *
    * @return - a double between .5 and 5.
    */
+
   public static double getReviewRating() {
     return .5 + (5 - .5) * randomGenerator.nextDouble();
   }
@@ -314,6 +315,8 @@ public class ProductFactory {
       review.setUserName(getReviewUserName());
     }
     review.setCreatedAt(String.valueOf(
+        between(LocalDate.parse(product.getReleaseDate()), LocalDate.now())));
+    review.setEditedAt(String.valueOf(
         between(LocalDate.parse(product.getReleaseDate()), LocalDate.now())));
     review.setProduct(product);
 

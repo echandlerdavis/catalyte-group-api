@@ -45,8 +45,7 @@ public class ReviewController {
 
   @PostMapping(value = "products/{productId}/reviews")
   @ResponseStatus(value = HttpStatus.CREATED)
-  public ResponseEntity<Review> postReview(@PathVariable Long productId,
-      @Valid @RequestBody ReviewDTO reviewDTO) {
+  public ResponseEntity<Review> postReview(@PathVariable Long productId, @Valid @RequestBody ReviewDTO reviewDTO){
     logger.info("Request received for postReview");
     return new ResponseEntity<>(reviewService.postReview(productId, reviewDTO), HttpStatus.CREATED);
   }
@@ -54,7 +53,7 @@ public class ReviewController {
   @DeleteMapping(value = "reviews/{reviewId}/email/{requestingEmail}")
   public ResponseEntity<HttpStatus> deleteReview(@PathVariable Long reviewId,
       @PathVariable String requestingEmail) {
-    logger.info(String.format("Request receieved to delete review %d from %s", reviewId,
+    logger.info(String.format("Request received to delete review %d from %s", reviewId,
         requestingEmail));
     return new ResponseEntity<>(reviewService.deactivateReview(reviewId, requestingEmail));
   }

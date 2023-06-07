@@ -4,33 +4,49 @@ import static io.catalyte.training.sportsproducts.constants.Paths.PRODUCTS_PATH;
 import static io.catalyte.training.sportsproducts.constants.Roles.ADMIN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.catalyte.training.sportsproducts.constants.StringConstants;
 import io.catalyte.training.sportsproducts.data.ProductFactory;
+import io.catalyte.training.sportsproducts.data.PurchaseFactory;
 import io.catalyte.training.sportsproducts.domains.product.Product;
 import io.catalyte.training.sportsproducts.domains.product.ProductRepository;
+import io.catalyte.training.sportsproducts.domains.purchase.BillingAddress;
+import io.catalyte.training.sportsproducts.domains.purchase.CreditCard;
+import io.catalyte.training.sportsproducts.domains.purchase.DeliveryAddress;
+import io.catalyte.training.sportsproducts.domains.purchase.LineItem;
+import io.catalyte.training.sportsproducts.domains.purchase.LineItemRepository;
+import io.catalyte.training.sportsproducts.domains.purchase.Purchase;
+import io.catalyte.training.sportsproducts.domains.purchase.PurchaseRepository;
+import io.catalyte.training.sportsproducts.domains.purchase.PurchaseService;
 import io.catalyte.training.sportsproducts.domains.user.User;
 import io.catalyte.training.sportsproducts.domains.user.UserRepository;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,12 +58,28 @@ public class ReviewApiTest {
   private ProductRepository productRepository;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private PurchaseRepository purchaseRepository;
+  @Autowired
+  private LineItemRepository lineItemRepository;
+
+  @Autowired
+  PurchaseService purchaseService;
+
   private ProductFactory productFactory = new ProductFactory();
+  private PurchaseFactory purchaseFactory = new PurchaseFactory();
   private Product testProduct = productFactory.createRandomProduct();
+  private Purchase testPurchase;
+  private LineItem testLineItem;
+  private DeliveryAddress testDelivery;
+  private BillingAddress testBilling;
+  private CreditCard testCreditCard;
   private Review testReview1 = productFactory.createRandomReview(testProduct, 1, null);
   private Review testReview2 = productFactory.createRandomReview(testProduct, 2, null);
+  private ReviewDTO writeReview;
   private String testEmail;
   private User admin;
+  private User user;
   private String adminEmail;
   @Autowired
   private WebApplicationContext wac;
@@ -60,6 +92,7 @@ public class ReviewApiTest {
     adminEmail = "admin@admin.com";
     setTestReviews();
     createAdmin();
+    setWriteReview();
   }
 
   @After
@@ -80,6 +113,31 @@ public class ReviewApiTest {
     }
   }
 
+  public void setWriteReview() {
+    User checkUser = userRepository.findByEmail(testEmail);
+    if (checkUser == null) {
+      user = new User();
+      user.setEmail(testEmail);
+      user.setFirstName("Devin");
+      user.setLastName("Duval");
+      User savedUser = userRepository.save(user);
+      user.setId(savedUser.getId());
+    } else {
+      user = checkUser;
+    }
+    ;
+    writeReview = new ReviewDTO(
+        "Title",
+        4.5,
+        "An excellent product!",
+        "10/12/2023",
+        "10/12/2023",
+        user.getFirstName(),
+        user.getEmail(),
+        testProduct
+    );
+  }
+
   public void deleteAdmin() {
     Optional<User> optionalAdmin = userRepository.findById(admin.getId());
     //if admin, remove from database
@@ -88,16 +146,64 @@ public class ReviewApiTest {
     }
   }
 
-
   private void setTestReviews() {
-    productRepository.save(testProduct);
+    Product savedProduct = productRepository.save(testProduct);
     testProduct.setReviews(Arrays.asList(testReview1, testReview2));
+    testProduct.setActive(true);
+    testProduct.setId(savedProduct.getId());
     //set testReview 1
     Review savedReview = reviewRepository.save(testReview1);
     testReview1.setId(savedReview.getId());
     //set testReview 2
     Review savedReview2 = reviewRepository.save(testReview2);
     testReview2.setId(savedReview2.getId());
+  }
+
+  private void setTestPurchase() {
+    testPurchase = new Purchase();
+
+    testDelivery = new DeliveryAddress(
+        "Test",
+        "User",
+        "Street 1",
+        null,
+        "City",
+        "New York",
+        12345);
+    testBilling = new BillingAddress(
+        "Street 1",
+        null,
+        "City",
+        "New York",
+        12345,
+        testEmail,
+        "1234567899");
+    testCreditCard = new CreditCard(
+        "1234567812345678",
+        "123",
+        "03/25",
+        "Test User"
+    );
+
+    Set<LineItem> lineItems = new HashSet<>();
+    testLineItem = new LineItem();
+
+    testLineItem.setProduct(testProduct);
+    testLineItem.setQuantity(1);
+    lineItems.add(testLineItem);
+
+    testPurchase.setProducts(lineItems);
+    testPurchase.setDeliveryAddress(testDelivery);
+    testPurchase.setShippingCharge(10.00);
+    testPurchase.setBillingAddress(testBilling);
+    testPurchase.setCreditCard(testCreditCard);
+    testPurchase.setPromoCode(null);
+    Purchase savedPurchase = purchaseRepository.save(testPurchase);
+
+    testLineItem.setPurchase(savedPurchase);
+
+    testPurchase.setId(savedPurchase.getId());
+    lineItemRepository.saveAll(savedPurchase.getProducts());
   }
 
   @Test
@@ -200,5 +306,125 @@ public class ReviewApiTest {
     mockMvc.perform(
             delete(String.format("/reviews/%d/email/%s", testReview2.getId(), testEmail)))
         .andExpect(status().isForbidden());
+  }
+
+  @Test
+  public void saveReviewReturns201WithReviewObject() throws Exception {
+    setTestPurchase();
+    testReview1.setUserEmail("test1@test.com");
+    testReview2.setUserEmail("test2@test.com");
+    ObjectMapper mapper = new ObjectMapper();
+    mockMvc.perform(
+            post(String.format("/products/%d/reviews", testProduct.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(writeReview)))
+        .andExpect(status().isCreated());
+  }
+
+  @Test
+  public void saveReviewReturns400IfRatingIsNotBetweenOneAndFive() throws Exception{
+    setTestPurchase();
+    writeReview.setRating(6.0);
+    testReview1.setUserEmail("test1@test.com");
+    testReview2.setUserEmail("test2@test.com");
+    ObjectMapper mapper = new ObjectMapper();
+    MockHttpServletResponse response = mockMvc.perform(
+            post(String.format("/products/%d/reviews", testProduct.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(writeReview)))
+        .andExpect(status().isBadRequest())
+        .andReturn().getResponse();
+    HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+    assertTrue(responseMap.get("errorMessage").equals(StringConstants.REVIEW_RATING_INVALID));
+  }
+
+  @Test
+  public void saveReviewReturns400IfFieldsAreNull() throws Exception {
+    setTestPurchase();
+    writeReview.setUserName(null);
+    testReview1.setUserEmail("test1@test.com");
+    testReview2.setUserEmail("test2@test.com");
+    ObjectMapper mapper = new ObjectMapper();
+    MockHttpServletResponse response = mockMvc.perform(
+            post(String.format("/products/%d/reviews", testProduct.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(writeReview)))
+        .andExpect(status().isBadRequest())
+        .andReturn().getResponse();
+    HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+    assertTrue(responseMap.get("errorMessage")
+        .equals(StringConstants.REVIEW_FIELDS_NULL(Arrays.asList("userName"))));
+
+  }
+
+  @Test
+  public void saveReviewReturns400IfFieldsAreEmpty() throws Exception {
+    setTestPurchase();
+    writeReview.setUserName("    ");
+    testReview1.setUserEmail("test1@test.com");
+    testReview2.setUserEmail("test2@test.com");
+    ObjectMapper mapper = new ObjectMapper();
+    MockHttpServletResponse response = mockMvc.perform(
+            post(String.format("/products/%d/reviews", testProduct.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(writeReview)))
+        .andExpect(status().isBadRequest())
+        .andReturn().getResponse();
+    HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+    assertTrue(responseMap.get("errorMessage")
+        .equals(StringConstants.REVIEW_FIELDS_EMPTY(Arrays.asList("userName"))));
+  }
+
+  @Test
+  public void saveReviewReturns400IfBothReviewAndTitleAreNullOrEmpty() throws Exception {
+    setTestPurchase();
+    writeReview.setReview("    ");
+    writeReview.setTitle(null);
+    testReview1.setUserEmail("test1@test.com");
+    testReview2.setUserEmail("test2@test.com");
+    ObjectMapper mapper = new ObjectMapper();
+    MockHttpServletResponse response = mockMvc.perform(
+            post(String.format("/products/%d/reviews", testProduct.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(writeReview)))
+        .andExpect(status().isBadRequest())
+        .andReturn().getResponse();
+    HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+    assertTrue(responseMap.get("errorMessage")
+        .equals(StringConstants.REVIEW_INPUTS_INVALID));
+  }
+
+  @Test
+  public void saveReviewReturns400IfUserHasNotPurchasedProduct() throws Exception{
+    testReview1.setUserEmail("test1@test.com");
+    testReview2.setUserEmail("test2@test.com");
+    ObjectMapper mapper = new ObjectMapper();
+    MockHttpServletResponse response = mockMvc.perform(
+            post(String.format("/products/%d/reviews", testProduct.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(writeReview)))
+        .andExpect(status().isBadRequest())
+        .andReturn().getResponse();
+    HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+    assertTrue(responseMap.get("errorMessage")
+        .equals(StringConstants.REVIEW_USER_PURCHASE_INVALID));
+
+  }
+
+  @Test
+  public void saveReviewReturns400IfUserHasAlreadyReviewed() throws Exception{
+    setTestPurchase();
+    testReview1.setUserEmail(testEmail);
+    reviewRepository.save(testReview1);
+    ObjectMapper mapper = new ObjectMapper();
+    MockHttpServletResponse response = mockMvc.perform(
+            post(String.format("/products/%d/reviews", testProduct.getId()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(writeReview)))
+        .andExpect(status().isBadRequest())
+        .andReturn().getResponse();
+    HashMap responseMap = mapper.readValue(response.getContentAsString(), HashMap.class);
+    assertTrue(responseMap.get("errorMessage")
+        .equals(StringConstants.REVIEW_USER_HAS_ALREADY_REVIEWED));
   }
 }
