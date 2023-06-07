@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,21 +87,20 @@ public class PurchaseServiceImpl implements PurchaseService {
   public List<Long> getProductIdsPurchasedByBillingAddressEmail(String email){
     try{
       List<Purchase> purchaseList = purchaseRepository.findByBillingAddressEmail(email);
-      List<Long> productIds = new ArrayList<>();
+      Set<Long> productIds = new HashSet<>();
       if(purchaseList.isEmpty()){
         return null;
       }else{
         purchaseList.stream().forEach(purchase -> {
           purchase.getProducts().forEach(product -> {
             Long productId = product.getProduct().getId();
-            if (!productIds.contains(productId)) {
-              productIds.add(product.getProduct().getId());
-            }
+            productIds.add(productId);
           });
         });
       };
-      Collections.sort(productIds);
-      return productIds;
+      List<Long> productIdsAsList = new ArrayList<>(productIds);
+      Collections.sort(productIdsAsList);
+      return productIdsAsList;
     }catch (DataAccessException e){
       logger.error(e.getMessage());
       throw new ServerError(e.getMessage());
