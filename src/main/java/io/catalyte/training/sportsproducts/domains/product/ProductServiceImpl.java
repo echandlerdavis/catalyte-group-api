@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
    */
   public List<Product> getProducts(Product product) {
     try {
-      return productRepository.findAll(Example.of(product));
+      return productRepository.findAllByOrderByIdAsc();
     } catch (DataAccessException e) {
       logger.error(e.getMessage());
       throw new ServerError(e.getMessage());
@@ -511,4 +510,5 @@ public class ProductServiceImpl implements ProductService {
 
     return products;
   }
+
 }
