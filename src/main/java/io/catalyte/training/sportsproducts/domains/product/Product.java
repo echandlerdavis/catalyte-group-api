@@ -86,10 +86,6 @@ public class Product {
     this.reviews = reviews;
   }
 
-  public static Object updateProduct(Long id, Product product) {
-    return product;
-  }
-
   public Long getId() {
     return id;
   }
